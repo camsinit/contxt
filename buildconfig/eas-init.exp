@@ -1,0 +1,27 @@
+set timeout 180
+spawn eas init
+match_max 100000
+
+expect {
+    "Existing project found*" {
+        send -- "Y"
+        send_user "*** DRAFTBIT - EXISTING PROJECT ***"
+        sleep 10
+        exit 0
+        }
+    "Would you like to create a project*" {
+        send -- "Y"
+        send_user "*** DRAFTBIT - CREATING NEW PROJECT ***"
+        sleep 10
+        exit 0
+        }
+    "*Project already linked*" {
+        exit 0
+        }
+    timeout {
+        exit 1
+        }
+    eof {
+        exit 1
+        }
+}

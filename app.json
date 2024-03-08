@@ -1,0 +1,70 @@
+{
+  "expo": {
+    "name": "Contxt",
+    "slug": "contxt",
+    "scheme": "untitled-app",
+    "description": "Your place for quotes n jokes",
+    "privacy": "unlisted",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "version": "1.0.0",
+    "orientation": "default",
+    "icon": "./assets/app/icon.png",
+    "backgroundColor": "#FFFFFF",
+    "splash": {
+      "image": "./assets/app/splash.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#FFFFFF"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "plugins": [
+      [
+        "expo-screen-orientation",
+        {
+          "initialOrientation": "ALL"
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "deploymentTarget": "14.0"
+          }
+        }
+      ]
+    ],
+    "ios": {
+      "bundleIdentifier": "com.contxt.app",
+      "buildNumber": "1.0.0",
+      "infoPlist": {},
+      "usesIcloudStorage": false,
+      "config": {
+        "usesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "versionCode": 1,
+      "package": "com.draftbit.untitledapp",
+      "permissions": [],
+      "adaptiveIcon": {}
+    },
+    "androidStatusBar": {},
+    "androidNavigationBar": {},
+    "web": {
+      "themeColor": "#000000"
+    },
+    "notification": {
+      "androidMode": "default"
+    },
+    "extra": {
+      "eas": {
+        "projectId": ""
+      }
+    }
+  }
+}

@@ -1,0 +1,60 @@
+set timeout 2100
+spawn eas build -p android
+match_max 100000
+expect {
+    "Generate a new Android Keystore*" {
+        send -- "y"
+        send_user "*** DRAFTBIT - GENERATE NEW KEYSTORE ***"
+        exp_continue
+        }
+    "*build was canceled*" {
+        send_user "*** DRAFTBIT - BUILD CANCELED ***"
+        exit 1
+        }
+    "*Build finished*" {
+        send_user "*** DRAFTBIT - BUILD SUCCEEDED ***"
+        exit 0
+        }
+    "*Build failed*" {
+        send_user "*** DRAFTBIT - BUILD FAILED ***"
+        exit 1
+        }
+    "*Waiting in Free tier queue*" {
+        send_user "*** DRAFTBIT - BUILD QUEUED ***"
+        exit 0
+        }
+    timeout {
+        send_user "*** DRAFTBIT - PRE BUILD TIMEOUT ***"
+        exit 1
+        }
+    eof {
+        send_user "*** DRAFTBIT - EOF #1 ***"
+        exit 1
+        }
+}
+expect {
+    "*build was canceled*" {
+        send_user "*** DRAFTBIT - BUILD CANCELED ***"
+        exit 1
+        }
+    "*Build finished*" {
+        send_user "*** DRAFTBIT - BUILD SUCCEEDED ***"
+        exit 0
+        }
+    "*Build failed*" {
+        send_user "*** DRAFTBIT - BUILD FAILED ***"
+        exit 1
+        }
+    "*Waiting in Free tier queue*" {
+        send_user "*** DRAFTBIT - BUILD QUEUED ***"
+        exit 0
+        }
+    timeout {
+        send_user "*** DRAFTBIT - POST BUILD TIMEOUT ***"
+        exit 1
+        }
+    eof {
+        send_user "*** DRAFTBIT - EOF #2  ***"
+        exit 1
+        }
+}
