@@ -1,5 +1,6 @@
 import React from 'react';
 import * as GlobalStyles from '../GlobalStyles.js';
+import * as AuthApiApi from '../apis/AuthApiApi.js';
 import * as GlobalVariables from '../config/GlobalVariableContext';
 import Images from '../config/Images';
 import Breakpoints from '../utils/Breakpoints';
@@ -17,17 +18,21 @@ const OnboardingScreen = props => {
   const Variables = Constants;
   const isFocused = useIsFocused();
   React.useEffect(() => {
-    try {
-      if (!isFocused) {
-        return;
+    const handler = async () => {
+      try {
+        if (!isFocused) {
+          return;
+        }
+        const authMeResult = (await AuthApiApi.authMeGET(Constants))?.json;
+        if (authMeResult?.message) {
+        } else {
+          navigation.navigate('HomeScreen');
+        }
+      } catch (err) {
+        console.error(err);
       }
-      if (Constants['CX_AUTH_TOKEN']) {
-        navigation.navigate('HomeScreen');
-      } else {
-      }
-    } catch (err) {
-      console.error(err);
-    }
+    };
+    handler();
   }, [isFocused]);
 
   return (

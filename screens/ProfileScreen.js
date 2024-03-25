@@ -39,14 +39,15 @@ const ProfileScreen = props => {
   const dimensions = useWindowDimensions();
   const Constants = GlobalVariables.useValues();
   const Variables = Constants;
+  const setGlobalVariableValue = GlobalVariables.useSetValue();
   const [currentContact, setCurrentContact] = React.useState({});
-  const [editMode, setEditMode] = React.useState(true);
+  const [editMode, setEditMode] = React.useState(false);
   const [isUpdatingDob, setIsUpdatingDob] = React.useState(false);
   const [isUpdatingName, setIsUpdatingName] = React.useState(false);
   const [isUploading, setIsUploading] = React.useState(false);
   const [newNameValue, setNewNameValue] = React.useState('');
   const [searchValue, setSearchValue] = React.useState('');
-  const [selectedDobValue, setSelectedDobValue] = React.useState(new Date());
+  const [selectedDobValue, setSelectedDobValue] = React.useState(null);
   const [selectedImage, setSelectedImage] = React.useState('');
   const [showNewQuoteModal, setShowNewQuoteModal] = React.useState(false);
   const hideModal = () => {
@@ -91,14 +92,23 @@ const ProfileScreen = props => {
               setCurrentContact(fetchData);
               setSelectedImage(fetchData?.profile_image?.url);
               setNewNameValue(fetchData?.name);
-              setSelectedDobValue(new Date(fetchData?.dob));
+              if (fetchData?.dob) {
+                setSelectedDobValue(new Date(fetchData?.dob));
+              }
+              if (Constants['CX_USER']?.id === fetchData?.id) {
+                setGlobalVariableValue({
+                  key: 'CX_USER',
+                  value: fetchData,
+                });
+              } else {
+              }
             } catch (err) {
               console.error(err);
             }
           },
         }}
-        id={props.route?.params?.id ?? 1}
-        type={props.route?.params?.type ?? 'user'}
+        id={props.route?.params?.id ?? 11088}
+        type={props.route?.params?.type ?? 'contact'}
       >
         {({ loading, error, data, refetchGetProfile }) => {
           const fetchData = data?.json;
@@ -157,7 +167,8 @@ const ProfileScreen = props => {
                 </Pressable>
                 <>
                   {!(
-                    Constants['CX_USER']?.id === (props.route?.params?.id ?? 1)
+                    Constants['CX_USER']?.id ===
+                    (props.route?.params?.id ?? 11088)
                   ) ? null : (
                     <View>
                       {/* EditLinkButton */}
@@ -165,7 +176,6 @@ const ProfileScreen = props => {
                         {editMode ? null : (
                           <Link
                             accessible={true}
-                            allowFontScaling={true}
                             onPress={() => {
                               try {
                                 setEditMode(true);
@@ -189,7 +199,6 @@ const ProfileScreen = props => {
                         {!editMode ? null : (
                           <Link
                             accessible={true}
-                            allowFontScaling={true}
                             onPress={() => {
                               const handler = async () => {
                                 try {
@@ -305,6 +314,10 @@ const ProfileScreen = props => {
                                   mediaTypes: 'Images',
                                   allowsEditing: false,
                                   quality: 0.2,
+                                  allowsMultipleSelection: false,
+                                  permissionErrorMessage:
+                                    'Sorry, we need notifications permissions to make this work.',
+                                  showAlertOnPermissionError: true,
                                 });
 
                                 setSelectedImage(imageResult);
@@ -316,7 +329,8 @@ const ProfileScreen = props => {
                                         id: currentContact?.id,
                                         profile_image: imageResult,
                                         type:
-                                          props.route?.params?.type ?? 'user',
+                                          props.route?.params?.type ??
+                                          'contact',
                                       }
                                     )
                                   )?.json;
@@ -359,7 +373,6 @@ const ProfileScreen = props => {
                                 {isUploading ? null : (
                                   <Text
                                     accessible={true}
-                                    allowFontScaling={true}
                                     style={StyleSheet.applyWidth(
                                       StyleSheet.compose(
                                         GlobalStyles.TextStyles(theme)['Text'],
@@ -406,7 +419,6 @@ const ProfileScreen = props => {
                     {editMode ? null : (
                       <Text
                         accessible={true}
-                        allowFontScaling={true}
                         style={StyleSheet.applyWidth(
                           StyleSheet.compose(
                             GlobalStyles.TextStyles(theme)['Text'],
@@ -432,7 +444,6 @@ const ProfileScreen = props => {
                         )}
                       >
                         <TextInput
-                          allowFontScaling={true}
                           autoCapitalize={'none'}
                           changeTextDelay={500}
                           onChangeText={newTextInputValue => {
@@ -453,7 +464,8 @@ const ProfileScreen = props => {
                                         id: currentContact?.id,
                                         name: newTextInputValue,
                                         type:
-                                          props.route?.params?.type ?? 'user',
+                                          props.route?.params?.type ??
+                                          'contact',
                                       }
                                     )
                                   )?.json;
@@ -550,7 +562,6 @@ const ProfileScreen = props => {
                   >
                     <Text
                       accessible={true}
-                      allowFontScaling={true}
                       style={StyleSheet.applyWidth(
                         StyleSheet.compose(
                           GlobalStyles.TextStyles(theme)['Text'],
@@ -580,10 +591,9 @@ const ProfileScreen = props => {
                     )}
                   >
                     <>
-                      {editMode ? null : (
+                      {!(!editMode && selectedDobValue) ? null : (
                         <Text
                           accessible={true}
-                          allowFontScaling={true}
                           style={StyleSheet.applyWidth(
                             StyleSheet.compose(
                               GlobalStyles.TextStyles(theme)['Text'],
@@ -622,6 +632,7 @@ const ProfileScreen = props => {
                             label={'Date'}
                             labelColor={'rgba(0, 0, 0, 0)'}
                             leftIconMode={'inset'}
+                            maximumDate={new Date()}
                             mode={'date'}
                             onDateChange={newDatePickerValue => {
                               const handler = async () => {
@@ -634,7 +645,8 @@ const ProfileScreen = props => {
                                         dob: newDatePickerValue,
                                         id: currentContact?.id,
                                         type:
-                                          props.route?.params?.type ?? 'user',
+                                          props.route?.params?.type ??
+                                          'contact',
                                       }
                                     )
                                   )?.json;
@@ -735,7 +747,6 @@ const ProfileScreen = props => {
                       size={24}
                     />
                     <TextInput
-                      allowFontScaling={true}
                       autoCapitalize={'none'}
                       changeTextDelay={500}
                       clearButtonMode={'always'}
@@ -865,7 +876,7 @@ const ProfileScreen = props => {
               <QuoteFormBlock
                 onClose={hideModal()}
                 selected_contact={currentContact}
-                selected_contact_type={props.route?.params?.type ?? 'user'}
+                selected_contact_type={props.route?.params?.type ?? 'contact'}
               />
             </View>
           </KeyboardAvoidingView>

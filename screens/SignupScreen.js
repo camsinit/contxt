@@ -22,6 +22,7 @@ import {
 } from '@draftbit/ui';
 import { H2 } from '@expo/html-elements';
 import { Text, View } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const SignupScreen = props => {
   const { theme, navigation } = props;
@@ -143,640 +144,629 @@ const SignupScreen = props => {
         </Pressable>
         <Icon name={'MaterialCommunityIcons/star-four-points'} size={32} />
       </View>
-      {/* NameForm */}
-      <>
-        {!(currentForm === 'name') ? null : (
-          <View
-            style={StyleSheet.applyWidth(
-              { flex: 1, padding: 20 },
-              dimensions.width
-            )}
-          >
-            {/* HeaderText */}
-            <H2
-              style={StyleSheet.applyWidth(
-                StyleSheet.compose(GlobalStyles.H2Styles(theme)['H2'], {
-                  fontSize: 32,
-                }),
-                dimensions.width
-              )}
-            >
-              {'First, what’s your name?'}
-            </H2>
-            {/* InnerText */}
-            <Text
-              accessible={true}
-              allowFontScaling={true}
-              style={StyleSheet.applyWidth(
-                GlobalStyles.TextStyles(theme)['Text'],
-                dimensions.width
-              )}
-            >
-              {
-                'While we love a good alter-ego, Contxt is for the people you know IRL\n\nSharing your name allows friends to find and attribute quotes to each other!'
-              }
-            </Text>
-            {/* Inner Container */}
+
+      <KeyboardAwareScrollView
+        enableOnAndroid={true}
+        extraScrollHeight={50}
+        keyboardShouldPersistTaps={'always'}
+        showsVerticalScrollIndicator={true}
+        viewIsInsideTabBar={true}
+      >
+        {/* NameForm */}
+        <>
+          {!(currentForm === 'name') ? null : (
             <View
               style={StyleSheet.applyWidth(
-                { flex: 1, justifyContent: 'space-between' },
+                { flex: 1, padding: 20 },
                 dimensions.width
               )}
             >
-              {/* Form */}
-              <View
+              {/* HeaderText */}
+              <H2
                 style={StyleSheet.applyWidth(
-                  { marginTop: 60 },
+                  StyleSheet.compose(GlobalStyles.H2Styles(theme)['H2'], {
+                    fontSize: 32,
+                  }),
                   dimensions.width
                 )}
               >
-                {/* FirstnameFormField */}
+                {'First, what’s your name?'}
+              </H2>
+              {/* InnerText */}
+              <Text
+                accessible={true}
+                style={StyleSheet.applyWidth(
+                  GlobalStyles.TextStyles(theme)['Text'],
+                  dimensions.width
+                )}
+              >
+                {
+                  'While we love a good alter-ego, Contxt is for the people you know IRL\n\nSharing your name allows friends to find and attribute quotes to each other!'
+                }
+              </Text>
+              {/* Inner Container */}
+              <View
+                style={StyleSheet.applyWidth(
+                  { flex: 1, justifyContent: 'space-between' },
+                  dimensions.width
+                )}
+              >
+                {/* Form */}
                 <View
                   style={StyleSheet.applyWidth(
-                    { marginBottom: 20 },
+                    { marginTop: 60 },
                     dimensions.width
                   )}
                 >
-                  {/* FormFieldLabel */}
-                  <Text
-                    accessible={true}
-                    allowFontScaling={true}
-                    style={StyleSheet.applyWidth(
-                      StyleSheet.compose(
-                        GlobalStyles.TextStyles(theme)['Text'],
-                        { fontSize: 12 }
-                      ),
-                      dimensions.width
-                    )}
-                  >
-                    {'First Name'}
-                  </Text>
-                  {/* FirstNameInput */}
-                  <TextInput
-                    allowFontScaling={true}
-                    autoCapitalize={'none'}
-                    autoComplete={'given-name'}
-                    changeTextDelay={500}
-                    onChangeText={newFirstNameInputValue => {
-                      try {
-                        setFirstNameValue(newFirstNameInputValue);
-                      } catch (err) {
-                        console.error(err);
-                      }
-                    }}
-                    placeholder={'Enter your name'}
-                    placeholderTextColor={theme.colors['Secondary']}
-                    style={StyleSheet.applyWidth(
-                      StyleSheet.compose(
-                        GlobalStyles.TextInputStyles(theme)['Text Input'],
-                        { marginTop: 6 }
-                      ),
-                      dimensions.width
-                    )}
-                    value={firstNameValue}
-                  />
-                </View>
-                {/* LastNameFormField */}
-                <View
-                  style={StyleSheet.applyWidth(
-                    { marginBottom: 20 },
-                    dimensions.width
-                  )}
-                >
-                  {/* FormFieldLabel */}
-                  <Text
-                    accessible={true}
-                    allowFontScaling={true}
-                    style={StyleSheet.applyWidth(
-                      StyleSheet.compose(
-                        GlobalStyles.TextStyles(theme)['Text'],
-                        { fontSize: 12 }
-                      ),
-                      dimensions.width
-                    )}
-                  >
-                    {'Last Name'}
-                  </Text>
-                  {/* LastNameInput */}
-                  <TextInput
-                    allowFontScaling={true}
-                    autoCapitalize={'words'}
-                    autoComplete={'family-name'}
-                    changeTextDelay={500}
-                    onChangeText={newLastNameInputValue => {
-                      try {
-                        setLastNameValue(newLastNameInputValue);
-                      } catch (err) {
-                        console.error(err);
-                      }
-                    }}
-                    placeholder={'Enter your lastname'}
-                    placeholderTextColor={theme.colors['Secondary']}
-                    style={StyleSheet.applyWidth(
-                      StyleSheet.compose(
-                        GlobalStyles.TextInputStyles(theme)['Text Input'],
-                        { marginTop: 6 }
-                      ),
-                      dimensions.width
-                    )}
-                    value={lastNameValue}
-                  />
-                </View>
-                {/* DobField */}
-                <View
-                  style={StyleSheet.applyWidth(
-                    { marginBottom: 20 },
-                    dimensions.width
-                  )}
-                >
-                  {/* FormFieldLabel */}
-                  <Text
-                    accessible={true}
-                    allowFontScaling={true}
-                    style={StyleSheet.applyWidth(
-                      StyleSheet.compose(
-                        GlobalStyles.TextStyles(theme)['Text'],
-                        { fontSize: 12 }
-                      ),
-                      dimensions.width
-                    )}
-                  >
-                    {'Date of Birth'}
-                  </Text>
-
+                  {/* FirstnameFormField */}
                   <View
                     style={StyleSheet.applyWidth(
-                      {
-                        borderColor: theme.colors['Divider'],
-                        borderRadius: 8,
-                        borderWidth: 1,
-                        height: 48,
-                        paddingLeft: 8,
-                      },
+                      { marginBottom: 20 },
                       dimensions.width
                     )}
                   >
-                    <DatePicker
-                      autoDismissKeyboard={true}
-                      borderColor={'rgba(0, 0, 0, 0)'}
-                      date={dob}
-                      label={''}
-                      labelColor={theme.colors['Strong']}
-                      labelSize={0}
-                      leftIconMode={'inset'}
-                      maximumDate={new Date()}
-                      mode={'date'}
-                      onDateChange={newDatePickerValue => {
-                        try {
-                          setDob(newDatePickerValue);
-                        } catch (err) {
-                          console.error(err);
-                        }
-                      }}
-                      style={StyleSheet.applyWidth(
-                        {
-                          fontFamily: 'Poppins_400Regular',
-                          fontSize: 14,
-                          margin: 0,
-                          position: 'relative',
-                          top: -4,
-                        },
-                        dimensions.width
-                      )}
-                      type={'underline'}
-                    />
-                  </View>
-                </View>
-                {/* ErrorText */}
-                <Text
-                  accessible={true}
-                  allowFontScaling={true}
-                  style={StyleSheet.applyWidth(
-                    StyleSheet.compose(GlobalStyles.TextStyles(theme)['Text'], {
-                      color: theme.colors['Error'],
-                    }),
-                    dimensions.width
-                  )}
-                >
-                  {errorMessage}
-                </Text>
-                {/* ContinueButton */}
-                <Button
-                  onPress={() => {
-                    try {
-                      const isValidForm = validateNameForm();
-                      if (!isValidForm) {
-                        return;
-                      }
-                      setCurrentForm('number');
-                    } catch (err) {
-                      console.error(err);
-                    }
-                  }}
-                  style={StyleSheet.applyWidth(
-                    StyleSheet.compose(
-                      GlobalStyles.ButtonStyles(theme)['Button'],
-                      { marginTop: 60 }
-                    ),
-                    dimensions.width
-                  )}
-                  title={'Continue'}
-                />
-              </View>
-
-              <Text
-                accessible={true}
-                allowFontScaling={true}
-                style={StyleSheet.applyWidth(
-                  StyleSheet.compose(GlobalStyles.TextStyles(theme)['Text'], {
-                    textAlign: 'center',
-                  }),
-                  dimensions.width
-                )}
-              >
-                {'Already have an account? '}
-                <Link
-                  accessible={true}
-                  allowFontScaling={true}
-                  onPress={() => {
-                    try {
-                      navigation.navigate('LoginScreen');
-                    } catch (err) {
-                      console.error(err);
-                    }
-                  }}
-                  style={StyleSheet.applyWidth(
-                    GlobalStyles.LinkStyles(theme)['Link'],
-                    dimensions.width
-                  )}
-                  title={'Login In'}
-                />
-              </Text>
-            </View>
-          </View>
-        )}
-      </>
-      {/* NumberForm */}
-      <>
-        {!(currentForm === 'number') ? null : (
-          <View
-            style={StyleSheet.applyWidth(
-              { flex: 1, padding: 20 },
-              dimensions.width
-            )}
-          >
-            {/* HeaderText */}
-            <H2
-              style={StyleSheet.applyWidth(
-                StyleSheet.compose(GlobalStyles.H2Styles(theme)['H2'], {
-                  fontSize: 32,
-                }),
-                dimensions.width
-              )}
-            >
-              {'And your number?'}
-            </H2>
-            {/* InnerTextLink */}
-            <Link
-              accessible={true}
-              allowFontScaling={true}
-              style={StyleSheet.applyWidth(
-                StyleSheet.compose(GlobalStyles.LinkStyles(theme)['Link'], {
-                  color: theme.colors['DarkGray'],
-                  textAlign: 'center',
-                }),
-                dimensions.width
-              )}
-              title={'Why do you need my number?'}
-            />
-            {/* Inner Container */}
-            <View
-              style={StyleSheet.applyWidth(
-                { flex: 1, justifyContent: 'space-between' },
-                dimensions.width
-              )}
-            >
-              {/* Form */}
-              <View
-                style={StyleSheet.applyWidth(
-                  { marginTop: 60 },
-                  dimensions.width
-                )}
-              >
-                {/* FirstnameFormField */}
-                <View
-                  style={StyleSheet.applyWidth(
-                    { marginBottom: 20 },
-                    dimensions.width
-                  )}
-                >
-                  {/* FormFieldLabel */}
-                  <Text
-                    accessible={true}
-                    allowFontScaling={true}
-                    style={StyleSheet.applyWidth(
-                      StyleSheet.compose(
-                        GlobalStyles.TextStyles(theme)['Text'],
-                        { fontSize: 12 }
-                      ),
-                      dimensions.width
-                    )}
-                  >
-                    {'First Name'}
-                  </Text>
-                  {/* PhoneNumberInput */}
-                  <Utils.CustomCodeErrorBoundary>
-                    <ScreenComponents.PhoneInput
-                      number={phoneNumberValue}
-                      setNumber={setPhoneNumberValue}
-                      theme={props.theme}
-                    />
-                  </Utils.CustomCodeErrorBoundary>
-                </View>
-                {/* ErrorText 2 */}
-                <Text
-                  accessible={true}
-                  allowFontScaling={true}
-                  style={StyleSheet.applyWidth(
-                    StyleSheet.compose(GlobalStyles.TextStyles(theme)['Text'], {
-                      color: theme.colors['Error'],
-                    }),
-                    dimensions.width
-                  )}
-                >
-                  {errorMessage}
-                </Text>
-                {/* ContinueButton */}
-                <Button
-                  onPress={() => {
-                    const handler = async () => {
-                      try {
-                        const isValid = validateNumberForm();
-                        if (!isValid) {
-                          return;
-                        }
-                        const signupResult = (
-                          await AuthApiApi.signupPOST(Constants, {
-                            dob: dob,
-                            first_name: firstNameValue,
-                            last_name: lastNameValue,
-                            phone: cleanNumber(phoneNumberValue),
-                          })
-                        )?.json;
-                        if (signupResult?.message) {
-                          setErrorMessage(signupResult?.message);
-                        } else {
-                          setErrorMessage('');
-                          setCurrentForm('code');
-                        }
-                      } catch (err) {
-                        console.error(err);
-                      }
-                    };
-                    handler();
-                  }}
-                  style={StyleSheet.applyWidth(
-                    StyleSheet.compose(
-                      GlobalStyles.ButtonStyles(theme)['Button'],
-                      { marginTop: 60 }
-                    ),
-                    dimensions.width
-                  )}
-                  title={'Continue'}
-                />
-              </View>
-
-              <Text
-                accessible={true}
-                allowFontScaling={true}
-                style={StyleSheet.applyWidth(
-                  StyleSheet.compose(GlobalStyles.TextStyles(theme)['Text'], {
-                    textAlign: 'center',
-                  }),
-                  dimensions.width
-                )}
-              >
-                {'Already have an account? '}
-                <Link
-                  accessible={true}
-                  allowFontScaling={true}
-                  style={StyleSheet.applyWidth(
-                    GlobalStyles.LinkStyles(theme)['Link'],
-                    dimensions.width
-                  )}
-                  title={'Login In'}
-                />
-              </Text>
-            </View>
-          </View>
-        )}
-      </>
-      {/* CodeInputForm */}
-      <>
-        {!(currentForm === 'code') ? null : (
-          <View
-            style={StyleSheet.applyWidth(
-              { flex: 1, padding: 20 },
-              dimensions.width
-            )}
-          >
-            {/* HeaderText */}
-            <H2
-              style={StyleSheet.applyWidth(
-                StyleSheet.compose(GlobalStyles.H2Styles(theme)['H2'], {
-                  fontSize: 32,
-                }),
-                dimensions.width
-              )}
-            >
-              {'Enter Code'}
-            </H2>
-            {/* InnerText */}
-            <Text
-              accessible={true}
-              allowFontScaling={true}
-              style={StyleSheet.applyWidth(
-                GlobalStyles.TextStyles(theme)['Text'],
-                dimensions.width
-              )}
-            >
-              {'We’ve sent an SMS with an activation code to your phone '}
-              {phoneNumberValue}
-            </Text>
-            {/* Inner Container */}
-            <View
-              style={StyleSheet.applyWidth(
-                { flex: 1, justifyContent: 'space-between' },
-                dimensions.width
-              )}
-            >
-              {/* Form */}
-              <View
-                style={StyleSheet.applyWidth(
-                  {
-                    flex: 1,
-                    justifyContent: 'space-between',
-                    marginTop: 60,
-                    paddingBottom: 60,
-                  },
-                  dimensions.width
-                )}
-              >
-                <PinInput
-                  autoComplete={'one-time-code'}
-                  blurOnFull={true}
-                  cellCount={5}
-                  changeTextDelay={500}
-                  clearOnCellFocus={true}
-                  keyboardType={'number-pad'}
-                  onChangeText={newPinInputValue => {
-                    try {
-                      setCodeValue(newPinInputValue);
-                    } catch (err) {
-                      console.error(err);
-                    }
-                  }}
-                  onInputFull={finalValue => {
-                    const handler = async () => {
-                      try {
-                        const loginResult = (
-                          await AuthApiApi.loginPOST(Constants, {
-                            code: codeValue,
-                            phone: cleanNumber(phoneNumberValue),
-                          })
-                        )?.json;
-                        if (loginResult?.message) {
-                          setErrorMessage(loginResult?.message);
-                        } else {
-                          setGlobalVariableValue({
-                            key: 'CX_AUTH_TOKEN',
-                            value: loginResult?.authToken,
-                          });
-                          setGlobalVariableValue({
-                            key: 'CX_USER',
-                            value: loginResult?.user,
-                          });
-                          navigation.navigate('HomeScreen');
-                        }
-                      } catch (err) {
-                        console.error(err);
-                      }
-                    };
-                    handler();
-                  }}
-                  renderItem={({ cellValue, isFocused }) => {
-                    return null;
-                  }}
-                  style={StyleSheet.applyWidth(
-                    StyleSheet.compose(
-                      GlobalStyles.PinInputStyles(theme)['Pin Input'],
-                      { borderColor: theme.colors['Divider'], borderRadius: 12 }
-                    ),
-                    dimensions.width
-                  )}
-                  value={codeValue}
-                />
-                {/* ErrorText 3 */}
-                <Text
-                  accessible={true}
-                  allowFontScaling={true}
-                  style={StyleSheet.applyWidth(
-                    StyleSheet.compose(GlobalStyles.TextStyles(theme)['Text'], {
-                      color: theme.colors['Error'],
-                    }),
-                    dimensions.width
-                  )}
-                >
-                  {errorMessage}
-                </Text>
-                <>
-                  {!(timerValue > 0) ? null : (
+                    {/* FormFieldLabel */}
                     <Text
                       accessible={true}
-                      allowFontScaling={true}
                       style={StyleSheet.applyWidth(
                         StyleSheet.compose(
                           GlobalStyles.TextStyles(theme)['Text'],
-                          {
-                            color: theme.colors['Light'],
-                            fontFamily: 'Poppins_500Medium',
-                            textAlign: 'center',
-                          }
+                          { fontSize: 12 }
                         ),
                         dimensions.width
                       )}
                     >
-                      {'Send code again in '}
-                      {formattedTimerValue()}
+                      {'First Name'}
                     </Text>
-                  )}
-                </>
-                {/* SendAgainLink */}
-                <>
-                  {timerValue > 0 ? null : (
-                    <Link
-                      accessible={true}
-                      allowFontScaling={true}
-                      onPress={() => {
-                        const handler = async () => {
-                          try {
-                            const resendResult = (
-                              await AuthApiApi.resendPOST(Constants, {
-                                phone: phoneNumberValue,
-                              })
-                            )?.json;
-                            if (resendResult?.message) {
-                              setErrorMessage(resendResult?.message);
-                            } else {
-                              setTimerValue(119);
-                            }
-                          } catch (err) {
-                            console.error(err);
-                          }
-                        };
-                        handler();
+                    {/* FirstNameInput */}
+                    <TextInput
+                      autoCapitalize={'words'}
+                      autoComplete={'given-name'}
+                      changeTextDelay={500}
+                      onChangeText={newFirstNameInputValue => {
+                        try {
+                          setFirstNameValue(newFirstNameInputValue);
+                        } catch (err) {
+                          console.error(err);
+                        }
                       }}
+                      placeholder={'Enter your name'}
+                      placeholderTextColor={theme.colors['Secondary']}
                       style={StyleSheet.applyWidth(
                         StyleSheet.compose(
-                          GlobalStyles.LinkStyles(theme)['Link'],
-                          {
-                            textAlign: 'center',
-                            textDecorationLine: 'underline',
-                          }
+                          GlobalStyles.TextInputStyles(theme)['Text Input'],
+                          { marginTop: 6 }
                         ),
                         dimensions.width
                       )}
-                      title={'Send the code again'}
+                      value={firstNameValue}
                     />
-                  )}
-                </>
-              </View>
+                  </View>
+                  {/* LastNameFormField */}
+                  <View
+                    style={StyleSheet.applyWidth(
+                      { marginBottom: 20 },
+                      dimensions.width
+                    )}
+                  >
+                    {/* FormFieldLabel */}
+                    <Text
+                      accessible={true}
+                      style={StyleSheet.applyWidth(
+                        StyleSheet.compose(
+                          GlobalStyles.TextStyles(theme)['Text'],
+                          { fontSize: 12 }
+                        ),
+                        dimensions.width
+                      )}
+                    >
+                      {'Last Name'}
+                    </Text>
+                    {/* LastNameInput */}
+                    <TextInput
+                      autoCapitalize={'words'}
+                      autoComplete={'family-name'}
+                      changeTextDelay={500}
+                      onChangeText={newLastNameInputValue => {
+                        try {
+                          setLastNameValue(newLastNameInputValue);
+                        } catch (err) {
+                          console.error(err);
+                        }
+                      }}
+                      placeholder={'Enter your lastname'}
+                      placeholderTextColor={theme.colors['Secondary']}
+                      style={StyleSheet.applyWidth(
+                        StyleSheet.compose(
+                          GlobalStyles.TextInputStyles(theme)['Text Input'],
+                          { marginTop: 6 }
+                        ),
+                        dimensions.width
+                      )}
+                      value={lastNameValue}
+                    />
+                  </View>
+                  {/* DobField */}
+                  <View
+                    style={StyleSheet.applyWidth(
+                      { marginBottom: 20 },
+                      dimensions.width
+                    )}
+                  >
+                    {/* FormFieldLabel */}
+                    <Text
+                      accessible={true}
+                      style={StyleSheet.applyWidth(
+                        StyleSheet.compose(
+                          GlobalStyles.TextStyles(theme)['Text'],
+                          { fontSize: 12 }
+                        ),
+                        dimensions.width
+                      )}
+                    >
+                      {'Date of Birth'}
+                    </Text>
 
-              <Text
-                accessible={true}
-                allowFontScaling={true}
+                    <View
+                      style={StyleSheet.applyWidth(
+                        {
+                          borderColor: theme.colors['Divider'],
+                          borderRadius: 8,
+                          borderWidth: 1,
+                          height: 48,
+                          paddingLeft: 8,
+                        },
+                        dimensions.width
+                      )}
+                    >
+                      <DatePicker
+                        autoDismissKeyboard={true}
+                        borderColor={'rgba(0, 0, 0, 0)'}
+                        date={dob}
+                        label={''}
+                        labelColor={theme.colors['Strong']}
+                        labelSize={0}
+                        leftIconMode={'inset'}
+                        maximumDate={new Date()}
+                        mode={'date'}
+                        onDateChange={newDatePickerValue => {
+                          try {
+                            setDob(newDatePickerValue);
+                          } catch (err) {
+                            console.error(err);
+                          }
+                        }}
+                        style={StyleSheet.applyWidth(
+                          {
+                            fontFamily: 'Poppins_400Regular',
+                            fontSize: 14,
+                            margin: 0,
+                            position: 'relative',
+                            top: -4,
+                          },
+                          dimensions.width
+                        )}
+                        type={'underline'}
+                      />
+                    </View>
+                  </View>
+                  {/* ErrorText */}
+                  <Text
+                    accessible={true}
+                    style={StyleSheet.applyWidth(
+                      StyleSheet.compose(
+                        GlobalStyles.TextStyles(theme)['Text'],
+                        { color: theme.colors['Error'] }
+                      ),
+                      dimensions.width
+                    )}
+                  >
+                    {errorMessage}
+                  </Text>
+                  {/* ContinueButton */}
+                  <Button
+                    onPress={() => {
+                      try {
+                        const isValidForm = validateNameForm();
+                        if (!isValidForm) {
+                          return;
+                        }
+                        setCurrentForm('number');
+                      } catch (err) {
+                        console.error(err);
+                      }
+                    }}
+                    style={StyleSheet.applyWidth(
+                      StyleSheet.compose(
+                        GlobalStyles.ButtonStyles(theme)['Button'],
+                        { marginTop: 60 }
+                      ),
+                      dimensions.width
+                    )}
+                    title={'Continue'}
+                  />
+                </View>
+
+                <Text
+                  accessible={true}
+                  style={StyleSheet.applyWidth(
+                    StyleSheet.compose(GlobalStyles.TextStyles(theme)['Text'], {
+                      marginTop: 8,
+                      textAlign: 'center',
+                    }),
+                    dimensions.width
+                  )}
+                >
+                  {'Already have an account? '}
+                  <Link
+                    accessible={true}
+                    onPress={() => {
+                      try {
+                        navigation.navigate('LoginScreen');
+                      } catch (err) {
+                        console.error(err);
+                      }
+                    }}
+                    style={StyleSheet.applyWidth(
+                      GlobalStyles.LinkStyles(theme)['Link'],
+                      dimensions.width
+                    )}
+                    title={'Login In'}
+                  />
+                </Text>
+              </View>
+            </View>
+          )}
+        </>
+        {/* NumberForm */}
+        <>
+          {!(currentForm === 'number') ? null : (
+            <View
+              style={StyleSheet.applyWidth(
+                { flex: 1, padding: 20 },
+                dimensions.width
+              )}
+            >
+              {/* HeaderText */}
+              <H2
                 style={StyleSheet.applyWidth(
-                  StyleSheet.compose(GlobalStyles.TextStyles(theme)['Text'], {
-                    textAlign: 'center',
+                  StyleSheet.compose(GlobalStyles.H2Styles(theme)['H2'], {
+                    fontSize: 32,
                   }),
                   dimensions.width
                 )}
               >
-                {'Already have an account? '}
-                <Link
-                  accessible={true}
-                  allowFontScaling={true}
+                {'And your number?'}
+              </H2>
+              {/* Inner Container */}
+              <View
+                style={StyleSheet.applyWidth(
+                  { flex: 1, justifyContent: 'space-between' },
+                  dimensions.width
+                )}
+              >
+                {/* Form */}
+                <View
                   style={StyleSheet.applyWidth(
-                    GlobalStyles.LinkStyles(theme)['Link'],
+                    { marginTop: 60 },
                     dimensions.width
                   )}
-                  title={'Login In'}
-                />
-              </Text>
+                >
+                  {/* FirstnameFormField */}
+                  <View
+                    style={StyleSheet.applyWidth(
+                      { marginBottom: 20 },
+                      dimensions.width
+                    )}
+                  >
+                    {/* FormFieldLabel */}
+                    <Text
+                      accessible={true}
+                      style={StyleSheet.applyWidth(
+                        StyleSheet.compose(
+                          GlobalStyles.TextStyles(theme)['Text'],
+                          { fontSize: 12 }
+                        ),
+                        dimensions.width
+                      )}
+                    >
+                      {'First Name'}
+                    </Text>
+                    {/* PhoneNumberInput */}
+                    <Utils.CustomCodeErrorBoundary>
+                      <ScreenComponents.PhoneInput
+                        number={phoneNumberValue}
+                        setNumber={setPhoneNumberValue}
+                        theme={props.theme}
+                      />
+                    </Utils.CustomCodeErrorBoundary>
+                  </View>
+                  {/* ErrorText 2 */}
+                  <Text
+                    accessible={true}
+                    style={StyleSheet.applyWidth(
+                      StyleSheet.compose(
+                        GlobalStyles.TextStyles(theme)['Text'],
+                        { color: theme.colors['Error'] }
+                      ),
+                      dimensions.width
+                    )}
+                  >
+                    {errorMessage}
+                  </Text>
+                  {/* ContinueButton */}
+                  <Button
+                    onPress={() => {
+                      const handler = async () => {
+                        try {
+                          const isValid = validateNumberForm();
+                          if (!isValid) {
+                            return;
+                          }
+                          const signupResult = (
+                            await AuthApiApi.signupPOST(Constants, {
+                              dob: dob,
+                              first_name: firstNameValue,
+                              last_name: lastNameValue,
+                              phone: cleanNumber(phoneNumberValue),
+                            })
+                          )?.json;
+                          if (signupResult?.message) {
+                            setErrorMessage(signupResult?.message);
+                          } else {
+                            setErrorMessage('');
+                            setCurrentForm('code');
+                          }
+                        } catch (err) {
+                          console.error(err);
+                        }
+                      };
+                      handler();
+                    }}
+                    style={StyleSheet.applyWidth(
+                      StyleSheet.compose(
+                        GlobalStyles.ButtonStyles(theme)['Button'],
+                        { marginTop: 60 }
+                      ),
+                      dimensions.width
+                    )}
+                    title={'Continue'}
+                  />
+                </View>
+
+                <Text
+                  accessible={true}
+                  style={StyleSheet.applyWidth(
+                    StyleSheet.compose(GlobalStyles.TextStyles(theme)['Text'], {
+                      textAlign: 'center',
+                    }),
+                    dimensions.width
+                  )}
+                >
+                  {'Already have an account? '}
+                  <Link
+                    accessible={true}
+                    style={StyleSheet.applyWidth(
+                      GlobalStyles.LinkStyles(theme)['Link'],
+                      dimensions.width
+                    )}
+                    title={'Login In'}
+                  />
+                </Text>
+              </View>
             </View>
-          </View>
-        )}
-      </>
+          )}
+        </>
+        {/* CodeInputForm */}
+        <>
+          {!(currentForm === 'code') ? null : (
+            <View
+              style={StyleSheet.applyWidth(
+                { flex: 1, padding: 20 },
+                dimensions.width
+              )}
+            >
+              {/* HeaderText */}
+              <H2
+                style={StyleSheet.applyWidth(
+                  StyleSheet.compose(GlobalStyles.H2Styles(theme)['H2'], {
+                    fontSize: 32,
+                  }),
+                  dimensions.width
+                )}
+              >
+                {'Enter Code'}
+              </H2>
+              {/* InnerText */}
+              <Text
+                accessible={true}
+                style={StyleSheet.applyWidth(
+                  GlobalStyles.TextStyles(theme)['Text'],
+                  dimensions.width
+                )}
+              >
+                {'We’ve sent an SMS with an activation code to your phone '}
+                {phoneNumberValue}
+              </Text>
+              {/* Inner Container */}
+              <View
+                style={StyleSheet.applyWidth(
+                  { flex: 1, justifyContent: 'space-between' },
+                  dimensions.width
+                )}
+              >
+                {/* Form */}
+                <View
+                  style={StyleSheet.applyWidth(
+                    {
+                      flex: 1,
+                      justifyContent: 'space-between',
+                      marginTop: 60,
+                      paddingBottom: 60,
+                    },
+                    dimensions.width
+                  )}
+                >
+                  <PinInput
+                    autoComplete={'one-time-code'}
+                    blurOnFull={true}
+                    cellCount={5}
+                    changeTextDelay={500}
+                    clearOnCellFocus={true}
+                    keyboardType={'number-pad'}
+                    onChangeText={newPinInputValue => {
+                      try {
+                        setCodeValue(newPinInputValue);
+                      } catch (err) {
+                        console.error(err);
+                      }
+                    }}
+                    onInputFull={finalValue => {
+                      const handler = async () => {
+                        try {
+                          const loginResult = (
+                            await AuthApiApi.loginPOST(Constants, {
+                              code: codeValue,
+                              phone: cleanNumber(phoneNumberValue),
+                            })
+                          )?.json;
+                          if (loginResult?.message) {
+                            setErrorMessage(loginResult?.message);
+                          } else {
+                            setGlobalVariableValue({
+                              key: 'CX_AUTH_TOKEN',
+                              value: loginResult?.authToken,
+                            });
+                            setGlobalVariableValue({
+                              key: 'CX_USER',
+                              value: loginResult?.user,
+                            });
+                            setCodeValue('');
+                            setFirstNameValue('');
+                            setLastNameValue('');
+                            setCurrentForm('name');
+                            setDob(new Date());
+                            navigation.navigate('ContactsImportScreen');
+                          }
+                        } catch (err) {
+                          console.error(err);
+                        }
+                      };
+                      handler();
+                    }}
+                    renderItem={({ cellValue, isFocused }) => {
+                      return null;
+                    }}
+                    style={StyleSheet.applyWidth(
+                      StyleSheet.compose(
+                        GlobalStyles.PinInputStyles(theme)['Pin Input'],
+                        {
+                          borderColor: theme.colors['Divider'],
+                          borderRadius: 12,
+                        }
+                      ),
+                      dimensions.width
+                    )}
+                    value={codeValue}
+                  />
+                  {/* ErrorText 3 */}
+                  <Text
+                    accessible={true}
+                    style={StyleSheet.applyWidth(
+                      StyleSheet.compose(
+                        GlobalStyles.TextStyles(theme)['Text'],
+                        { color: theme.colors['Error'] }
+                      ),
+                      dimensions.width
+                    )}
+                  >
+                    {errorMessage}
+                  </Text>
+                  <>
+                    {!(timerValue > 0) ? null : (
+                      <Text
+                        accessible={true}
+                        style={StyleSheet.applyWidth(
+                          StyleSheet.compose(
+                            GlobalStyles.TextStyles(theme)['Text'],
+                            {
+                              color: theme.colors['Light'],
+                              fontFamily: 'Poppins_500Medium',
+                              textAlign: 'center',
+                            }
+                          ),
+                          dimensions.width
+                        )}
+                      >
+                        {'Send code again in '}
+                        {formattedTimerValue()}
+                      </Text>
+                    )}
+                  </>
+                  {/* SendAgainLink */}
+                  <>
+                    {timerValue > 0 ? null : (
+                      <Link
+                        accessible={true}
+                        onPress={() => {
+                          const handler = async () => {
+                            try {
+                              const resendResult = (
+                                await AuthApiApi.resendPOST(Constants, {
+                                  phone: phoneNumberValue,
+                                })
+                              )?.json;
+                              if (resendResult?.message) {
+                                setErrorMessage(resendResult?.message);
+                              } else {
+                                setTimerValue(119);
+                              }
+                            } catch (err) {
+                              console.error(err);
+                            }
+                          };
+                          handler();
+                        }}
+                        style={StyleSheet.applyWidth(
+                          StyleSheet.compose(
+                            GlobalStyles.LinkStyles(theme)['Link'],
+                            {
+                              textAlign: 'center',
+                              textDecorationLine: 'underline',
+                            }
+                          ),
+                          dimensions.width
+                        )}
+                        title={'Send the code again'}
+                      />
+                    )}
+                  </>
+                </View>
+
+                <Text
+                  accessible={true}
+                  style={StyleSheet.applyWidth(
+                    StyleSheet.compose(GlobalStyles.TextStyles(theme)['Text'], {
+                      textAlign: 'center',
+                    }),
+                    dimensions.width
+                  )}
+                >
+                  {'Already have an account? '}
+                  <Link
+                    accessible={true}
+                    style={StyleSheet.applyWidth(
+                      GlobalStyles.LinkStyles(theme)['Link'],
+                      dimensions.width
+                    )}
+                    title={'Login In'}
+                  />
+                </Text>
+              </View>
+            </View>
+          )}
+        </>
+      </KeyboardAwareScrollView>
     </ScreenContainer>
   );
 };

@@ -12,19 +12,19 @@ import useWindowDimensions from '../utils/useWindowDimensions';
 export const HighlightText = ({
   searchWords = [],
   textToHighlight = '',
-  highlightMode = 'yellow',
+  highlightMode = 'lightgrey',
 }) => {
-  if (highlightMode === 'yellow') {
+  if (highlightMode === 'lightgrey') {
     return (
       <Text
-        highlightStyle={{ backgroundColor: 'yellow' }}
+        highlightStyle={{ backgroundColor: 'lightgrey' }}
         searchWords={searchWords}
         textToHighlight={textToHighlight}
-        style={{
-          textShadowColor: 'rgba(0, 0, 0, 0.25)',
-          textShadowOffset: { width: 0, height: 4 },
-          textShadowRadius: 10,
-        }}
+        // style={{
+        //   textShadowColor: 'rgba(0, 0, 0, 0.25)',
+        //   textShadowOffset: { width: 0, height: 4 },
+        //   textShadowRadius: 10,
+        // }}
       />
     );
   } else {

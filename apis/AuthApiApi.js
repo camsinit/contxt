@@ -12,6 +12,63 @@ import usePrevious from '../utils/usePrevious';
 import encodeQueryParam from '../utils/encodeQueryParam';
 import * as GlobalVariables from '../config/GlobalVariableContext';
 
+export const authMeGET = (Constants, _args, handlers = {}) =>
+  fetch(`https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/auth/me`, {
+    headers: {
+      Accept: 'application/json',
+      Authorization: Constants['CX_AUTH_TOKEN'],
+      'Content-Type': 'application/json',
+    },
+  }).then(res => handleResponse(res, handlers));
+
+export const useAuthMeGET = (
+  args = {},
+  { refetchInterval, handlers = {} } = {}
+) => {
+  const Constants = GlobalVariables.useValues();
+  const queryClient = useQueryClient();
+  return useQuery(
+    ['authApiAuthMeGET', args],
+    () => authMeGET(Constants, args, handlers),
+    {
+      refetchInterval,
+      onSuccess: () => queryClient.invalidateQueries(['authApiAuthMeGETS']),
+    }
+  );
+};
+
+export const FetchAuthMeGET = ({
+  children,
+  onData = () => {},
+  handlers = {},
+  refetchInterval,
+}) => {
+  const Constants = GlobalVariables.useValues();
+  const isFocused = useIsFocused();
+  const prevIsFocused = usePrevious(isFocused);
+
+  const {
+    isLoading: loading,
+    data,
+    error,
+    refetch,
+  } = useAuthMeGET({}, { refetchInterval, handlers: { onData, ...handlers } });
+
+  React.useEffect(() => {
+    if (!prevIsFocused && isFocused) {
+      refetch();
+    }
+  }, [isFocused, prevIsFocused]);
+
+  React.useEffect(() => {
+    if (error) {
+      console.error('Fetch error: ' + error.status + ' ' + error.statusText);
+      console.error(error);
+    }
+  }, [error]);
+  return children({ loading, data, error, refetchAuthMe: refetch });
+};
+
 export const loginPOST = (Constants, { code, phone }, handlers = {}) =>
   fetch(`https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/auth/login`, {
     body: JSON.stringify({ phone: phone, code: code }),

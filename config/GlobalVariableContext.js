@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const DeviceVariables = {
   CX_AUTH_TOKEN:
-    'eyJhbGciOiJBMjU2S1ciLCJlbmMiOiJBMjU2Q0JDLUhTNTEyIiwiemlwIjoiREVGIn0.oIBEdD-9vuIKmGnGJGLZgVJ_eQLkXATvJSEkMNHbTxjSTE6UbvT3tH4wanZiW7cNwQigaYDqpiv543--MyWoQ-dsVDalMQlS.g3UYG01byboZlnyFwZvGRQ.GwL6ySBgZb8XIycQ4q3ZcLWmsv-jy8nPLSiux_ARWRA0p_pIsoRjbKTtuZamg5FT-PxksxnrVxQWPcBkCe9aJuZa1tA6Uwlqp9CoRgzxqDqPPt02PyJb2NIcGvarRPd7ShWLVlg9kN5P679WOxTyjg.jEUSHxb9-pk1bbuIbwd-nPt3TafZ9dk31mQo1zYQkVA',
+    'eyJhbGciOiJBMjU2S1ciLCJlbmMiOiJBMjU2Q0JDLUhTNTEyIiwiemlwIjoiREVGIn0.KbQkIkDjxXRqzq6HEUfXbV1OtOsmL6pXS6DbkmRjS9LVrl97MeDV_6VDyhIL-PLFtYDqJNJvDE361igUHqGr-fJz9eNofYRv.vA_rtHo6-GoBU3HWgNuLjg.-0-zybEyVhQ5qhxBjQFqiQa79tPeC8J56zzFKGM6193FXPraA2zyHiZJ5Bb8WM6wOKH_Vnh9cs7rQhIHKSMsL7yGcBde95PsEYFP5rIT8kdy_jYgp223le06GOboYiYa.CVl2qzwaTPh1oc8r0C7wWWI84avmB-eWLWx9R7ec_oo',
   CX_USER: {},
   RECENT_CONTACTS: [],
   __env__: 'Development',

@@ -10,7 +10,7 @@
       "android",
       "web"
     ],
-    "version": "1.0.0",
+    "version": "1.15.0",
     "orientation": "default",
     "icon": "./assets/app/icon.png",
     "backgroundColor": "#FFFFFF",
@@ -40,7 +40,7 @@
     ],
     "ios": {
       "bundleIdentifier": "com.contxt.app",
-      "buildNumber": "1.0.0",
+      "buildNumber": "1.15.0",
       "infoPlist": {},
       "usesIcloudStorage": false,
       "config": {
@@ -48,7 +48,7 @@
       }
     },
     "android": {
-      "versionCode": 1,
+      "versionCode": 15,
       "package": "com.draftbit.untitledapp",
       "permissions": [],
       "adaptiveIcon": {}

@@ -63,7 +63,6 @@ const AddNewContactButtonBlock = props => {
               {/* AddNewText */}
               <Text
                 accessible={true}
-                allowFontScaling={true}
                 style={StyleSheet.applyWidth(
                   GlobalStyles.TextStyles(theme)['Text'],
                   dimensions.width
@@ -124,10 +123,18 @@ const AddNewContactButtonBlock = props => {
                 style={StyleSheet.applyWidth({ flex: 1 }, dimensions.width)}
               >
                 <TextInput
-                  allowFontScaling={true}
                   autoCapitalize={'none'}
                   autoFocus={true}
                   changeTextDelay={500}
+                  onBlur={() => {
+                    const textInputValue = undefined;
+                    try {
+                      setMode('button');
+                      props.onModeChange?.('button');
+                    } catch (err) {
+                      console.error(err);
+                    }
+                  }}
                   onChangeText={newTextInputValue => {
                     const textInputValue = newTextInputValue;
                     try {
@@ -136,7 +143,15 @@ const AddNewContactButtonBlock = props => {
                       console.error(err);
                     }
                   }}
-                  placeholder={'Enter a value...'}
+                  onFocus={() => {
+                    const textInputValue = undefined;
+                    try {
+                      /* 'Run a Custom Function' action requires configuration: choose a custom function */
+                    } catch (err) {
+                      console.error(err);
+                    }
+                  }}
+                  placeholder={'Their name'}
                   style={StyleSheet.applyWidth(
                     StyleSheet.compose(
                       GlobalStyles.TextInputStyles(theme)['Text Input'],
@@ -158,7 +173,6 @@ const AddNewContactButtonBlock = props => {
                   {!errorMessage ? null : (
                     <Text
                       accessible={true}
-                      allowFontScaling={true}
                       style={StyleSheet.applyWidth(
                         StyleSheet.compose(
                           GlobalStyles.TextStyles(theme)['Text'],
@@ -230,7 +244,6 @@ const AddNewContactButtonBlock = props => {
                   {isLoading ? null : (
                     <Text
                       accessible={true}
-                      allowFontScaling={true}
                       style={StyleSheet.applyWidth(
                         StyleSheet.compose(
                           GlobalStyles.TextStyles(theme)['Text'],

@@ -1,48 +1,50 @@
 import { Platform } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import * as FileSystem from 'expo-file-system';
-import { getMimeTypeFromFilename } from '@shopify/mime-types';
+import assetToBase64 from './assetToBase64';
 
 async function openImagePicker({
   mediaTypes = ImagePicker.MediaTypeOptions.Images,
   allowsEditing = false,
-  cameraType = 'back',
-  videoMaxDuration,
   quality = 1,
+  allowsMultipleSelection = false,
+  showAlertOnPermissionError = true,
+  permissionErrorMessage = 'Sorry, we need media library permissions to make this work.',
 }) {
   if (Platform.OS !== 'web') {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
     if (status !== 'granted') {
-      alert('Sorry, we need media library permissions to make this work!');
+      console.error('Media library permissions were not granted.');
+      if (showAlertOnPermissionError) {
+        alert(permissionErrorMessage);
+      }
+      return;
     }
   }
 
   let result = await ImagePicker.launchImageLibraryAsync({
     mediaTypes,
     allowsEditing,
-    cameraType,
-    videoMaxDuration,
     quality,
-    base64: true,
+    allowsMultipleSelection,
   });
 
-  let asset = result.assets?.length > 0 ? result.assets[0] : null;
+  if (result.canceled) {
+    console.error('Open image picker action was canceled');
+    return;
+  }
 
-  if (!result.canceled && asset) {
-    if (Platform.OS === 'web') return asset.uri;
+  const assets = result.assets;
 
-    const mimeType = getMimeTypeFromFilename(asset.uri);
+  if (!assets || assets.length === 0) {
+    console.error('No assets were returned with the open image picker action');
+    return;
+  }
 
-    if (asset.type === 'video') {
-      const base64Video = await FileSystem.readAsStringAsync(asset.uri, {
-        encoding: 'base64',
-      });
-
-      return 'data:' + mimeType + ';base64,' + base64Video;
-    }
-
-    return 'data:' + mimeType + ';base64,' + asset.base64;
+  if (allowsMultipleSelection) {
+    return await Promise.all(assets.map(asset => assetToBase64(asset)));
+  } else {
+    return await assetToBase64(assets[0]);
   }
 }
 

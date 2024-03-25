@@ -1,0 +1,29 @@
+const configPlugins = require('@expo/config-plugins');
+
+// Based on https://github.com/expo/expo/issues/11604#issuecomment-1018306243
+function withAndroidColorAccent(config, { color }) {
+  return configPlugins.withAndroidStyles(config, async config => {
+    config.modResults = configureColorAccent(config.modResults, color);
+    return config;
+  });
+}
+
+function configureColorAccent(styles, color) {
+  const appTheme = styles.resources.style.find(
+    style => style.$.name === 'AppTheme'
+  );
+
+  if (appTheme) {
+    appTheme.item = appTheme.item.filter(item => item.$.name !== 'colorAccent');
+    appTheme.item.push(
+      configPlugins.AndroidConfig.Resources.buildResourceItem({
+        name: 'colorAccent',
+        value: color,
+      })
+    );
+  }
+
+  return styles;
+}
+
+module.exports = withAndroidColorAccent;

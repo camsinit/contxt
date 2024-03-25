@@ -18,7 +18,7 @@
     "preset": "jest-expo"
   },
   "dependencies": {
-    "@draftbit/ui": "49.3.1",
+    "@draftbit/ui": "49.4.1",
     "@expo/dev-server": "0.5.5",
     "@expo/html-elements": "^0.5.1",
     "@expo/vector-icons": "^13.0.0",
@@ -30,7 +30,7 @@
     "@react-native-picker/picker": "2.4.10",
     "@react-navigation/bottom-tabs": "^6.5.7",
     "@react-navigation/drawer": "^6.6.2",
-    "@react-navigation/native": "^6.1.6",
+    "@react-navigation/native": "^6.1.8",
     "@react-navigation/stack": "^6.3.16",
     "@sanar/react-native-highlight-text": "latest",
     "@shopify/flash-list": "1.4.3",
@@ -88,7 +88,8 @@
   },
   "resolutions": {
     "react-native-gesture-handler": "~2.12.0",
-    "string-width": "4.2.3"
+    "string-width": "4.2.3",
+    "prop-types": "^15.8.1"
   },
   "devDependencies": {
     "@babel/core": "^7.19.3",

@@ -21,6 +21,7 @@ import {
   Circle,
   DatePicker,
   Icon,
+  IconButton,
   Pressable,
   Surface,
   TextInput,
@@ -29,8 +30,14 @@ import {
 import { H2 } from '@expo/html-elements';
 import { useIsFocused } from '@react-navigation/native';
 import { BlurView } from 'expo-blur';
-import { ActivityIndicator, FlatList, Image, Text, View } from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import {
+  ActivityIndicator,
+  FlatList,
+  Image,
+  Modal,
+  Text,
+  View,
+} from 'react-native';
 import { Fetch } from 'react-request';
 
 const QuoteFormBlock = props => {
@@ -42,13 +49,19 @@ const QuoteFormBlock = props => {
   const [blocks, setBlocks] = React.useState([]);
   const [choosenContacts, setChoosenContacts] = React.useState([]);
   const [datePickerValue, setDatePickerValue] = React.useState(new Date());
+  const [errorMessage, setErrorMessage] = React.useState('');
   const [isAddingNewContact, setIsAddingNewContact] = React.useState(false);
+  const [isImporting, setIsImporting] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [mode, setMode] = React.useState('');
+  const [newNameValue, setNewNameValue] = React.useState('');
   const [searchStringDisplayValue, setSearchStringDisplayValue] =
     React.useState('');
   const [searchStringValue, setSearchStringValue] = React.useState('');
   const [selectedContacts, setSelectedContacts] = React.useState([]);
   const [selectedDateTime, setSelectedDateTime] = React.useState(new Date());
   const [selectedLocation, setSelectedLocation] = React.useState({});
+  const [showAreYouSureModal, setShowAreYouSureModal] = React.useState(false);
   const [showChooseUserModal, setShowChooseUserModal] = React.useState(false);
   const [showRecentContactsList, setShowRecentContactsList] =
     React.useState(true);
@@ -64,24 +77,6 @@ const QuoteFormBlock = props => {
       } else {
         return [...prev, { ...contact, type }];
       }
-    });
-  };
-
-  const addConversationToBlocks = contact => {
-    const quote_id = props.quote_id || Lib.uniqid();
-
-    setBlocks(prev => {
-      return [
-        ...prev,
-
-        {
-          id: Lib.uniqid(),
-          quote_id: quote_id,
-          type: 'dialogue',
-          value: '',
-          _user: contact,
-        },
-      ];
     });
   };
 
@@ -136,6 +131,8 @@ const QuoteFormBlock = props => {
   const onNewContactCreate = contact => {
     return contact => {
       toggleSelectedContact(contact, 'contact');
+
+      addConversationToBlocks(contact);
     };
   };
 
@@ -151,6 +148,24 @@ const QuoteFormBlock = props => {
 
     if (mode === 'button') searchInputG4eZj05mRef?.current?.focus();
   };
+
+  const addConversationToBlocks = contact => {
+    const quote_id = props.quote_id || Lib.uniqid();
+
+    setBlocks(prev => {
+      return [
+        ...prev,
+
+        {
+          id: Lib.uniqid(),
+          quote_id: quote_id,
+          type: 'dialogue',
+          text: '',
+          _user: contact,
+        },
+      ];
+    });
+  };
   React.useEffect(() => {
     try {
       if (props.selected_contact) {
@@ -164,6 +179,13 @@ const QuoteFormBlock = props => {
     }
   }, [props.selected_contact]);
   const xANOCreateQuotePOST = XANOApi.useCreateQuotePOST();
+  React.useEffect(() => {
+    try {
+      toggleSelectedContact(Constants['CX_USER'], 'user');
+    } catch (err) {
+      console.error(err);
+    }
+  }, []);
   const searchInputG4eZj05mRef = React.useRef();
 
   return (
@@ -221,7 +243,7 @@ const QuoteFormBlock = props => {
         <Pressable
           onPress={() => {
             try {
-              onCloseFunction();
+              setShowAreYouSureModal(true);
             } catch (err) {
               console.error(err);
             }
@@ -252,17 +274,18 @@ const QuoteFormBlock = props => {
               try {
                 if (props.quote_id ?? '') {
                 } else {
+                  console.log(selectedContacts);
+                  console.log(blocks);
                   if (selectedContacts?.length > 1) {
                     setShowChooseUserModal(true);
                   } else {
-                    console.log(selectedContacts);
                     setChoosenContacts(selectedContacts);
                     (
                       await xANOCreateQuotePOST.mutateAsync({
                         blocks: blocks,
                         date: selectedDateTime,
                         linked_ids: convertToLinkArray(selectedContacts),
-                        location: selectedLocation,
+                        location: locationToGeoPointJson(selectedLocation),
                       })
                     )?.json;
                     onCloseFunction();
@@ -339,6 +362,7 @@ const QuoteFormBlock = props => {
             label={'Date'}
             labelColor={'rgba(0, 0, 0, 0)'}
             leftIconMode={'inset'}
+            maximumDate={new Date()}
             mode={'date'}
             onDateChange={newDatePickerValue => {
               const date = newDatePickerValue;
@@ -466,61 +490,97 @@ const QuoteFormBlock = props => {
             dimensions.width
           )}
         >
-          <FlatList
-            data={blocks}
-            keyExtractor={(listData, index) =>
-              listData?.id ?? listData?.uuid ?? index.toString()
-            }
-            keyboardShouldPersistTaps={'always'}
-            listKey={'wyTzOzbS'}
-            numColumns={1}
-            onEndReachedThreshold={0.5}
-            renderItem={({ item, index }) => {
-              const listData = item;
-              return (
-                <>
-                  <View
-                    style={StyleSheet.applyWidth(
-                      { marginBottom: 8 },
-                      dimensions.width
-                    )}
-                  >
+          <>
+            {!(blocks?.length > 0) ? null : (
+              <FlatList
+                contentContainerStyle={StyleSheet.applyWidth(
+                  { backgroundColor: 'rgba(0, 0, 0, 0)' },
+                  dimensions.width
+                )}
+                data={blocks}
+                keyExtractor={(listData, index) =>
+                  listData?.id ?? listData?.uuid ?? index.toString()
+                }
+                keyboardShouldPersistTaps={'always'}
+                listKey={'wyTzOzbS'}
+                numColumns={1}
+                onEndReachedThreshold={0.5}
+                renderItem={({ item, index }) => {
+                  const listData = item;
+                  return (
                     <>
-                      {!(listData?.type === 'description') ? null : (
-                        <QuoteBlock
-                          editable={true}
-                          id={listData?.id}
-                          onChange={(id, value) => updateBlockValue(id, value)}
-                          onDelete={id => deleteBlock(id)}
-                          text={listData?.value}
-                        />
-                      )}
+                      <View
+                        style={StyleSheet.applyWidth(
+                          { marginBottom: 8 },
+                          dimensions.width
+                        )}
+                      >
+                        <>
+                          {!(listData?.type === 'description') ? null : (
+                            <QuoteBlock
+                              editable={true}
+                              id={listData?.id}
+                              onChange={(id, value) =>
+                                updateBlockValue(id, value)
+                              }
+                              onDelete={id => deleteBlock(id)}
+                              text={listData?.value}
+                            />
+                          )}
+                        </>
+                        <>
+                          {!(listData?.type === 'dialogue') ? null : (
+                            <ConversationBlock
+                              contact={listData && listData['_user']}
+                              id={listData?.id}
+                              onChangeValue={(id, value) =>
+                                updateBlockValue(id, value)
+                              }
+                              onDelete={id => deleteBlock(id)}
+                              text={listData?.text}
+                            />
+                          )}
+                        </>
+                      </View>
                     </>
-                    <>
-                      {!(listData?.type === 'dialogue') ? null : (
-                        <ConversationBlock
-                          contact={listData && listData['_user']}
-                          id={listData?.id}
-                          onChangeValue={(id, value) =>
-                            updateBlockValue(id, value)
-                          }
-                          onDelete={id => deleteBlock(id)}
-                          text={listData?.value}
-                        />
-                      )}
-                    </>
-                  </View>
-                </>
-              );
-            }}
-            showsHorizontalScrollIndicator={true}
-            showsVerticalScrollIndicator={true}
-          />
+                  );
+                }}
+                showsHorizontalScrollIndicator={true}
+                showsVerticalScrollIndicator={true}
+              />
+            )}
+          </>
+          <>
+            {!(blocks?.length === 0) ? null : (
+              <Pressable
+                onPress={() => {
+                  try {
+                    addConversationToBlocks(Constants['CX_USER']);
+                  } catch (err) {
+                    console.error(err);
+                  }
+                }}
+              >
+                <View
+                  style={StyleSheet.applyWidth(
+                    { height: '100%', width: '100%' },
+                    dimensions.width
+                  )}
+                />
+              </Pressable>
+            )}
+          </>
         </View>
-        {/* FooterMenu */}
+        {/* QuoteMenuBar */}
         <View
           style={StyleSheet.applyWidth(
-            { flexDirection: 'row', marginTop: 20 },
+            {
+              backgroundColor: 'rgba(0, 0, 0, 0)',
+              flexDirection: 'row',
+              marginTop: 20,
+              paddingBottom: 5,
+              paddingTop: 5,
+            },
             dimensions.width
           )}
         >
@@ -563,42 +623,6 @@ const QuoteFormBlock = props => {
                         >
                           {'Recent'}
                         </Text>
-                        {/* MePressable */}
-                        <Pressable
-                          onPress={() => {
-                            try {
-                              toggleSelectedContact(
-                                Constants['CX_USER'],
-                                'user'
-                              );
-                              setShowRecentContactsList(false);
-                            } catch (err) {
-                              console.error(err);
-                            }
-                          }}
-                        >
-                          {/* MeItemView */}
-                          <View
-                            style={StyleSheet.applyWidth(
-                              {
-                                alignItems: 'center',
-                                borderColor: theme.colors['Light Gray'],
-                                borderTopWidth: 1,
-                                flexDirection: 'row',
-                                paddingBottom: 7,
-                                paddingLeft: 15,
-                                paddingRight: 15,
-                                paddingTop: 7,
-                              },
-                              dimensions.width
-                            )}
-                          >
-                            {/* MeItemContactView */}
-                            <SearchContactViewBlock
-                              contact={Constants['CX_USER']}
-                            />
-                          </View>
-                        </Pressable>
                         <FlatList
                           data={Constants['RECENT_CONTACTS']}
                           keyExtractor={(listData, index) =>
@@ -657,14 +681,10 @@ const QuoteFormBlock = props => {
                       </View>
                     )}
                   </>
-                  <>
-                    {!showRecentContactsList ? null : (
-                      <AddNewContactButtonBlock
-                        onChange={onNewContactCreate(undefined)}
-                        onModeChange={mode => updateIsAddingNewContact(mode)}
-                      />
-                    )}
-                  </>
+                  <AddNewContactButtonBlock
+                    onChange={onNewContactCreate(undefined)}
+                    onModeChange={mode => updateIsAddingNewContact(mode)}
+                  />
                 </View>
               )}
             </>
@@ -733,6 +753,7 @@ const QuoteFormBlock = props => {
                                         setGlobalVariableValue,
                                         listData
                                       );
+                                      addConversationToBlocks(listData);
                                       setSearchStringValue('');
                                       setSearchStringDisplayValue('');
                                     } catch (err) {
@@ -864,7 +885,7 @@ const QuoteFormBlock = props => {
                       lineHeight: 17,
                       minWidth: 80,
                       paddingBottom: 0,
-                      paddingLeft: 4,
+                      paddingLeft: 8,
                       paddingRight: 4,
                       paddingTop: 0,
                     }
@@ -880,6 +901,7 @@ const QuoteFormBlock = props => {
             style={StyleSheet.applyWidth(
               {
                 alignItems: 'center',
+                backgroundColor: 'rgba(0, 0, 0, 0)',
                 flex: 0.6,
                 flexDirection: 'row',
                 paddingBottom: 6,
@@ -893,6 +915,8 @@ const QuoteFormBlock = props => {
               style={StyleSheet.applyWidth(
                 {
                   alignItems: 'flex-end',
+                  backgroundColor: 'rgba(0, 0, 0, 0)',
+                  borderColor: 'rgba(0, 0, 0, 0)',
                   flex: 1,
                   marginRight: 4,
                   overflow: 'hidden',
@@ -901,6 +925,10 @@ const QuoteFormBlock = props => {
               )}
             >
               <FlatList
+                contentContainerStyle={StyleSheet.applyWidth(
+                  { backgroundColor: 'rgba(0, 0, 0, 0)' },
+                  dimensions.width
+                )}
                 data={selectedContacts}
                 horizontal={true}
                 keyExtractor={(listData, index) =>
@@ -915,7 +943,7 @@ const QuoteFormBlock = props => {
                   return (
                     <View
                       style={StyleSheet.applyWidth(
-                        { marginRight: 4 },
+                        { backgroundColor: 'rgba(0, 0, 0, 0)', marginRight: 4 },
                         dimensions.width
                       )}
                     >
@@ -927,9 +955,17 @@ const QuoteFormBlock = props => {
                             console.error(err);
                           }
                         }}
+                        style={StyleSheet.applyWidth(
+                          {
+                            borderColor: 'rgba(0, 0, 0, 0)',
+                            borderLeftWidth: 5,
+                            borderRightWidth: 5,
+                          },
+                          dimensions.width
+                        )}
                       >
                         <ContactsViewBlock
-                          avatarSize={24}
+                          avatarSize={28}
                           contact={listData}
                           imageOnly={true}
                         />
@@ -952,12 +988,12 @@ const QuoteFormBlock = props => {
               }}
             >
               <Image
-                resizeMode={'contain'}
-                source={Images.Icon}
+                resizeMode={'cover'}
+                source={Images.DescriptionIconV4}
                 style={StyleSheet.applyWidth(
                   StyleSheet.compose(GlobalStyles.ImageStyles(theme)['Image'], {
-                    height: 24,
-                    width: 24,
+                    height: 28,
+                    width: 28,
                   }),
                   dimensions.width
                 )}
@@ -1065,7 +1101,7 @@ const QuoteFormBlock = props => {
                   showsHorizontalScrollIndicator={true}
                   showsVerticalScrollIndicator={true}
                 />
-                {/* ProceedButton */}
+                {/* SubmitButton */}
                 <Button
                   disabled={choosenContacts?.length === 0}
                   disabledOpacity={0.2}
@@ -1094,13 +1130,130 @@ const QuoteFormBlock = props => {
                     ),
                     dimensions.width
                   )}
-                  title={'Proceed'}
+                  title={'Submit'}
                 />
               </Surface>
             </BlurView>
           </View>
         )}
       </>
+      {/* Are You Sure Modal  */}
+      <Modal
+        animationType={'none'}
+        transparent={true}
+        visible={showAreYouSureModal}
+      >
+        <BlurView
+          intensity={50}
+          style={StyleSheet.applyWidth(
+            StyleSheet.compose(
+              GlobalStyles.BlurViewStyles(theme)['Blur View'],
+              {
+                alignItems: 'center',
+                backgroundColor: 'rgba(58, 58, 58, 0.09)',
+                justifyContent: 'center',
+              }
+            ),
+            dimensions.width
+          )}
+          tint={'default'}
+        >
+          <Surface
+            elevation={0}
+            style={StyleSheet.applyWidth(
+              StyleSheet.compose(GlobalStyles.SurfaceStyles(theme)['Surface'], {
+                alignItems: 'center',
+                backgroundColor: 'rgb(255, 255, 255)',
+                borderRadius: 16,
+                paddingBottom: 40,
+                paddingLeft: 20,
+                paddingRight: 20,
+                paddingTop: 40,
+                width: '90%',
+              }),
+              dimensions.width
+            )}
+          >
+            <View
+              style={StyleSheet.applyWidth(
+                { alignSelf: 'flex-start', left: 5, top: -15 },
+                dimensions.width
+              )}
+            >
+              <IconButton
+                color={theme.colors['Medium']}
+                icon={'Feather/x'}
+                onPress={() => {
+                  try {
+                    setShowAreYouSureModal(false);
+                  } catch (err) {
+                    console.error(err);
+                  }
+                }}
+                size={32}
+              />
+            </View>
+
+            <H2
+              style={StyleSheet.applyWidth(
+                StyleSheet.compose(GlobalStyles.H2Styles(theme)['H2'], {
+                  fontSize: 28,
+                  paddingBottom: 15,
+                }),
+                dimensions.width
+              )}
+            >
+              {'Are you sure?'}
+            </H2>
+
+            <Text
+              accessible={true}
+              allowFontScaling={true}
+              style={StyleSheet.applyWidth(
+                StyleSheet.compose(GlobalStyles.TextStyles(theme)['Text'], {
+                  fontSize: 20,
+                  paddingBottom: 15,
+                  textAlign: 'center',
+                }),
+                dimensions.width
+              )}
+            >
+              {'Leaving this page will discard all progress'}
+            </Text>
+            {/* Close Button */}
+            <Button
+              disabled={isImporting}
+              loading={isImporting}
+              onPress={() => {
+                try {
+                  onCloseFunction();
+                } catch (err) {
+                  console.error(err);
+                }
+              }}
+              style={StyleSheet.applyWidth(
+                StyleSheet.compose(
+                  GlobalStyles.ButtonStyles(theme)['OutlineButton'],
+                  {
+                    backgroundColor: '"rgb(242, 242, 247)"',
+                    borderColor: 'rgb(242, 242, 247)',
+                    borderRadius: 50,
+                    borderWidth: 1.5,
+                    color: 'rgb(99, 99, 102)',
+                    fontFamily: 'Poppins_600SemiBold',
+                    fontSize: 20,
+                    marginTop: 20,
+                    paddingLeft: 20,
+                    paddingRight: 20,
+                  }
+                ),
+                dimensions.width
+              )}
+              title={'Discard Quote'}
+            />
+          </Surface>
+        </BlurView>
+      </Modal>
     </View>
   );
 };

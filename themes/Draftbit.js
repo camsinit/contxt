@@ -5,6 +5,7 @@ export default {
   colors: {
     Background: 'rgb(255, 255, 255)',
     Blue: 'rgb(41, 96, 203)',
+    'Custom Color': 'rgb(99, 99, 102)',
     DarkGray: 'rgb(142, 142, 147)',
     Divider: 'rgba(234, 237, 242, 1)',
     Error: 'rgba(255, 69, 100, 1)',
@@ -26,6 +27,7 @@ export default {
     TransparentBlue: 'rgba(41, 96, 203, 0.15)',
     background: 'rgb(255, 255, 255)',
     blue: 'rgb(41, 96, 203)',
+    custom_rgb99_99_102: 'rgb(99, 99, 102)',
     darkGray: 'rgb(142, 142, 147)',
     divider: 'rgba(234, 237, 242, 1)',
     error: 'rgba(255, 69, 100, 1)',

@@ -89,16 +89,21 @@ const LoginScreen = props => {
   }, [currentForm, timerValue]);
   const isFocused = useIsFocused();
   React.useEffect(() => {
-    try {
-      if (!isFocused) {
-        return;
+    const handler = async () => {
+      try {
+        if (!isFocused) {
+          return;
+        }
+        const authMeResult = (await AuthApiApi.authMeGET(Constants))?.json;
+        console.log(authMeResult);
+        if (!authMeResult?.message) {
+          navigation.navigate('HomeScreen');
+        }
+      } catch (err) {
+        console.error(err);
       }
-      if (Constants['CX_AUTH_TOKEN']) {
-        navigation.navigate('HomeScreen');
-      }
-    } catch (err) {
-      console.error(err);
-    }
+    };
+    handler();
   }, [isFocused]);
 
   return (
@@ -202,7 +207,6 @@ const LoginScreen = props => {
                 {/* ErrorText 2 */}
                 <Text
                   accessible={true}
-                  allowFontScaling={true}
                   style={StyleSheet.applyWidth(
                     StyleSheet.compose(GlobalStyles.TextStyles(theme)['Text'], {
                       color: theme.colors['Error'],
@@ -251,7 +255,6 @@ const LoginScreen = props => {
 
               <Text
                 accessible={true}
-                allowFontScaling={true}
                 style={StyleSheet.applyWidth(
                   StyleSheet.compose(GlobalStyles.TextStyles(theme)['Text'], {
                     textAlign: 'center',
@@ -262,7 +265,6 @@ const LoginScreen = props => {
                 {'Not have an account yet?  '}
                 <Link
                   accessible={true}
-                  allowFontScaling={true}
                   onPress={() => {
                     try {
                       navigation.navigate('SignupScreen');
@@ -304,7 +306,6 @@ const LoginScreen = props => {
             {/* InnerText */}
             <Text
               accessible={true}
-              allowFontScaling={true}
               style={StyleSheet.applyWidth(
                 GlobalStyles.TextStyles(theme)['Text'],
                 dimensions.width
@@ -369,7 +370,7 @@ const LoginScreen = props => {
                           setCodeValue('');
                           setPhoneNumberValue('');
                           setCurrentForm('number');
-                          navigation.navigate('HomeScreen');
+                          navigation.navigate('ContactsImportScreen');
                         }
                       } catch (err) {
                         console.error(err);
@@ -392,7 +393,6 @@ const LoginScreen = props => {
                 {/* ErrorText 3 */}
                 <Text
                   accessible={true}
-                  allowFontScaling={true}
                   style={StyleSheet.applyWidth(
                     StyleSheet.compose(GlobalStyles.TextStyles(theme)['Text'], {
                       color: theme.colors['Error'],
@@ -406,7 +406,6 @@ const LoginScreen = props => {
                   {!(timerValue > 0) ? null : (
                     <Text
                       accessible={true}
-                      allowFontScaling={true}
                       style={StyleSheet.applyWidth(
                         StyleSheet.compose(
                           GlobalStyles.TextStyles(theme)['Text'],
@@ -429,7 +428,6 @@ const LoginScreen = props => {
                   {timerValue > 0 ? null : (
                     <Link
                       accessible={true}
-                      allowFontScaling={true}
                       onPress={() => {
                         const handler = async () => {
                           try {
@@ -467,7 +465,6 @@ const LoginScreen = props => {
 
               <Text
                 accessible={true}
-                allowFontScaling={true}
                 style={StyleSheet.applyWidth(
                   StyleSheet.compose(GlobalStyles.TextStyles(theme)['Text'], {
                     textAlign: 'center',
@@ -478,7 +475,6 @@ const LoginScreen = props => {
                 {'Already have an account? '}
                 <Link
                   accessible={true}
-                  allowFontScaling={true}
                   style={StyleSheet.applyWidth(
                     GlobalStyles.LinkStyles(theme)['Link'],
                     dimensions.width

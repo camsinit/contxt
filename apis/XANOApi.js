@@ -195,6 +195,67 @@ export const useDeleteQuoteDELETE = (
   );
 };
 
+export const getContactsCountGET = (Constants, _args, handlers = {}) =>
+  fetch(`https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/get_contacts_count`, {
+    headers: {
+      Accept: 'application/json',
+      Authorization: Constants['CX_AUTH_TOKEN'],
+      'Content-Type': 'application/json',
+    },
+  }).then(res => handleResponse(res, handlers));
+
+export const useGetContactsCountGET = (
+  args = {},
+  { refetchInterval, handlers = {} } = {}
+) => {
+  const Constants = GlobalVariables.useValues();
+  const queryClient = useQueryClient();
+  return useQuery(
+    ['xANOGetContactsCountGET', args],
+    () => getContactsCountGET(Constants, args, handlers),
+    {
+      refetchInterval,
+      onSuccess: () =>
+        queryClient.invalidateQueries(['xANOGetContactsCountGETS']),
+    }
+  );
+};
+
+export const FetchGetContactsCountGET = ({
+  children,
+  onData = () => {},
+  handlers = {},
+  refetchInterval,
+}) => {
+  const Constants = GlobalVariables.useValues();
+  const isFocused = useIsFocused();
+  const prevIsFocused = usePrevious(isFocused);
+
+  const {
+    isLoading: loading,
+    data,
+    error,
+    refetch,
+  } = useGetContactsCountGET(
+    {},
+    { refetchInterval, handlers: { onData, ...handlers } }
+  );
+
+  React.useEffect(() => {
+    if (!prevIsFocused && isFocused) {
+      refetch();
+    }
+  }, [isFocused, prevIsFocused]);
+
+  React.useEffect(() => {
+    if (error) {
+      console.error('Fetch error: ' + error.status + ' ' + error.statusText);
+      console.error(error);
+    }
+  }, [error]);
+  return children({ loading, data, error, refetchGetContactsCount: refetch });
+};
+
 export const getInboxCountGET = (Constants, _args, handlers = {}) =>
   fetch(`https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/quote_inbox_count`, {
     headers: {
@@ -265,7 +326,7 @@ export const getMyContactsGET = (
           ? search_term
           : JSON.stringify(search_term ?? '')
       }`
-    )}&refetch=${encodeQueryParam(
+    )}&random_seed=${encodeQueryParam(
       `${
         typeof random_seed === 'string'
           ? random_seed

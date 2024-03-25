@@ -1,5 +1,6 @@
 import React from 'react';
 import * as GlobalStyles from '../GlobalStyles.js';
+import * as AuthApiApi from '../apis/AuthApiApi.js';
 import * as XANOApi from '../apis/XANOApi.js';
 import ContactsViewBlock from '../components/ContactsViewBlock';
 import HeaderBlock from '../components/HeaderBlock';
@@ -8,6 +9,7 @@ import * as GlobalVariables from '../config/GlobalVariableContext';
 import Images from '../config/Images';
 import * as ScreenComponents from '../custom-files/ScreenComponents';
 import getContacts from '../global-functions/getContacts';
+import randomNumber from '../global-functions/randomNumber';
 import requestContactsPermissions from '../global-functions/requestContactsPermissions';
 import * as Utils from '../utils';
 import Breakpoints from '../utils/Breakpoints';
@@ -67,30 +69,37 @@ const HomeScreen = props => {
           return;
         }
         if (Constants['CX_AUTH_TOKEN']) {
-          const contactsPermissionsResult = await requestContactsPermissions();
-          if (contactsPermissionsResult === 'granted') {
-            const contactsResult = (
-              await XANOApi.getMyContactsGET(Constants, {
-                random_seed: 123,
-                search_term: '',
-              })
-            )?.json;
-            if (contactsResult?.contacts?.length === 0) {
-              setShowImportModal(true);
-              setIsImporting(true);
-              const getContactsData = await getContacts();
-              (
-                await XANOApi.importContactsPOST(Constants, {
-                  contacts: getContactsData,
+          const authMeResult = (await AuthApiApi.authMeGET(Constants))?.json;
+          console.log(authMeResult);
+          if (authMeResult?.message) {
+            navigation.navigate('OnboardingScreen');
+          } else {
+            const contactsPermissionsResult =
+              await requestContactsPermissions();
+            if (contactsPermissionsResult === 'granted') {
+              const contactsResult = (
+                await XANOApi.getMyContactsGET(Constants, {
+                  random_seed: 123,
+                  search_term: '',
                 })
               )?.json;
-              setIsImporting(false);
-              setShowImportModal(false);
-              setRefechContacts(randomNumber());
+              if (contactsResult?.contacts?.length === 0) {
+                setShowImportModal(true);
+                setIsImporting(true);
+                const getContactsData = await getContacts();
+                (
+                  await XANOApi.importContactsPOST(Constants, {
+                    contacts: getContactsData,
+                  })
+                )?.json;
+                setIsImporting(false);
+                setShowImportModal(false);
+                setRefechContacts(randomNumber());
+              } else {
+              }
             } else {
+              setShowDenidedModal(true);
             }
-          } else {
-            setShowDenidedModal(true);
           }
         } else {
           navigation.navigate('OnboardingScreen');
@@ -169,7 +178,7 @@ const HomeScreen = props => {
           />
         </View>
       </View>
-      {/* Container */}
+      {/* SearchResults */}
       <View
         style={StyleSheet.applyWidth(
           {
@@ -185,7 +194,6 @@ const HomeScreen = props => {
         {/* Label */}
         <Text
           accessible={true}
-          allowFontScaling={true}
           style={StyleSheet.applyWidth(
             StyleSheet.compose(GlobalStyles.TextStyles(theme)['Text'], {
               color: theme.colors['Light'],
@@ -234,7 +242,6 @@ const HomeScreen = props => {
                   {/* Label */}
                   <Text
                     accessible={true}
-                    allowFontScaling={true}
                     style={StyleSheet.applyWidth(
                       StyleSheet.compose(
                         GlobalStyles.TextStyles(theme)['Text'],
@@ -274,13 +281,11 @@ const HomeScreen = props => {
                                   navigation.navigate('ProfileScreen', {
                                     id: listData?.connected_user_id,
                                     type: 'user',
-                                    initialSearchTerm: searchTermValue,
                                   });
                                 } else {
                                   navigation.navigate('ProfileScreen', {
                                     id: listData?.id,
                                     type: 'contact',
-                                    initialSearchTerm: searchTermValue,
                                   });
                                 }
                               } catch (err) {
@@ -307,7 +312,6 @@ const HomeScreen = props => {
                       {/* Label */}
                       <Text
                         accessible={true}
-                        allowFontScaling={true}
                         style={StyleSheet.applyWidth(
                           StyleSheet.compose(
                             GlobalStyles.TextStyles(theme)['Text'],
@@ -457,7 +461,6 @@ const HomeScreen = props => {
 
                 <Text
                   accessible={true}
-                  allowFontScaling={true}
                   style={StyleSheet.applyWidth(
                     StyleSheet.compose(GlobalStyles.TextStyles(theme)['Text'], {
                       textAlign: 'center',
@@ -546,7 +549,6 @@ const HomeScreen = props => {
 
             <Text
               accessible={true}
-              allowFontScaling={true}
               style={StyleSheet.applyWidth(
                 StyleSheet.compose(GlobalStyles.TextStyles(theme)['Text'], {
                   textAlign: 'center',

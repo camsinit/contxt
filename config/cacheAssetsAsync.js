@@ -2,8 +2,10 @@ import { Image } from 'react-native';
 import { Asset } from 'expo-asset';
 import * as Font from 'expo-font';
 import {
+  AntDesign,
   Entypo,
   EvilIcons,
+  Feather,
   FontAwesome,
   Ionicons,
   MaterialCommunityIcons,
@@ -28,8 +30,10 @@ function cacheFonts(fonts) {
 export default function cacheAssetsAsync() {
   const imageAssets = cacheImages(Object.values(IMAGES));
   const iconAssets = cacheFonts([
+    AntDesign.font,
     Entypo.font,
     EvilIcons.font,
+    Feather.font,
     FontAwesome.font,
     Ionicons.font,
     MaterialCommunityIcons.font,

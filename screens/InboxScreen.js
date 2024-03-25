@@ -8,15 +8,20 @@ import Breakpoints from '../utils/Breakpoints';
 import * as StyleSheet from '../utils/StyleSheet';
 import useWindowDimensions from '../utils/useWindowDimensions';
 import {
+  Button,
   DeckSwiper,
   DeckSwiperCard,
   Icon,
+  IconButton,
   Pressable,
   ScreenContainer,
+  Surface,
   withTheme,
 } from '@draftbit/ui';
+import { H2 } from '@expo/html-elements';
 import { useIsFocused } from '@react-navigation/native';
-import { ActivityIndicator, Text, View } from 'react-native';
+import { BlurView } from 'expo-blur';
+import { ActivityIndicator, Modal, Text, View } from 'react-native';
 import { Fetch } from 'react-request';
 
 const InboxScreen = props => {
@@ -139,9 +144,14 @@ const InboxScreen = props => {
     visibilty: 'unset',
     created_at: 1708378249614,
   });
+  const [isImporting, setIsImporting] = React.useState(false);
   const [isUpdating, setIsUpdating] = React.useState(false);
   const [lastUpdatedQuoteLink, setLastUpdatedQuoteLink] = React.useState([]);
   const [refetchParam, setRefetchParam] = React.useState('');
+  const [showApproveModalFriends, setShowApproveModalFriends] =
+    React.useState(false);
+  const [showApproveModalJustUs, setShowApproveModalJustUs] =
+    React.useState(false);
   const getNItemFromArray = (arr, index) => {
     if ((arr || []).length === index + 1) return (arr || [])[0];
     else return (arr || [])?.[index + 1];
@@ -277,7 +287,13 @@ const InboxScreen = props => {
                     {currentQuote ? null : (
                       <View
                         style={StyleSheet.applyWidth(
-                          { flex: 1, justifyContent: 'center' },
+                          {
+                            alignContent: 'center',
+                            flex: 1,
+                            justifyContent: 'center',
+                            paddingLeft: 30,
+                            paddingRight: 30,
+                          },
                           dimensions.width
                         )}
                       >
@@ -285,11 +301,56 @@ const InboxScreen = props => {
                           accessible={true}
                           allowFontScaling={true}
                           style={StyleSheet.applyWidth(
-                            GlobalStyles.TextStyles(theme)['Text'],
+                            StyleSheet.compose(
+                              GlobalStyles.TextStyles(theme)['Text'],
+                              {
+                                fontFamily: 'Poppins_600SemiBold',
+                                fontSize: 32,
+                                textAlign: 'center',
+                              }
+                            ),
                             dimensions.width
                           )}
                         >
-                          {'You do not have any quotes to check in your Inbox'}
+                          {'No quotes here!'}
+                        </Text>
+                        {/* Text 2 */}
+                        <Text
+                          accessible={true}
+                          allowFontScaling={true}
+                          style={StyleSheet.applyWidth(
+                            StyleSheet.compose(
+                              GlobalStyles.TextStyles(theme)['Text'],
+                              {
+                                fontSize: 18,
+                                marginTop: 15,
+                                textAlign: 'center',
+                              }
+                            ),
+                            dimensions.width
+                          )}
+                        >
+                          {
+                            'Come back here to approve new quotes added to your profile'
+                          }
+                        </Text>
+                        {/* P.S. */}
+                        <Text
+                          accessible={true}
+                          allowFontScaling={true}
+                          style={StyleSheet.applyWidth(
+                            StyleSheet.compose(
+                              GlobalStyles.TextStyles(theme)['Text'],
+                              {
+                                fontSize: 14,
+                                marginTop: 40,
+                                textAlign: 'center',
+                              }
+                            ),
+                            dimensions.width
+                          )}
+                        >
+                          {'You can also add quotes for yourself!'}
                         </Text>
                       </View>
                     )}
@@ -299,7 +360,7 @@ const InboxScreen = props => {
                       <View>
                         <DeckSwiper
                           data={fetchData}
-                          horizontalEnabled={true}
+                          horizontalEnabled={false}
                           infiniteSwiping={true}
                           keyExtractor={(deckSwiperData, index) =>
                             deckSwiperData?.id ??
@@ -354,7 +415,7 @@ const InboxScreen = props => {
                             GlobalStyles.DeckSwiperStyles(theme)['Deck Swiper'],
                             dimensions.width
                           )}
-                          verticalEnabled={true}
+                          verticalEnabled={false}
                           visibleCardCount={3}
                         />
                         {/* FromView */}
@@ -428,7 +489,7 @@ const InboxScreen = props => {
                 dimensions.width
               )}
             >
-              {/* Left */}
+              {/* Just Us */}
               <View
                 style={StyleSheet.applyWidth(
                   { flex: 1, justifyContent: 'flex-end' },
@@ -452,6 +513,7 @@ const InboxScreen = props => {
                           lastUpdatedQuoteLink.concat([currentQuote?.id])
                         );
                         setRefetchParam(randomNumber());
+                        setShowApproveModalJustUs(true);
                       } catch (err) {
                         console.error(err);
                       }
@@ -505,7 +567,7 @@ const InboxScreen = props => {
                   </View>
                 </Pressable>
               </View>
-              {/* Center */}
+              {/* Trash */}
               <View
                 style={StyleSheet.applyWidth(
                   { alignItems: 'center', flex: 1, justifyContent: 'flex-end' },
@@ -551,6 +613,7 @@ const InboxScreen = props => {
                       dimensions.width
                     )}
                   >
+                    {/* Trash */}
                     <Icon
                       color={theme.colors['Red']}
                       name={'Ionicons/close'}
@@ -559,7 +622,7 @@ const InboxScreen = props => {
                   </View>
                 </Pressable>
               </View>
-              {/* Right */}
+              {/* Friends */}
               <View
                 style={StyleSheet.applyWidth(
                   { flex: 1, justifyContent: 'flex-end' },
@@ -582,6 +645,7 @@ const InboxScreen = props => {
                           lastUpdatedQuoteLink.concat([currentQuote?.id])
                         );
                         setRefetchParam(randomNumber());
+                        setShowApproveModalFriends(true);
                       } catch (err) {
                         console.error(err);
                       }
@@ -639,6 +703,366 @@ const InboxScreen = props => {
           )}
         </>
       </View>
+      {/* Approved Modal - Private */}
+      <Modal
+        animationType={'none'}
+        transparent={true}
+        visible={showApproveModalJustUs}
+      >
+        <BlurView
+          intensity={50}
+          style={StyleSheet.applyWidth(
+            StyleSheet.compose(
+              GlobalStyles.BlurViewStyles(theme)['Blur View'],
+              {
+                alignItems: 'center',
+                backgroundColor: 'rgba(58, 58, 58, 0.09)',
+                justifyContent: 'center',
+              }
+            ),
+            dimensions.width
+          )}
+          tint={'default'}
+        >
+          <Surface
+            elevation={0}
+            style={StyleSheet.applyWidth(
+              StyleSheet.compose(GlobalStyles.SurfaceStyles(theme)['Surface'], {
+                alignItems: 'center',
+                backgroundColor: 'rgb(255, 255, 255)',
+                borderRadius: 16,
+                paddingBottom: 40,
+                paddingLeft: 20,
+                paddingRight: 20,
+                paddingTop: 40,
+                width: '90%',
+              }),
+              dimensions.width
+            )}
+          >
+            <View
+              style={StyleSheet.applyWidth(
+                {
+                  alignSelf: 'flex-start',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  left: 5,
+                  top: -15,
+                },
+                dimensions.width
+              )}
+            >
+              {/* View 2 */}
+              <View
+                style={StyleSheet.applyWidth(
+                  { flex: 1, flexDirection: 'row' },
+                  dimensions.width
+                )}
+              >
+                <IconButton
+                  color={theme.colors['Medium']}
+                  icon={'Feather/x'}
+                  onPress={() => {
+                    try {
+                      setShowApproveModalJustUs(false);
+                    } catch (err) {
+                      console.error(err);
+                    }
+                  }}
+                  size={32}
+                />
+              </View>
+
+              <View
+                style={StyleSheet.applyWidth(
+                  { flex: 1, flexDirection: 'row', justifyContent: 'flex-end' },
+                  dimensions.width
+                )}
+              >
+                <Pressable
+                  onPress={() => {
+                    const handler = async () => {
+                      try {
+                        const quoteLinkToUpdate =
+                          getFirstItem(lastUpdatedQuoteLink);
+                        setIsUpdating(true);
+                        (
+                          await XANOApi.updateQuoteLinkPATCH(Constants, {
+                            quote_links_id: quoteLinkToUpdate,
+                            visibility: 'unset',
+                          })
+                        )?.json;
+                        setIsUpdating(false);
+                        setShowApproveModalJustUs(false);
+                        setRefetchParam(randomNumber());
+                      } catch (err) {
+                        console.error(err);
+                      }
+                    };
+                    handler();
+                  }}
+                >
+                  <Text
+                    accessible={true}
+                    allowFontScaling={true}
+                    style={StyleSheet.applyWidth(
+                      StyleSheet.compose(
+                        GlobalStyles.TextStyles(theme)['Text'],
+                        { color: theme.colors['DarkGray'] }
+                      ),
+                      dimensions.width
+                    )}
+                  >
+                    {'UNDO'}
+                  </Text>
+                </Pressable>
+              </View>
+            </View>
+
+            <H2
+              style={StyleSheet.applyWidth(
+                StyleSheet.compose(GlobalStyles.H2Styles(theme)['H2'], {
+                  fontSize: 28,
+                  paddingBottom: 15,
+                }),
+                dimensions.width
+              )}
+            >
+              {'Approved!'}
+            </H2>
+
+            <Text
+              accessible={true}
+              allowFontScaling={true}
+              style={StyleSheet.applyWidth(
+                StyleSheet.compose(GlobalStyles.TextStyles(theme)['Text'], {
+                  fontSize: 20,
+                  paddingBottom: 15,
+                  textAlign: 'center',
+                }),
+                dimensions.width
+              )}
+            >
+              {'That one will stay private to those involved'}
+            </Text>
+            {/* ViewQuoteButton */}
+            <Button
+              disabled={isImporting}
+              loading={isImporting}
+              onPress={() => {
+                try {
+                  setShowApproveModalJustUs(false);
+                  navigation.navigate('ProfileScreen', {
+                    id: Constants['CX_USER']?.id,
+                    type: 'user',
+                  });
+                } catch (err) {
+                  console.error(err);
+                }
+              }}
+              style={StyleSheet.applyWidth(
+                StyleSheet.compose(
+                  GlobalStyles.ButtonStyles(theme)['OutlineButton'],
+                  {
+                    backgroundColor: '"rgb(242, 242, 247)"',
+                    borderColor: 'rgb(242, 242, 247)',
+                    borderRadius: 50,
+                    borderWidth: 1.5,
+                    color: 'rgb(99, 99, 102)',
+                    fontFamily: 'Poppins_600SemiBold',
+                    fontSize: 20,
+                    marginTop: 20,
+                    paddingLeft: 20,
+                    paddingRight: 20,
+                  }
+                ),
+                dimensions.width
+              )}
+              title={'View Quote'}
+            />
+          </Surface>
+        </BlurView>
+      </Modal>
+      {/* Approved Modal - Friends */}
+      <Modal
+        animationType={'none'}
+        transparent={true}
+        visible={showApproveModalFriends}
+      >
+        <BlurView
+          intensity={50}
+          style={StyleSheet.applyWidth(
+            StyleSheet.compose(
+              GlobalStyles.BlurViewStyles(theme)['Blur View'],
+              {
+                alignItems: 'center',
+                backgroundColor: 'rgba(58, 58, 58, 0.09)',
+                justifyContent: 'center',
+              }
+            ),
+            dimensions.width
+          )}
+          tint={'default'}
+        >
+          <Surface
+            elevation={0}
+            style={StyleSheet.applyWidth(
+              StyleSheet.compose(GlobalStyles.SurfaceStyles(theme)['Surface'], {
+                alignItems: 'center',
+                backgroundColor: 'rgb(255, 255, 255)',
+                borderRadius: 16,
+                paddingBottom: 40,
+                paddingLeft: 20,
+                paddingRight: 20,
+                paddingTop: 40,
+                width: '90%',
+              }),
+              dimensions.width
+            )}
+          >
+            <View
+              style={StyleSheet.applyWidth(
+                {
+                  alignSelf: 'flex-start',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  left: 5,
+                  top: -15,
+                },
+                dimensions.width
+              )}
+            >
+              {/* View 2 */}
+              <View
+                style={StyleSheet.applyWidth(
+                  { flex: 1, flexDirection: 'row' },
+                  dimensions.width
+                )}
+              >
+                <IconButton
+                  color={theme.colors['Medium']}
+                  icon={'Feather/x'}
+                  onPress={() => {
+                    try {
+                      setShowApproveModalJustUs(false);
+                    } catch (err) {
+                      console.error(err);
+                    }
+                  }}
+                  size={32}
+                />
+              </View>
+
+              <View
+                style={StyleSheet.applyWidth(
+                  { flex: 1, flexDirection: 'row', justifyContent: 'flex-end' },
+                  dimensions.width
+                )}
+              >
+                <Pressable
+                  onPress={() => {
+                    const handler = async () => {
+                      try {
+                        const quoteLinkToUpdate =
+                          getFirstItem(lastUpdatedQuoteLink);
+                        setIsUpdating(true);
+                        (
+                          await XANOApi.updateQuoteLinkPATCH(Constants, {
+                            quote_links_id: quoteLinkToUpdate,
+                            visibility: 'unset',
+                          })
+                        )?.json;
+                        setIsUpdating(false);
+                        setShowApproveModalJustUs(false);
+                        setRefetchParam(randomNumber());
+                      } catch (err) {
+                        console.error(err);
+                      }
+                    };
+                    handler();
+                  }}
+                >
+                  <Text
+                    accessible={true}
+                    allowFontScaling={true}
+                    style={StyleSheet.applyWidth(
+                      StyleSheet.compose(
+                        GlobalStyles.TextStyles(theme)['Text'],
+                        { color: theme.colors['DarkGray'] }
+                      ),
+                      dimensions.width
+                    )}
+                  >
+                    {'UNDO'}
+                  </Text>
+                </Pressable>
+              </View>
+            </View>
+
+            <H2
+              style={StyleSheet.applyWidth(
+                StyleSheet.compose(GlobalStyles.H2Styles(theme)['H2'], {
+                  fontSize: 28,
+                  paddingBottom: 15,
+                }),
+                dimensions.width
+              )}
+            >
+              {'Approved!'}
+            </H2>
+
+            <Text
+              accessible={true}
+              allowFontScaling={true}
+              style={StyleSheet.applyWidth(
+                StyleSheet.compose(GlobalStyles.TextStyles(theme)['Text'], {
+                  fontSize: 20,
+                  paddingBottom: 15,
+                  textAlign: 'center',
+                }),
+                dimensions.width
+              )}
+            >
+              {'Only Contxt users who have your number will see this one'}
+            </Text>
+            {/* ViewQuoteButton */}
+            <Button
+              disabled={isImporting}
+              loading={isImporting}
+              onPress={() => {
+                try {
+                  setShowApproveModalJustUs(false);
+                  navigation.navigate('ProfileScreen', {
+                    id: Constants['CX_USER']?.id,
+                    type: 'user',
+                  });
+                } catch (err) {
+                  console.error(err);
+                }
+              }}
+              style={StyleSheet.applyWidth(
+                StyleSheet.compose(
+                  GlobalStyles.ButtonStyles(theme)['OutlineButton'],
+                  {
+                    backgroundColor: '"rgb(242, 242, 247)"',
+                    borderColor: 'rgb(242, 242, 247)',
+                    borderRadius: 50,
+                    borderWidth: 1.5,
+                    color: 'rgb(99, 99, 102)',
+                    fontFamily: 'Poppins_600SemiBold',
+                    fontSize: 20,
+                    marginTop: 20,
+                    paddingLeft: 20,
+                    paddingRight: 20,
+                  }
+                ),
+                dimensions.width
+              )}
+              title={'View Quote'}
+            />
+          </Surface>
+        </BlurView>
+      </Modal>
     </ScreenContainer>
   );
 };
