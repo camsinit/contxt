@@ -34,7 +34,7 @@
     "@sanar/react-native-highlight-text": "1.0.0",
     "@shopify/flash-list": "1.6.4",
     "@shopify/mime-types": "^2.1.0",
-    "expo": "^51.0.18",
+    "expo": "^48.0.17",
     "expo-asset": "~10.0.10",
     "expo-av": "~14.0.6",
     "expo-blur": "~13.0.2",
