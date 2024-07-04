@@ -21,7 +21,7 @@
     "@expo/dev-server": "0.5.5",
     "@expo/html-elements": "^0.5.1",
     "@expo/vector-icons": "^14.0.2",
-    "@expo/webpack-config": "~19.0.1",
+    "@expo/webpack-config": "18.1.4",
     "@react-native-async-storage/async-storage": "1.23.1",
     "@react-native-community/datetimepicker": "8.0.1",
     "@react-native-community/netinfo": "11.3.1",
