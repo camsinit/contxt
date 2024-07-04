@@ -69,4 +69,7 @@ yarn-error.log
 web-build/
 dist/
 
+# Ignore install_pods_logs.txt
+install_pods_logs.txt
+
 # @end expo-cli
