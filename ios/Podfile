@@ -56,10 +56,10 @@ target 'Contxt' do
   use_frameworks! :linkage => ENV['USE_FRAMEWORKS'].to_sym if ENV['USE_FRAMEWORKS']
 
   # Flags change depending on the env values.
-  flags = get_default_flags()
-
-  # Ensure flags[:reactNativePath] is not nil
-  flags[:reactNativePath] ||= "../node_modules/react-native"
+  flags = {
+    :reactNativePath => "../node_modules/react-native",
+    :fabric_enabled => false
+  }
 
   use_react_native!(
     :path => flags[:reactNativePath],
