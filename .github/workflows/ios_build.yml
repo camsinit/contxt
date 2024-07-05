@@ -30,6 +30,9 @@ jobs:
     - name: Set up environment variables
       run: echo "REACT_APP_BASE_URL=${{ secrets.REACT_APP_BASE_URL }}" >> $GITHUB_ENV
 
+    - name: Set up Xcode environment
+      run: echo "DEVELOPER_DIR=$(xcode-select -p)" >> $GITHUB_ENV
+
     - name: Install CocoaPods
       run: pod install --project-directory=ios
 
