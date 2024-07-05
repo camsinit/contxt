@@ -12,7 +12,8 @@ import usePrevious from '../utils/usePrevious';
 import encodeQueryParam from '../utils/encodeQueryParam';
 import * as GlobalVariables from '../config/GlobalVariableContext';
 
-const BASE_URL = 'https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB';
+// Define the BASE_URL based on the environment
+const BASE_URL = process.env.REACT_APP_BASE_URL || 'https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB';
 
 export const addNewContactPOST = (Constants, { name }, handlers = {}) =>
   fetch(`${BASE_URL}/contact`, {
