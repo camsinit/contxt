@@ -339,7 +339,7 @@ const LoginScreen = props => {
                   cellCount={5}
                   changeTextDelay={500}
                   clearOnCellFocus={true}
-                  keyboardType={'number-pad'}
+                  inputMode={'numeric'}
                   onChangeText={newPinInputValue => {
                     try {
                       setCodeValue(newPinInputValue);
