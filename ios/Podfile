@@ -58,6 +58,9 @@ target 'Contxt' do
   # Flags change depending on the env values.
   flags = get_default_flags()
 
+  # Ensure flags[:reactNativePath] is not nil
+  flags[:reactNativePath] ||= "../node_modules/react-native"
+
   use_react_native!(
     :path => flags[:reactNativePath],
     :hermes_enabled => podfile_properties['expo.jsEngine'] == nil || podfile_properties['expo.jsEngine'] == 'hermes',
