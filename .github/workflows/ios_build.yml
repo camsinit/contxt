@@ -24,9 +24,6 @@ jobs:
     - name: Install dependencies
       run: yarn install
 
-    - name: Set up Expo CLI
-      run: yarn global add expo-cli
-
     - name: Set up EAS CLI
       run: npm install -g eas-cli
 
