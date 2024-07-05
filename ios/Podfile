@@ -24,6 +24,18 @@ prepare_react_native_project!
 #   }
 # }
 # ```
+
+# Define FlipperConfiguration
+class FlipperConfiguration
+  def self.disabled
+    { 'Flipper' => '0' }
+  end
+
+  def self.enabled(configurations, options = {})
+    { 'Flipper' => '1', 'Configurations' => configurations }.merge(options)
+  end
+end
+
 flipper_config = FlipperConfiguration.disabled
 if ENV['NO_FLIPPER'] == '1' then
   # Explicitly disabled through environment variables
@@ -51,9 +63,7 @@ target 'Contxt' do
     :hermes_enabled => podfile_properties['expo.jsEngine'] == nil || podfile_properties['expo.jsEngine'] == 'hermes',
     :fabric_enabled => flags[:fabric_enabled],
     # An absolute path to your application root.
-    :app_path => "#{Pod::Config.instance.installation_root}/..",
-    # Note that if you have use_frameworks! enabled, Flipper will not work if enabled
-    :flipper_configuration => flipper_config
+    :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
   post_install do |installer|
