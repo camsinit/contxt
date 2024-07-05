@@ -12,8 +12,10 @@ import usePrevious from '../utils/usePrevious';
 import encodeQueryParam from '../utils/encodeQueryParam';
 import * as GlobalVariables from '../config/GlobalVariableContext';
 
+const API_BASE_URL = 'https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB';
+
 export const authMeGET = (Constants, _args, handlers = {}) =>
-  fetch(`https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/auth/me`, {
+  fetch(`${API_BASE_URL}/auth/me`, {
     headers: {
       Accept: 'application/json',
       Authorization: Constants['CX_AUTH_TOKEN'],
@@ -70,7 +72,7 @@ export const FetchAuthMeGET = ({
 };
 
 export const loginPOST = (Constants, { code, phone }, handlers = {}) =>
-  fetch(`https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/auth/login`, {
+  fetch(`${API_BASE_URL}/auth/login`, {
     body: JSON.stringify({ phone: phone, code: code }),
     headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
     method: 'POST',
@@ -130,7 +132,7 @@ export const FetchLoginPOST = ({
 };
 
 export const resendPOST = (Constants, { phone }, handlers = {}) =>
-  fetch(`https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/auth/resend_code`, {
+  fetch(`${API_BASE_URL}/auth/resend_code`, {
     body: JSON.stringify({ phone: phone }),
     headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
     method: 'POST',
@@ -193,7 +195,7 @@ export const signupPOST = (
   { dob, first_name, last_name, phone },
   handlers = {}
 ) =>
-  fetch(`https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/auth/signup`, {
+  fetch(`${API_BASE_URL}/auth/signup`, {
     body: JSON.stringify({
       phone: phone,
       first_name: first_name,

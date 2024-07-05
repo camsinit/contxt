@@ -12,8 +12,10 @@ import usePrevious from '../utils/usePrevious';
 import encodeQueryParam from '../utils/encodeQueryParam';
 import * as GlobalVariables from '../config/GlobalVariableContext';
 
+const API_BASE_URL = 'https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB';
+
 export const addNewContactPOST = (Constants, { name }, handlers = {}) =>
-  fetch(`https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/contact`, {
+  fetch(`${API_BASE_URL}/contact`, {
     body: JSON.stringify({ name: name }),
     headers: {
       Accept: 'application/json',
@@ -86,7 +88,7 @@ export const createQuotePOST = (
   { blocks, date, linked_ids, location },
   handlers = {}
 ) =>
-  fetch(`https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/quote`, {
+  fetch(`${API_BASE_URL}/quote`, {
     body: JSON.stringify({
       blocks: blocks,
       quote_date: date,
@@ -163,7 +165,7 @@ export const FetchCreateQuotePOST = ({
 };
 
 export const deleteQuoteDELETE = (Constants, { quote_id }, handlers = {}) =>
-  fetch(`https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/quote`, {
+  fetch(`${API_BASE_URL}/quote`, {
     body: JSON.stringify({ quote_id: quote_id }),
     headers: {
       Accept: 'application/json',
@@ -196,7 +198,7 @@ export const useDeleteQuoteDELETE = (
 };
 
 export const getContactsCountGET = (Constants, _args, handlers = {}) =>
-  fetch(`https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/get_contacts_count`, {
+  fetch(`${API_BASE_URL}/get_contacts_count`, {
     headers: {
       Accept: 'application/json',
       Authorization: Constants['CX_AUTH_TOKEN'],
@@ -257,7 +259,7 @@ export const FetchGetContactsCountGET = ({
 };
 
 export const getInboxCountGET = (Constants, _args, handlers = {}) =>
-  fetch(`https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/quote_inbox_count`, {
+  fetch(`${API_BASE_URL}/quote_inbox_count`, {
     headers: {
       Accept: 'application/json',
       Authorization: Constants['CX_AUTH_TOKEN'],
@@ -320,7 +322,7 @@ export const getMyContactsGET = (
   handlers = {}
 ) =>
   fetch(
-    `https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/get_my_contacts?search_term=${encodeQueryParam(
+    `${API_BASE_URL}/get_my_contacts?search_term=${encodeQueryParam(
       `${
         typeof search_term === 'string'
           ? search_term
@@ -396,7 +398,7 @@ export const FetchGetMyContactsGET = ({
 };
 
 export const getProfilePOST = (Constants, { id, type }, handlers = {}) =>
-  fetch(`https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/profile`, {
+  fetch(`${API_BASE_URL}/profile`, {
     body: JSON.stringify({ id: id, type: type }),
     headers: {
       Accept: 'application/json',
@@ -468,7 +470,7 @@ export const getQuotesInboxGET = (
   handlers = {}
 ) =>
   fetch(
-    `https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/quote_inbox?r=${encodeQueryParam(
+    `${API_BASE_URL}/quote_inbox?r=${encodeQueryParam(
       `${
         typeof refetch_param === 'string'
           ? refetch_param
@@ -535,7 +537,7 @@ export const FetchGetQuotesInboxGET = ({
 };
 
 export const importContactsPOST = (Constants, { contacts }, handlers = {}) =>
-  fetch(`https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/import_contacts`, {
+  fetch(`${API_BASE_URL}/import_contacts`, {
     body: JSON.stringify({ contacts: contacts }),
     headers: {
       Accept: 'application/json',
@@ -600,7 +602,7 @@ export const FetchImportContactsPOST = ({
 
 export const searchContactsGET = (Constants, { term }, handlers = {}) =>
   fetch(
-    `https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/search_contacts?term=${encodeQueryParam(
+    `${API_BASE_URL}/search_contacts?term=${encodeQueryParam(
       `${typeof term === 'string' ? term : JSON.stringify(term ?? '')}`
     )}`,
     {
@@ -668,7 +670,7 @@ export const updateProfileDOBPATCH = (
   handlers = {}
 ) =>
   fetch(
-    `https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/profile/${
+    `${API_BASE_URL}/profile/${
       typeof id === 'string' ? id : JSON.stringify(id ?? '')
     }`,
     {
@@ -711,7 +713,7 @@ export const updateProfileImagePATCH = (
   handlers = {}
 ) =>
   fetch(
-    `https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/profile/${
+    `${API_BASE_URL}/profile/${
       typeof id === 'string' ? id : JSON.stringify(id ?? '')
     }`,
     {
@@ -754,7 +756,7 @@ export const updateProfileNamePATCH = (
   handlers = {}
 ) =>
   fetch(
-    `https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/profile/${
+    `${API_BASE_URL}/profile/${
       typeof id === 'string' ? id : JSON.stringify(id ?? '')
     }`,
     {
@@ -797,13 +799,13 @@ export const updateQuoteLinkPATCH = (
   handlers = {}
 ) =>
   fetch(
-    `https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/quote_links/${
+    `${API_BASE_URL}/quote_links/${
       typeof quote_links_id === 'string'
         ? quote_links_id
         : JSON.stringify(quote_links_id ?? '')
     }`,
     {
-      body: JSON.stringify({ visibilty: visibility }),
+      body: JSON.stringify({ visibility: visibility }),
       headers: {
         Accept: 'application/json',
         Authorization: Constants['CX_AUTH_TOKEN'],
