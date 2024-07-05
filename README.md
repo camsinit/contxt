@@ -73,6 +73,26 @@ $ yarn
 > the correct dependencies. You should replace `Desktop/New-App` with the actual
 > path to your unzipped project folder.
 
+## Environment Variables
+
+To configure the base URL for API calls, you need to set the `REACT_APP_BASE_URL` environment variable. This allows you to use different base URLs for different environments (e.g., development, staging, production).
+
+### Setting Up Environment Variables
+
+1. Create a `.env` file in the root of your project directory if it doesn't already exist.
+2. Add the following line to the `.env` file, replacing `your_api_base_url` with the appropriate URL for your environment:
+
+```
+REACT_APP_BASE_URL=https://your_api_base_url
+```
+
+3. Save the `.env` file.
+### Using Environment Variables
+
+The `REACT_APP_BASE_URL` environment variable will be automatically used by the application to configure the base URL for API calls. If the environment variable is not set, the application will fall back to a default URL.
+
+Make sure to set the `REACT_APP_BASE_URL` environment variable for each environment where the application will be deployed (e.g., development, staging, production).
+
 ## Log In to Expo
 
 Verify that the installation was successful by running `npx expo whoami`. You're not logged in yet, so you will see "Not logged in". You can create an account by running `npx expo register` if you like, or if you have one already run `npx expo login`, but you also don't need an account to get started.
