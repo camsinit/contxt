@@ -152,7 +152,7 @@ const HomeScreen = props => {
             autoFocus={false}
             changeTextDelay={500}
             clearButtonMode={'always'}
-            keyboardType={'default'}
+            inputMode={'text'}
             onChangeText={newTextInputValue => {
               try {
                 setSearchTermDisplayValue(newTextInputValue);
