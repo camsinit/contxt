@@ -5,7 +5,7 @@ import * as GlobalVariables from '../config/GlobalVariableContext';
 import Breakpoints from '../utils/Breakpoints';
 import * as StyleSheet from '../utils/StyleSheet';
 import useWindowDimensions from '../utils/useWindowDimensions';
-import { Icon, Pressable, TextInput, withTheme } from '@draftbit/ui';
+import { Pressable, TextInput, withTheme } from '@draftbit/ui';
 import { ActivityIndicator, Text, View } from 'react-native';
 
 const AddNewContactButtonBlock = props => {
@@ -15,153 +15,124 @@ const AddNewContactButtonBlock = props => {
   const Variables = Constants;
   const [errorMessage, setErrorMessage] = React.useState('');
   const [isLoading, setIsLoading] = React.useState(false);
-  const [mode, setMode] = React.useState('button');
+  const [nameInputReturned, setNameInputReturned] = React.useState(false);
   const [newNameValue, setNewNameValue] = React.useState('');
-  const [textInputValue, setTextInputValue] = React.useState('');
-  const onChangeFunction = contact => {
-    props.onChange && props.onChange(contact);
+  const [phoneInputReturned, setPhoneInputReturned] = React.useState(false);
+  const [phoneNumberValue, setPhoneNumberValue] = React.useState('');
+  const [searchStringDisplayValue, setSearchStringDisplayValue] =
+    React.useState('');
+  const [searchStringValue, setSearchStringValue] = React.useState('');
+  const [showPhoneNumberInput, setShowPhoneNumberInput] = React.useState(false);
+  const [showRecentContactsList, setShowRecentContactsList] =
+    React.useState(false);
+  const validatePhoneNumber = () => {
+    const phoneNumberRegex = /^(\+\d{1,3}[- ]?)?\d{10}$/;
+
+    if (phoneNumberValue.length < 1) {
+      setErrorMessage('Please enter phone number');
+      return false;
+    }
+
+    if (!phoneNumberRegex.test(phoneNumberValue)) {
+      setErrorMessage('Please enter valid phone number');
+      return false;
+    }
+
+    setErrorMessage('');
+    return true;
   };
   const xANOAddNewContactPOST = XANOApi.useAddNewContactPOST();
+  React.useEffect(() => {
+    try {
+      setNewNameValue(props.initialValue ?? null);
+    } catch (err) {
+      console.error(err);
+    }
+  }, []);
 
   return (
     <View>
-      <>
-        {!(mode === 'button') ? null : (
-          <Pressable
-            onPress={() => {
-              try {
-                setMode('edit');
-                props.onModeChange?.('edit');
-              } catch (err) {
-                console.error(err);
-              }
-            }}
-          >
-            {/* AddNewContact */}
-            <View
-              style={StyleSheet.applyWidth(
-                {
-                  alignItems: 'center',
-                  borderColor: theme.colors['Light Gray'],
-                  borderTopWidth: 1,
-                  flexDirection: 'row',
-                  height: 40,
-                  paddingLeft: 15,
-                  paddingRight: 15,
-                },
-                dimensions.width
-              )}
-            >
-              <Icon
-                name={'Ionicons/ios-add-circle-outline'}
-                size={24}
-                style={StyleSheet.applyWidth(
-                  { marginRight: 8 },
-                  dimensions.width
-                )}
-              />
-              {/* AddNewText */}
-              <Text
-                accessible={true}
-                style={StyleSheet.applyWidth(
-                  GlobalStyles.TextStyles(theme)['Text'],
-                  dimensions.width
-                )}
-              >
-                {'New Friend'}
-              </Text>
-            </View>
-          </Pressable>
-        )}
-      </>
       {/* AddNewContactForm */}
-      <>
-        {mode === 'button' ? null : (
-          <View
-            style={StyleSheet.applyWidth(
-              {
-                alignItems: 'center',
-                borderColor: theme.colors['Light Gray'],
-                borderTopWidth: 1,
-                flexDirection: 'row',
-                height: 40,
-                paddingLeft: 15,
-                paddingRight: 15,
-              },
-              dimensions.width
-            )}
-          >
-            <Pressable
-              onPress={() => {
-                try {
-                  setErrorMessage('');
-                  setNewNameValue('');
-                  setMode('button');
-                  props.onModeChange?.('button');
-                } catch (err) {
-                  console.error(err);
-                }
-              }}
-            >
-              <Icon
-                name={'Ionicons/ios-add-circle-outline'}
-                size={24}
-                style={StyleSheet.applyWidth(
-                  { marginRight: 8 },
-                  dimensions.width
-                )}
-              />
-            </Pressable>
-
-            <View
-              style={StyleSheet.applyWidth(
-                { flex: 1, flexDirection: 'row' },
-                dimensions.width
-              )}
-            >
-              <View
-                style={StyleSheet.applyWidth({ flex: 1 }, dimensions.width)}
-              >
+      <View
+        style={StyleSheet.applyWidth(
+          {
+            alignItems: 'center',
+            backgroundColor: theme.colors['Light Gray'],
+            borderRadius: 36,
+            flexDirection: 'row',
+            minHeight: 40,
+            paddingLeft: 8,
+            paddingRight: 8,
+          },
+          dimensions.width
+        )}
+      >
+        <View
+          style={StyleSheet.applyWidth(
+            { flex: 1, flexDirection: 'row' },
+            dimensions.width
+          )}
+        >
+          <View style={StyleSheet.applyWidth({ flex: 1 }, dimensions.width)}>
+            {/* NameInput */}
+            <>
+              {showPhoneNumberInput ? null : (
                 <TextInput
                   autoCapitalize={'none'}
-                  autoFocus={true}
+                  autoCorrect={true}
                   changeTextDelay={500}
                   onBlur={() => {
-                    const textInputValue = undefined;
                     try {
-                      setMode('button');
-                      props.onModeChange?.('button');
+                      if (nameInputReturned) {
+                        if (newNameValue === '') {
+                          return;
+                        }
+                      } else {
+                        setNameInputReturned(false);
+                      }
+
+                      props.onCancelCreate?.();
                     } catch (err) {
                       console.error(err);
                     }
                   }}
-                  onChangeText={newTextInputValue => {
-                    const textInputValue = newTextInputValue;
+                  onChangeText={newNameInputValue => {
                     try {
-                      setNewNameValue(newTextInputValue);
+                      setNewNameValue(newNameInputValue);
                     } catch (err) {
                       console.error(err);
                     }
                   }}
-                  onFocus={() => {
-                    const textInputValue = undefined;
+                  onSubmitEditing={() => {
                     try {
-                      /* 'Run a Custom Function' action requires configuration: choose a custom function */
+                      if (newNameValue !== '') {
+                        setShowPhoneNumberInput(true);
+                        setErrorMessage('');
+                      } else {
+                        setErrorMessage('Please enter a valid contact name');
+                      }
+
+                      setNameInputReturned(true);
                     } catch (err) {
                       console.error(err);
                     }
                   }}
+                  webShowOutline={true}
+                  {...GlobalStyles.TextInputStyles(theme)['Text Input'].props}
+                  autoFocus={true}
                   placeholder={'Their name'}
                   style={StyleSheet.applyWidth(
                     StyleSheet.compose(
-                      GlobalStyles.TextInputStyles(theme)['Text Input'],
+                      GlobalStyles.TextInputStyles(theme)['Text Input'].style,
                       {
                         borderBottomWidth: 0,
                         borderLeftWidth: 0,
                         borderRightWidth: 0,
                         borderTopWidth: 0,
+                        fontSize: 12,
+                        lineHeight: 17,
                         paddingBottom: 0,
-                        paddingLeft: 0,
+                        paddingLeft: 8,
                         paddingTop: 0,
                       }
                     ),
@@ -169,114 +140,212 @@ const AddNewContactButtonBlock = props => {
                   )}
                   value={newNameValue}
                 />
-                <>
-                  {!errorMessage ? null : (
-                    <Text
-                      accessible={true}
-                      style={StyleSheet.applyWidth(
-                        StyleSheet.compose(
-                          GlobalStyles.TextStyles(theme)['Text'],
-                          { color: theme.colors['Error'], fontSize: 11 }
-                        ),
-                        dimensions.width
-                      )}
-                    >
-                      {errorMessage}
-                    </Text>
-                  )}
-                </>
-              </View>
-            </View>
-            {/* AddButton */}
-            <Pressable
-              disabled={isLoading}
-              onPress={() => {
-                const handler = async () => {
-                  try {
-                    setErrorMessage('');
-                    if (newNameValue !== '') {
-                      setIsLoading(true);
-                      const newContactResult = (
-                        await xANOAddNewContactPOST.mutateAsync({
-                          name: newNameValue,
-                        })
-                      )?.json;
-                      setIsLoading(false);
-                      setErrorMessage(newContactResult?.message);
-                      onChangeFunction(newContactResult);
-                      if (!newContactResult?.message) {
-                        setNewNameValue('');
+              )}
+            </>
+            {/* PhoneNumberInput */}
+            <>
+              {!showPhoneNumberInput ? null : (
+                <TextInput
+                  autoCapitalize={'none'}
+                  autoCorrect={true}
+                  changeTextDelay={500}
+                  onBlur={() => {
+                    try {
+                      if (phoneInputReturned) {
+                        if (!validatePhoneNumber()) {
+                          return;
+                        }
+                      } else {
+                        setPhoneInputReturned(false);
                       }
-                      if (!newContactResult?.message) {
-                        setMode('button');
-                      }
-                      if (!newContactResult?.message) {
-                        props.onModeChange?.('button');
-                      }
-                    } else {
-                      setErrorMessage('Please enter a valid contact name');
+
+                      props.onCancelCreate?.();
+                      setShowPhoneNumberInput(false);
+                      setPhoneNumberValue('');
+                    } catch (err) {
+                      console.error(err);
                     }
-                  } catch (err) {
-                    console.error(err);
-                  }
-                };
-                handler();
-              }}
-            >
-              {/* View 2 */}
-              <View
-                style={StyleSheet.applyWidth(
-                  {
-                    alignItems: 'center',
-                    borderColor: theme.colors['DarkGray'],
-                    borderRadius: 30,
-                    borderWidth: 1,
-                    justifyContent: 'center',
-                    paddingBottom: 6,
-                    paddingLeft: 16,
-                    paddingRight: 16,
-                    paddingTop: 6,
-                  },
-                  dimensions.width
-                )}
-              >
-                <>
-                  {isLoading ? null : (
-                    <Text
-                      accessible={true}
-                      style={StyleSheet.applyWidth(
-                        StyleSheet.compose(
-                          GlobalStyles.TextStyles(theme)['Text'],
-                          { color: theme.colors['DarkGray'], fontSize: 12 }
-                        ),
-                        dimensions.width
-                      )}
-                    >
-                      {'Add'}
-                    </Text>
+                  }}
+                  onChangeText={newPhoneNumberInputValue => {
+                    try {
+                      setPhoneNumberValue(newPhoneNumberInputValue);
+                    } catch (err) {
+                      console.error(err);
+                    }
+                  }}
+                  onSubmitEditing={() => {
+                    const handler = async () => {
+                      try {
+                        setPhoneInputReturned(true);
+                        if (!validatePhoneNumber()) {
+                          return;
+                        }
+                        setIsLoading(true);
+                        const addContactResult = (
+                          await xANOAddNewContactPOST.mutateAsync({
+                            name: newNameValue,
+                            phone_number: phoneNumberValue,
+                          })
+                        )?.json;
+                        setIsLoading(false);
+                        if (!addContactResult?.message) {
+                          props.onChange?.(addContactResult);
+                        }
+                        setErrorMessage(addContactResult?.message);
+                        setNewNameValue('');
+                        setPhoneNumberValue('');
+                        setShowPhoneNumberInput(false);
+                        props.onCancelCreate?.();
+                      } catch (err) {
+                        console.error(err);
+                      }
+                    };
+                    handler();
+                  }}
+                  webShowOutline={true}
+                  {...GlobalStyles.TextInputStyles(theme)['Text Input'].props}
+                  autoFocus={true}
+                  keyboardType={'numeric'}
+                  placeholder={'Their Number'}
+                  style={StyleSheet.applyWidth(
+                    StyleSheet.compose(
+                      GlobalStyles.TextInputStyles(theme)['Text Input'].style,
+                      {
+                        borderBottomWidth: 0,
+                        borderLeftWidth: 0,
+                        borderRightWidth: 0,
+                        borderTopWidth: 0,
+                        paddingBottom: 0,
+                        paddingLeft: 0,
+                        paddingRight: 0,
+                        paddingTop: 0,
+                      }
+                    ),
+                    dimensions.width
                   )}
-                </>
-                <>
-                  {!isLoading ? null : (
-                    <ActivityIndicator
-                      animating={true}
-                      hidesWhenStopped={true}
-                      size={'small'}
-                      style={StyleSheet.applyWidth(
-                        StyleSheet.compose(
-                          GlobalStyles.ActivityIndicatorStyles(theme)[
-                            'Activity Indicator'
-                          ],
-                          { height: 12, width: 12 }
-                        ),
-                        dimensions.width
-                      )}
-                    />
-                  )}
-                </>
-              </View>
-            </Pressable>
+                  value={phoneNumberValue}
+                />
+              )}
+            </>
           </View>
+        </View>
+        {/* AddButton */}
+        <Pressable
+          onPress={() => {
+            const handler = async () => {
+              try {
+                setErrorMessage('');
+                if (showPhoneNumberInput) {
+                  if (!validatePhoneNumber()) {
+                    return;
+                  }
+                  setIsLoading(true);
+                  let addContactResult = (
+                    await xANOAddNewContactPOST.mutateAsync({
+                      name: newNameValue,
+                      phone_number: phoneNumberValue,
+                    })
+                  )?.json;
+                  setIsLoading(false);
+                  setErrorMessage(addContactResult?.message);
+                  /* hidden 'Set Variable' action */
+                  console.log('resultt', addContactResult);
+                  if (!addContactResult?.message) {
+                    props.onChange?.(addContactResult);
+                  }
+                  setNewNameValue('');
+                  setPhoneNumberValue('');
+                  setShowPhoneNumberInput(false);
+                  props.onCancelCreate?.();
+                } else {
+                  if (newNameValue !== '') {
+                    setShowPhoneNumberInput(true);
+                    setErrorMessage('');
+                  } else {
+                    setErrorMessage('Please enter a valid contact name');
+                  }
+                }
+              } catch (err) {
+                console.error(err);
+              }
+            };
+            handler();
+          }}
+          disabled={isLoading}
+        >
+          {/* View 2 */}
+          <View
+            style={StyleSheet.applyWidth(
+              {
+                alignItems: 'center',
+                backgroundColor: theme.colors['Surface'],
+                borderRadius: 30,
+                justifyContent: 'center',
+                paddingBottom: 2,
+                paddingLeft: 6,
+                paddingRight: 6,
+                paddingTop: 2,
+              },
+              dimensions.width
+            )}
+          >
+            <>
+              {isLoading ? null : (
+                <Text
+                  accessible={true}
+                  {...GlobalStyles.TextStyles(theme)['Text'].props}
+                  style={StyleSheet.applyWidth(
+                    StyleSheet.compose(
+                      GlobalStyles.TextStyles(theme)['Text'].style,
+                      { color: theme.colors['Medium'], fontSize: 12 }
+                    ),
+                    dimensions.width
+                  )}
+                >
+                  {showPhoneNumberInput ? 'Add' : 'Next'}
+                </Text>
+              )}
+            </>
+            <>
+              {!isLoading ? null : (
+                <ActivityIndicator
+                  animating={true}
+                  hidesWhenStopped={true}
+                  size={'small'}
+                  {...GlobalStyles.ActivityIndicatorStyles(theme)[
+                    'Activity Indicator'
+                  ].props}
+                  style={StyleSheet.applyWidth(
+                    StyleSheet.compose(
+                      GlobalStyles.ActivityIndicatorStyles(theme)[
+                        'Activity Indicator'
+                      ].style,
+                      { height: 12, width: 12 }
+                    ),
+                    dimensions.width
+                  )}
+                />
+              )}
+            </>
+          </View>
+        </Pressable>
+      </View>
+      {/* ErrorMessage */}
+      <>
+        {!errorMessage ? null : (
+          <Text
+            accessible={true}
+            {...GlobalStyles.TextStyles(theme)['Text'].props}
+            style={StyleSheet.applyWidth(
+              StyleSheet.compose(GlobalStyles.TextStyles(theme)['Text'].style, {
+                color: theme.colors['Error'],
+                fontSize: 11,
+              }),
+              dimensions.width
+            )}
+          >
+            {errorMessage}
+          </Text>
         )}
       </>
     </View>

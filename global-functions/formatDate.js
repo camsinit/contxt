@@ -1,6 +1,6 @@
 import React from 'react';
 
-const formatDate = timestamp => {
+const formatDate = (timestamp, showYear) => {
   // Create a date object from the timestamp
   const date = new Date(timestamp);
 
@@ -26,7 +26,9 @@ const formatDate = timestamp => {
   const day = date.getDate();
 
   // Format the date string
-  const formattedDate = `${month} ${day}, ${year}`;
+  const formattedDate = showYear
+    ? `${month} ${day}, ${year}`
+    : `${month} ${day}`;
 
   return formattedDate;
 };

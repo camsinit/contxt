@@ -1,6 +1,7 @@
 import React from 'react';
 import * as GlobalStyles from '../GlobalStyles.js';
 import * as XANOApi from '../apis/XANOApi.js';
+import * as GlobalVariables from '../config/GlobalVariableContext';
 import Breakpoints from '../utils/Breakpoints';
 import * as StyleSheet from '../utils/StyleSheet';
 import useWindowDimensions from '../utils/useWindowDimensions';
@@ -13,6 +14,8 @@ const HeaderBlock = props => {
   const { theme } = props;
   const dimensions = useWindowDimensions();
   const navigation = useNavigation();
+  const Constants = GlobalVariables.useValues();
+  const Variables = Constants;
 
   return (
     <View
@@ -28,62 +31,44 @@ const HeaderBlock = props => {
         dimensions.width
       )}
     >
-      {/* PressableSettings */}
+      {/* UserProfile */}
       <Pressable
         onPress={() => {
           try {
-            navigation.navigate('SettingsScreen');
+            navigation.navigate('ProfileScreen', {
+              id: Constants['CX_USER']?.id,
+              type: 'user',
+            });
           } catch (err) {
             console.error(err);
           }
         }}
-      >
-        <Circle
-          style={StyleSheet.applyWidth(
-            StyleSheet.compose(GlobalStyles.CircleStyles(theme)['Circle'], {
-              backgroundColor: theme.colors['Secondary'],
-              height: 34,
-              width: 34,
-            }),
-            dimensions.width
-          )}
-        >
-          <Icon name={'FontAwesome/gears'} size={18} />
-        </Circle>
-      </Pressable>
-      {/* Title */}
-      <Text
-        accessible={true}
-        allowFontScaling={true}
         style={StyleSheet.applyWidth(
-          StyleSheet.compose(GlobalStyles.TextStyles(theme)['Text'], {
-            fontFamily: 'Poppins_600SemiBold',
-            fontSize: 17,
-          }),
+          { borderColor: 'rgba(0, 0, 0, 0)', borderLeftWidth: 20 },
           dimensions.width
         )}
       >
-        {props.title ?? 'Home'}
-      </Text>
-
+        <Icon name={'Feather/user'} size={24} />
+      </Pressable>
+      {/* QuoteInbox */}
       <View>
-        {/* PressableInbox */}
         <Pressable
           onPress={() => {
             try {
-              navigation.navigate('InboxScreen');
+              navigation.navigate('QuoteBoxScreen');
             } catch (err) {
               console.error(err);
             }
           }}
+          disabled={false}
         >
           <Circle
+            {...GlobalStyles.CircleStyles(theme)['Circle'].props}
             style={StyleSheet.applyWidth(
-              StyleSheet.compose(GlobalStyles.CircleStyles(theme)['Circle'], {
-                backgroundColor: theme.colors['Secondary'],
-                height: 34,
-                width: 34,
-              }),
+              StyleSheet.compose(
+                GlobalStyles.CircleStyles(theme)['Circle'].style,
+                { backgroundColor: 'rgba(0, 0, 0, 0)', height: 34, width: 34 }
+              ),
               dimensions.width
             )}
           >
@@ -106,9 +91,10 @@ const HeaderBlock = props => {
               <>
                 {!(fetchData > 0) ? null : (
                   <Circle
+                    {...GlobalStyles.CircleStyles(theme)['Circle'].props}
                     style={StyleSheet.applyWidth(
                       StyleSheet.compose(
-                        GlobalStyles.CircleStyles(theme)['Circle'],
+                        GlobalStyles.CircleStyles(theme)['Circle'].style,
                         {
                           backgroundColor: theme.colors['Error'],
                           height: 15,
@@ -122,10 +108,10 @@ const HeaderBlock = props => {
                   >
                     <Text
                       accessible={true}
-                      allowFontScaling={true}
+                      {...GlobalStyles.TextStyles(theme)['Text'].props}
                       style={StyleSheet.applyWidth(
                         StyleSheet.compose(
-                          GlobalStyles.TextStyles(theme)['Text'],
+                          GlobalStyles.TextStyles(theme)['Text'].style,
                           { color: theme.colors['Background'], fontSize: 9 }
                         ),
                         dimensions.width

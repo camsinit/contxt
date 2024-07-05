@@ -94,7 +94,7 @@ const SignupScreen = props => {
   }, [currentForm, timerValue]);
 
   return (
-    <ScreenContainer hasSafeArea={true} scrollable={false}>
+    <ScreenContainer scrollable={false} hasSafeArea={true}>
       {/* Header */}
       <View
         style={StyleSheet.applyWidth(
@@ -125,31 +125,37 @@ const SignupScreen = props => {
           }}
         >
           <Surface
+            {...GlobalStyles.SurfaceStyles(theme)['Surface'].props}
             elevation={1}
             style={StyleSheet.applyWidth(
-              StyleSheet.compose(GlobalStyles.SurfaceStyles(theme)['Surface'], {
-                alignItems: 'center',
-                borderColor: theme.colors['Light Inverse'],
-                borderRadius: 8,
-                borderWidth: 1,
-                height: 40,
-                justifyContent: 'center',
-                width: 40,
-              }),
+              StyleSheet.compose(
+                GlobalStyles.SurfaceStyles(theme)['Surface'].style,
+                {
+                  alignItems: 'center',
+                  borderColor: theme.colors['Light Inverse'],
+                  borderRadius: 8,
+                  borderWidth: 1,
+                  height: 40,
+                  justifyContent: 'center',
+                  width: 40,
+                }
+              ),
               dimensions.width
             )}
           >
-            <Icon name={'Entypo/chevron-left'} size={24} />
+            <Icon size={24} name={'Entypo/chevron-left'} />
           </Surface>
         </Pressable>
         <Icon name={'MaterialCommunityIcons/star-four-points'} size={32} />
       </View>
 
       <KeyboardAwareScrollView
+        enableAutomaticScroll={false}
+        enableResetScrollToCoords={false}
+        showsVerticalScrollIndicator={true}
         enableOnAndroid={true}
         extraScrollHeight={50}
         keyboardShouldPersistTaps={'always'}
-        showsVerticalScrollIndicator={true}
         viewIsInsideTabBar={true}
       >
         {/* NameForm */}
@@ -163,8 +169,10 @@ const SignupScreen = props => {
             >
               {/* HeaderText */}
               <H2
+                selectable={false}
+                {...GlobalStyles.H2Styles(theme)['H2'].props}
                 style={StyleSheet.applyWidth(
-                  StyleSheet.compose(GlobalStyles.H2Styles(theme)['H2'], {
+                  StyleSheet.compose(GlobalStyles.H2Styles(theme)['H2'].style, {
                     fontSize: 32,
                   }),
                   dimensions.width
@@ -175,8 +183,9 @@ const SignupScreen = props => {
               {/* InnerText */}
               <Text
                 accessible={true}
+                {...GlobalStyles.TextStyles(theme)['Text'].props}
                 style={StyleSheet.applyWidth(
-                  GlobalStyles.TextStyles(theme)['Text'],
+                  GlobalStyles.TextStyles(theme)['Text'].style,
                   dimensions.width
                 )}
               >
@@ -208,9 +217,10 @@ const SignupScreen = props => {
                     {/* FormFieldLabel */}
                     <Text
                       accessible={true}
+                      {...GlobalStyles.TextStyles(theme)['Text'].props}
                       style={StyleSheet.applyWidth(
                         StyleSheet.compose(
-                          GlobalStyles.TextStyles(theme)['Text'],
+                          GlobalStyles.TextStyles(theme)['Text'].style,
                           { fontSize: 12 }
                         ),
                         dimensions.width
@@ -220,8 +230,7 @@ const SignupScreen = props => {
                     </Text>
                     {/* FirstNameInput */}
                     <TextInput
-                      autoCapitalize={'words'}
-                      autoComplete={'given-name'}
+                      autoCorrect={true}
                       changeTextDelay={500}
                       onChangeText={newFirstNameInputValue => {
                         try {
@@ -230,11 +239,17 @@ const SignupScreen = props => {
                           console.error(err);
                         }
                       }}
+                      webShowOutline={true}
+                      {...GlobalStyles.TextInputStyles(theme)['Text Input']
+                        .props}
+                      autoCapitalize={'words'}
+                      autoComplete={'given-name'}
                       placeholder={'Enter your name'}
                       placeholderTextColor={theme.colors['Secondary']}
                       style={StyleSheet.applyWidth(
                         StyleSheet.compose(
-                          GlobalStyles.TextInputStyles(theme)['Text Input'],
+                          GlobalStyles.TextInputStyles(theme)['Text Input']
+                            .style,
                           { marginTop: 6 }
                         ),
                         dimensions.width
@@ -252,9 +267,10 @@ const SignupScreen = props => {
                     {/* FormFieldLabel */}
                     <Text
                       accessible={true}
+                      {...GlobalStyles.TextStyles(theme)['Text'].props}
                       style={StyleSheet.applyWidth(
                         StyleSheet.compose(
-                          GlobalStyles.TextStyles(theme)['Text'],
+                          GlobalStyles.TextStyles(theme)['Text'].style,
                           { fontSize: 12 }
                         ),
                         dimensions.width
@@ -264,8 +280,7 @@ const SignupScreen = props => {
                     </Text>
                     {/* LastNameInput */}
                     <TextInput
-                      autoCapitalize={'words'}
-                      autoComplete={'family-name'}
+                      autoCorrect={true}
                       changeTextDelay={500}
                       onChangeText={newLastNameInputValue => {
                         try {
@@ -274,11 +289,17 @@ const SignupScreen = props => {
                           console.error(err);
                         }
                       }}
+                      webShowOutline={true}
+                      {...GlobalStyles.TextInputStyles(theme)['Text Input']
+                        .props}
+                      autoCapitalize={'words'}
+                      autoComplete={'family-name'}
                       placeholder={'Enter your lastname'}
                       placeholderTextColor={theme.colors['Secondary']}
                       style={StyleSheet.applyWidth(
                         StyleSheet.compose(
-                          GlobalStyles.TextInputStyles(theme)['Text Input'],
+                          GlobalStyles.TextInputStyles(theme)['Text Input']
+                            .style,
                           { marginTop: 6 }
                         ),
                         dimensions.width
@@ -296,9 +317,10 @@ const SignupScreen = props => {
                     {/* FormFieldLabel */}
                     <Text
                       accessible={true}
+                      {...GlobalStyles.TextStyles(theme)['Text'].props}
                       style={StyleSheet.applyWidth(
                         StyleSheet.compose(
-                          GlobalStyles.TextStyles(theme)['Text'],
+                          GlobalStyles.TextStyles(theme)['Text'].style,
                           { fontSize: 12 }
                         ),
                         dimensions.width
@@ -321,13 +343,9 @@ const SignupScreen = props => {
                     >
                       <DatePicker
                         autoDismissKeyboard={true}
-                        borderColor={'rgba(0, 0, 0, 0)'}
-                        date={dob}
-                        label={''}
-                        labelColor={theme.colors['Strong']}
-                        labelSize={0}
+                        disabled={false}
+                        hideLabel={false}
                         leftIconMode={'inset'}
-                        maximumDate={new Date()}
                         mode={'date'}
                         onDateChange={newDatePickerValue => {
                           try {
@@ -336,8 +354,14 @@ const SignupScreen = props => {
                             console.error(err);
                           }
                         }}
+                        date={dob}
+                        label={''}
+                        labelColor={theme.colors['Strong']}
+                        labelSize={0}
+                        maximumDate={new Date()}
                         style={StyleSheet.applyWidth(
                           {
+                            borderColor: 'rgba(0, 0, 0, 0)',
                             fontFamily: 'Poppins_400Regular',
                             fontSize: 14,
                             margin: 0,
@@ -353,9 +377,10 @@ const SignupScreen = props => {
                   {/* ErrorText */}
                   <Text
                     accessible={true}
+                    {...GlobalStyles.TextStyles(theme)['Text'].props}
                     style={StyleSheet.applyWidth(
                       StyleSheet.compose(
-                        GlobalStyles.TextStyles(theme)['Text'],
+                        GlobalStyles.TextStyles(theme)['Text'].style,
                         { color: theme.colors['Error'] }
                       ),
                       dimensions.width
@@ -365,6 +390,7 @@ const SignupScreen = props => {
                   </Text>
                   {/* ContinueButton */}
                   <Button
+                    iconPosition={'left'}
                     onPress={() => {
                       try {
                         const isValidForm = validateNameForm();
@@ -376,9 +402,10 @@ const SignupScreen = props => {
                         console.error(err);
                       }
                     }}
+                    {...GlobalStyles.ButtonStyles(theme)['Button'].props}
                     style={StyleSheet.applyWidth(
                       StyleSheet.compose(
-                        GlobalStyles.ButtonStyles(theme)['Button'],
+                        GlobalStyles.ButtonStyles(theme)['Button'].style,
                         { marginTop: 60 }
                       ),
                       dimensions.width
@@ -389,11 +416,12 @@ const SignupScreen = props => {
 
                 <Text
                   accessible={true}
+                  {...GlobalStyles.TextStyles(theme)['Text'].props}
                   style={StyleSheet.applyWidth(
-                    StyleSheet.compose(GlobalStyles.TextStyles(theme)['Text'], {
-                      marginTop: 8,
-                      textAlign: 'center',
-                    }),
+                    StyleSheet.compose(
+                      GlobalStyles.TextStyles(theme)['Text'].style,
+                      { marginTop: 8, textAlign: 'center' }
+                    ),
                     dimensions.width
                   )}
                 >
@@ -407,8 +435,9 @@ const SignupScreen = props => {
                         console.error(err);
                       }
                     }}
+                    {...GlobalStyles.LinkStyles(theme)['Link'].props}
                     style={StyleSheet.applyWidth(
-                      GlobalStyles.LinkStyles(theme)['Link'],
+                      GlobalStyles.LinkStyles(theme)['Link'].style,
                       dimensions.width
                     )}
                     title={'Login In'}
@@ -418,7 +447,7 @@ const SignupScreen = props => {
             </View>
           )}
         </>
-        {/* NumberForm */}
+        {/* PhoneNumberForm */}
         <>
           {!(currentForm === 'number') ? null : (
             <View
@@ -429,8 +458,10 @@ const SignupScreen = props => {
             >
               {/* HeaderText */}
               <H2
+                selectable={false}
+                {...GlobalStyles.H2Styles(theme)['H2'].props}
                 style={StyleSheet.applyWidth(
-                  StyleSheet.compose(GlobalStyles.H2Styles(theme)['H2'], {
+                  StyleSheet.compose(GlobalStyles.H2Styles(theme)['H2'].style, {
                     fontSize: 32,
                   }),
                   dimensions.width
@@ -459,19 +490,6 @@ const SignupScreen = props => {
                       dimensions.width
                     )}
                   >
-                    {/* FormFieldLabel */}
-                    <Text
-                      accessible={true}
-                      style={StyleSheet.applyWidth(
-                        StyleSheet.compose(
-                          GlobalStyles.TextStyles(theme)['Text'],
-                          { fontSize: 12 }
-                        ),
-                        dimensions.width
-                      )}
-                    >
-                      {'First Name'}
-                    </Text>
                     {/* PhoneNumberInput */}
                     <Utils.CustomCodeErrorBoundary>
                       <ScreenComponents.PhoneInput
@@ -480,13 +498,35 @@ const SignupScreen = props => {
                         theme={props.theme}
                       />
                     </Utils.CustomCodeErrorBoundary>
+                    {/* ConsentText */}
+                    <Text
+                      accessible={true}
+                      {...GlobalStyles.TextStyles(theme)['Text'].props}
+                      style={StyleSheet.applyWidth(
+                        StyleSheet.compose(
+                          GlobalStyles.TextStyles(theme)['Text'].style,
+                          {
+                            color: theme.colors['Strong'],
+                            fontFamily: 'Poppins_400Regular_Italic',
+                            fontSize: 12,
+                            marginTop: 12,
+                          }
+                        ),
+                        dimensions.width
+                      )}
+                    >
+                      {
+                        'By entering your phone number and clicking "Continue" you agree to receive automated texts from Contxt for authentication purposes. You can text "STOP" to unsubscribe.\n\n'
+                      }
+                    </Text>
                   </View>
                   {/* ErrorText 2 */}
                   <Text
                     accessible={true}
+                    {...GlobalStyles.TextStyles(theme)['Text'].props}
                     style={StyleSheet.applyWidth(
                       StyleSheet.compose(
-                        GlobalStyles.TextStyles(theme)['Text'],
+                        GlobalStyles.TextStyles(theme)['Text'].style,
                         { color: theme.colors['Error'] }
                       ),
                       dimensions.width
@@ -496,6 +536,7 @@ const SignupScreen = props => {
                   </Text>
                   {/* ContinueButton */}
                   <Button
+                    iconPosition={'left'}
                     onPress={() => {
                       const handler = async () => {
                         try {
@@ -523,36 +564,17 @@ const SignupScreen = props => {
                       };
                       handler();
                     }}
+                    {...GlobalStyles.ButtonStyles(theme)['Button'].props}
                     style={StyleSheet.applyWidth(
                       StyleSheet.compose(
-                        GlobalStyles.ButtonStyles(theme)['Button'],
-                        { marginTop: 60 }
+                        GlobalStyles.ButtonStyles(theme)['Button'].style,
+                        { marginBottom: 12, marginTop: 60 }
                       ),
                       dimensions.width
                     )}
                     title={'Continue'}
                   />
                 </View>
-
-                <Text
-                  accessible={true}
-                  style={StyleSheet.applyWidth(
-                    StyleSheet.compose(GlobalStyles.TextStyles(theme)['Text'], {
-                      textAlign: 'center',
-                    }),
-                    dimensions.width
-                  )}
-                >
-                  {'Already have an account? '}
-                  <Link
-                    accessible={true}
-                    style={StyleSheet.applyWidth(
-                      GlobalStyles.LinkStyles(theme)['Link'],
-                      dimensions.width
-                    )}
-                    title={'Login In'}
-                  />
-                </Text>
               </View>
             </View>
           )}
@@ -568,8 +590,10 @@ const SignupScreen = props => {
             >
               {/* HeaderText */}
               <H2
+                selectable={false}
+                {...GlobalStyles.H2Styles(theme)['H2'].props}
                 style={StyleSheet.applyWidth(
-                  StyleSheet.compose(GlobalStyles.H2Styles(theme)['H2'], {
+                  StyleSheet.compose(GlobalStyles.H2Styles(theme)['H2'].style, {
                     fontSize: 32,
                   }),
                   dimensions.width
@@ -580,8 +604,9 @@ const SignupScreen = props => {
               {/* InnerText */}
               <Text
                 accessible={true}
+                {...GlobalStyles.TextStyles(theme)['Text'].props}
                 style={StyleSheet.applyWidth(
-                  GlobalStyles.TextStyles(theme)['Text'],
+                  GlobalStyles.TextStyles(theme)['Text'].style,
                   dimensions.width
                 )}
               >
@@ -610,9 +635,9 @@ const SignupScreen = props => {
                   <PinInput
                     autoComplete={'one-time-code'}
                     blurOnFull={true}
-                    cellCount={5}
                     changeTextDelay={500}
                     clearOnCellFocus={true}
+                    focusedBorderColor={theme.colors.primary}
                     keyboardType={'number-pad'}
                     onChangeText={newPinInputValue => {
                       try {
@@ -646,7 +671,9 @@ const SignupScreen = props => {
                             setLastNameValue('');
                             setCurrentForm('name');
                             setDob(new Date());
-                            navigation.navigate('ContactsImportScreen');
+                            navigation.navigate(
+                              'Onboarding5ContactsImportScreen'
+                            );
                           }
                         } catch (err) {
                           console.error(err);
@@ -657,9 +684,12 @@ const SignupScreen = props => {
                     renderItem={({ cellValue, isFocused }) => {
                       return null;
                     }}
+                    secureTextEntry={false}
+                    {...GlobalStyles.PinInputStyles(theme)['Pin Input'].props}
+                    cellCount={5}
                     style={StyleSheet.applyWidth(
                       StyleSheet.compose(
-                        GlobalStyles.PinInputStyles(theme)['Pin Input'],
+                        GlobalStyles.PinInputStyles(theme)['Pin Input'].style,
                         {
                           borderColor: theme.colors['Divider'],
                           borderRadius: 12,
@@ -672,9 +702,10 @@ const SignupScreen = props => {
                   {/* ErrorText 3 */}
                   <Text
                     accessible={true}
+                    {...GlobalStyles.TextStyles(theme)['Text'].props}
                     style={StyleSheet.applyWidth(
                       StyleSheet.compose(
-                        GlobalStyles.TextStyles(theme)['Text'],
+                        GlobalStyles.TextStyles(theme)['Text'].style,
                         { color: theme.colors['Error'] }
                       ),
                       dimensions.width
@@ -686,9 +717,10 @@ const SignupScreen = props => {
                     {!(timerValue > 0) ? null : (
                       <Text
                         accessible={true}
+                        {...GlobalStyles.TextStyles(theme)['Text'].props}
                         style={StyleSheet.applyWidth(
                           StyleSheet.compose(
-                            GlobalStyles.TextStyles(theme)['Text'],
+                            GlobalStyles.TextStyles(theme)['Text'].style,
                             {
                               color: theme.colors['Light'],
                               fontFamily: 'Poppins_500Medium',
@@ -727,9 +759,10 @@ const SignupScreen = props => {
                           };
                           handler();
                         }}
+                        {...GlobalStyles.LinkStyles(theme)['Link'].props}
                         style={StyleSheet.applyWidth(
                           StyleSheet.compose(
-                            GlobalStyles.LinkStyles(theme)['Link'],
+                            GlobalStyles.LinkStyles(theme)['Link'].style,
                             {
                               textAlign: 'center',
                               textDecorationLine: 'underline',
@@ -745,18 +778,21 @@ const SignupScreen = props => {
 
                 <Text
                   accessible={true}
+                  {...GlobalStyles.TextStyles(theme)['Text'].props}
                   style={StyleSheet.applyWidth(
-                    StyleSheet.compose(GlobalStyles.TextStyles(theme)['Text'], {
-                      textAlign: 'center',
-                    }),
+                    StyleSheet.compose(
+                      GlobalStyles.TextStyles(theme)['Text'].style,
+                      { textAlign: 'center' }
+                    ),
                     dimensions.width
                   )}
                 >
                   {'Already have an account? '}
                   <Link
                     accessible={true}
+                    {...GlobalStyles.LinkStyles(theme)['Link'].props}
                     style={StyleSheet.applyWidth(
-                      GlobalStyles.LinkStyles(theme)['Link'],
+                      GlobalStyles.LinkStyles(theme)['Link'].style,
                       dimensions.width
                     )}
                     title={'Login In'}

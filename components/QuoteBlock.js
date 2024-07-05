@@ -46,11 +46,9 @@ const QuoteBlock = props => {
           >
             {/* QuoteTextInput */}
             <TextInput
-              allowFontScaling={true}
-              autoFocus={true}
+              autoCorrect={true}
               changeTextDelay={500}
               multiline={true}
-              numberOfLines={2}
               onBlur={() => {
                 try {
                   setEditMode(false);
@@ -71,10 +69,15 @@ const QuoteBlock = props => {
                   console.error(err);
                 }
               }}
+              textAlignVertical={'top'}
+              webShowOutline={true}
+              {...GlobalStyles.TextInputStyles(theme)['Text Area'].props}
+              autoFocus={true}
+              numberOfLines={2}
               placeholder={'Enter your quote...'}
               style={StyleSheet.applyWidth(
                 StyleSheet.compose(
-                  GlobalStyles.TextInputStyles(theme)['Text Area'],
+                  GlobalStyles.TextInputStyles(theme)['Text Area'].style,
                   {
                     borderBottomWidth: 0,
                     borderColor: null,
@@ -83,6 +86,7 @@ const QuoteBlock = props => {
                     borderRightWidth: 0,
                     borderTopWidth: 0,
                     color: theme.colors['DarkGray'],
+                    fontFamily: 'Poppins_400Regular_Italic',
                     paddingBottom: 0,
                     paddingLeft: 0,
                     paddingRight: 0,
@@ -93,7 +97,6 @@ const QuoteBlock = props => {
                 ),
                 dimensions.width
               )}
-              textAlignVertical={'top'}
               value={quoteValue}
             />
           </View>
@@ -104,9 +107,9 @@ const QuoteBlock = props => {
         {props.editable ?? true ? null : (
           <Text
             accessible={true}
-            allowFontScaling={true}
+            {...GlobalStyles.TextStyles(theme)['Text'].props}
             style={StyleSheet.applyWidth(
-              StyleSheet.compose(GlobalStyles.TextStyles(theme)['Text'], {
+              StyleSheet.compose(GlobalStyles.TextStyles(theme)['Text'].style, {
                 color: theme.colors['DarkGray'],
                 textAlign: 'center',
               }),
@@ -123,12 +126,12 @@ const QuoteBlock = props => {
               {props.editable ?? true ? null : (
                 <Text
                   accessible={true}
-                  allowFontScaling={true}
+                  {...GlobalStyles.TextStyles(theme)['Text'].props}
                   style={StyleSheet.applyWidth(
-                    StyleSheet.compose(GlobalStyles.TextStyles(theme)['Text'], {
-                      color: theme.colors['DarkGray'],
-                      textAlign: 'center',
-                    }),
+                    StyleSheet.compose(
+                      GlobalStyles.TextStyles(theme)['Text'].style,
+                      { color: theme.colors['DarkGray'], textAlign: 'center' }
+                    ),
                     dimensions.width
                   )}
                 >
@@ -154,12 +157,12 @@ const QuoteBlock = props => {
               {editMode ? null : (
                 <Text
                   accessible={true}
-                  allowFontScaling={true}
+                  {...GlobalStyles.TextStyles(theme)['Text'].props}
                   style={StyleSheet.applyWidth(
-                    StyleSheet.compose(GlobalStyles.TextStyles(theme)['Text'], {
-                      color: theme.colors['DarkGray'],
-                      textAlign: 'center',
-                    }),
+                    StyleSheet.compose(
+                      GlobalStyles.TextStyles(theme)['Text'].style,
+                      { color: theme.colors['DarkGray'], textAlign: 'center' }
+                    ),
                     dimensions.width
                   )}
                 >

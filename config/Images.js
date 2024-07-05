@@ -11,4 +11,9 @@ export default {
   DescriptionIconV22: require('../assets/images/DescriptionIconV22.png'),
   DescriptionIconV3: require('../assets/images/DescriptionIconV3.png'),
   DescriptionIconV4: require('../assets/images/DescriptionIconV4.png'),
+  ImportPhotos1: require('../assets/images/ImportPhotos1.png'),
+  Group36710: require('../assets/images/Group36710.png'),
+  FirstFrame: require('../assets/images/FirstFrame.png'),
+  EnableNotificationsV3: require('../assets/images/EnableNotificationsV3.png'),
+  QuoteInboxWalkthrough: require('../assets/images/QuoteInboxWalkthrough.png'),
 };

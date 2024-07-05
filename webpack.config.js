@@ -5,7 +5,7 @@ module.exports = async function (env, argv) {
   // https://github.com/expo/expo-cli/tree/master/packages/webpack-config#environment
   const enviroment = {
     ...env,
-    pwa: false,
+    pwa: true,
     babel: {
       dangerouslyAddModulePathsToTranspile: ["@draftbit","@amplitude"],
     },

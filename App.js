@@ -11,6 +11,8 @@ import {
   TextInput,
   ActivityIndicator,
   AppState,
+  Platform,
+  StatusBar,
 } from 'react-native';
 import { Provider as ThemeProvider } from '@draftbit/ui';
 import { QueryClient, QueryClientProvider } from 'react-query';
@@ -37,11 +39,12 @@ const App = () => {
   const [areAssetsCached, setAreAssetsCached] = React.useState(false);
 
   const [fontsLoaded] = useFonts({
-    Poppins_300Light: Fonts.Poppins_300Light,
-    Poppins_500Medium: Fonts.Poppins_500Medium,
-    Poppins_600SemiBold: Fonts.Poppins_600SemiBold,
     Poppins_400Regular: Fonts.Poppins_400Regular,
     Poppins_700Bold: Fonts.Poppins_700Bold,
+    Poppins_500Medium: Fonts.Poppins_500Medium,
+    Poppins_600SemiBold: Fonts.Poppins_600SemiBold,
+    Poppins_400Regular_Italic: Fonts.Poppins_400Regular_Italic,
+    Poppins_300Light: Fonts.Poppins_300Light,
   });
 
   React.useEffect(() => {

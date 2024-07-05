@@ -4,13 +4,18 @@ import * as SplashScreen from 'expo-splash-screen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const DeviceVariables = {
+  ACTIVE_BLOCK_ID: -1,
   CX_AUTH_TOKEN:
-    'eyJhbGciOiJBMjU2S1ciLCJlbmMiOiJBMjU2Q0JDLUhTNTEyIiwiemlwIjoiREVGIn0.KbQkIkDjxXRqzq6HEUfXbV1OtOsmL6pXS6DbkmRjS9LVrl97MeDV_6VDyhIL-PLFtYDqJNJvDE361igUHqGr-fJz9eNofYRv.vA_rtHo6-GoBU3HWgNuLjg.-0-zybEyVhQ5qhxBjQFqiQa79tPeC8J56zzFKGM6193FXPraA2zyHiZJ5Bb8WM6wOKH_Vnh9cs7rQhIHKSMsL7yGcBde95PsEYFP5rIT8kdy_jYgp223le06GOboYiYa.CVl2qzwaTPh1oc8r0C7wWWI84avmB-eWLWx9R7ec_oo',
+    'eyJhbGciOiJBMjU2S1ciLCJlbmMiOiJBMjU2Q0JDLUhTNTEyIiwiemlwIjoiREVGIn0.8Sz8Xz-7Qao9xJ9u1dqAb-fnZKZzpqQvnGazsU3L1VlPxT6pIeFBiZAZtOqIVDYTl3RYc--A1BOBa2FcX6qWYCOQI5I89-sk.V4OogpLdp-QLypR5G1Stnw.1UotFErGW85cw4xDsMqD4e_TAfOv0uF79ZtTIQkHx47EQ0U6vgapSieIAEdVIJtjXpMOFz8So0VwMYOeK4tKornBZybg96ZkCsyF_ncpxEl_TtFs1cGX9EJ9sRmV0dmyqdHjxZAnq8nRAdM3qJtBSw.72hBaN1MrlDSF1I_qLSHXV9bp2myKJ1WoSoCcx0OosQ',
   CX_USER: {},
   RECENT_CONTACTS: [],
+  SHOW_INBOX_TUTORIAL: true,
+  SHOW_LOCATION_TUTORIAL: true,
   __env__: 'Development',
 };
-export const AppVariables = {};
+export const AppVariables = {
+  REGISTERING_USER: { dob: null, phone: '', lastname: '', firstname: '' },
+};
 const GlobalVariableContext = React.createContext();
 const GlobalVariableUpdater = React.createContext();
 const keySuffix = '';

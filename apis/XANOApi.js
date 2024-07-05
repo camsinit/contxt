@@ -9,19 +9,34 @@ import useFetch from 'react-fetch-hook';
 import { useIsFocused } from '@react-navigation/native';
 import { handleResponse, isOkStatus } from '../utils/handleRestApiResponse';
 import usePrevious from '../utils/usePrevious';
-import encodeQueryParam from '../utils/encodeQueryParam';
+import {
+  encodeQueryParam,
+  renderParam,
+  renderQueryString,
+} from '../utils/encodeQueryParam';
 import * as GlobalVariables from '../config/GlobalVariableContext';
 
-export const addNewContactPOST = (Constants, { name }, handlers = {}) =>
-  fetch(`https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/contact`, {
-    body: JSON.stringify({ name: name }),
-    headers: {
+const cleanHeaders = headers =>
+  Object.fromEntries(Object.entries(headers).filter(kv => kv[1] != null));
+
+export const addNewContactPOST = async (
+  Constants,
+  { name, phone_number },
+  handlers = {}
+) => {
+  const url = `https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/contact`;
+  const options = {
+    body: JSON.stringify({ name: name, phone_number: phone_number }),
+    headers: cleanHeaders({
       Accept: 'application/json',
       Authorization: Constants['CX_AUTH_TOKEN'],
       'Content-Type': 'application/json',
-    },
+    }),
     method: 'POST',
-  }).then(res => handleResponse(res, handlers));
+  };
+  const res = await fetch(url, options);
+  return handleResponse(res, handlers);
+};
 
 export const useAddNewContactPOST = (
   initialArgs = {},
@@ -51,6 +66,7 @@ export const FetchAddNewContactPOST = ({
   handlers = {},
   refetchInterval,
   name,
+  phone_number,
 }) => {
   const Constants = GlobalVariables.useValues();
   const isFocused = useIsFocused();
@@ -62,7 +78,7 @@ export const FetchAddNewContactPOST = ({
     error,
     mutate: refetch,
   } = useAddNewContactPOST(
-    { name },
+    { name, phone_number },
     { refetchInterval, handlers: { onData, ...handlers } }
   );
 
@@ -81,25 +97,29 @@ export const FetchAddNewContactPOST = ({
   return children({ loading, data, error, refetchAddNewContact: refetch });
 };
 
-export const createQuotePOST = (
+export const createQuotePOST = async (
   Constants,
   { blocks, date, linked_ids, location },
   handlers = {}
-) =>
-  fetch(`https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/quote`, {
+) => {
+  const url = `https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/quote`;
+  const options = {
     body: JSON.stringify({
       blocks: blocks,
       quote_date: date,
       location: location,
       linked_ids: linked_ids,
     }),
-    headers: {
+    headers: cleanHeaders({
       Accept: 'application/json',
       Authorization: Constants['CX_AUTH_TOKEN'],
       'Content-Type': 'application/json',
-    },
+    }),
     method: 'POST',
-  }).then(res => handleResponse(res, handlers));
+  };
+  const res = await fetch(url, options);
+  return handleResponse(res, handlers);
+};
 
 export const useCreateQuotePOST = (
   initialArgs = {},
@@ -162,16 +182,24 @@ export const FetchCreateQuotePOST = ({
   return children({ loading, data, error, refetchCreateQuote: refetch });
 };
 
-export const deleteQuoteDELETE = (Constants, { quote_id }, handlers = {}) =>
-  fetch(`https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/quote`, {
+export const deleteQuoteDELETE = async (
+  Constants,
+  { quote_id },
+  handlers = {}
+) => {
+  const url = `https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/quote`;
+  const options = {
     body: JSON.stringify({ quote_id: quote_id }),
-    headers: {
+    headers: cleanHeaders({
       Accept: 'application/json',
       Authorization: Constants['CX_AUTH_TOKEN'],
       'Content-Type': 'application/json',
-    },
+    }),
     method: 'DELETE',
-  }).then(res => handleResponse(res, handlers));
+  };
+  const res = await fetch(url, options);
+  return handleResponse(res, handlers);
+};
 
 export const useDeleteQuoteDELETE = (
   initialArgs = {},
@@ -195,14 +223,18 @@ export const useDeleteQuoteDELETE = (
   );
 };
 
-export const getContactsCountGET = (Constants, _args, handlers = {}) =>
-  fetch(`https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/get_contacts_count`, {
-    headers: {
+export const getContactsCountGET = async (Constants, _args, handlers = {}) => {
+  const url = `https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/get_contacts_count`;
+  const options = {
+    headers: cleanHeaders({
       Accept: 'application/json',
       Authorization: Constants['CX_AUTH_TOKEN'],
       'Content-Type': 'application/json',
-    },
-  }).then(res => handleResponse(res, handlers));
+    }),
+  };
+  const res = await fetch(url, options);
+  return handleResponse(res, handlers);
+};
 
 export const useGetContactsCountGET = (
   args = {},
@@ -256,14 +288,82 @@ export const FetchGetContactsCountGET = ({
   return children({ loading, data, error, refetchGetContactsCount: refetch });
 };
 
-export const getInboxCountGET = (Constants, _args, handlers = {}) =>
-  fetch(`https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/quote_inbox_count`, {
-    headers: {
+export const getFavoritesGET = async (Constants, _args, handlers = {}) => {
+  const url = `https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/favorites`;
+  const options = {
+    headers: cleanHeaders({
       Accept: 'application/json',
       Authorization: Constants['CX_AUTH_TOKEN'],
       'Content-Type': 'application/json',
-    },
-  }).then(res => handleResponse(res, handlers));
+    }),
+  };
+  const res = await fetch(url, options);
+  return handleResponse(res, handlers);
+};
+
+export const useGetFavoritesGET = (
+  args = {},
+  { refetchInterval, handlers = {} } = {}
+) => {
+  const Constants = GlobalVariables.useValues();
+  const queryClient = useQueryClient();
+  return useQuery(
+    ['xANOGetFavoritesGET', args],
+    () => getFavoritesGET(Constants, args, handlers),
+    {
+      refetchInterval,
+      onSuccess: () => queryClient.invalidateQueries(['xANOGetFavoritesGETS']),
+    }
+  );
+};
+
+export const FetchGetFavoritesGET = ({
+  children,
+  onData = () => {},
+  handlers = {},
+  refetchInterval,
+}) => {
+  const Constants = GlobalVariables.useValues();
+  const isFocused = useIsFocused();
+  const prevIsFocused = usePrevious(isFocused);
+
+  const {
+    isLoading: loading,
+    data,
+    error,
+    refetch,
+  } = useGetFavoritesGET(
+    {},
+    { refetchInterval, handlers: { onData, ...handlers } }
+  );
+
+  React.useEffect(() => {
+    if (!prevIsFocused && isFocused) {
+      refetch();
+    }
+  }, [isFocused, prevIsFocused]);
+
+  React.useEffect(() => {
+    if (error) {
+      console.error('Fetch error: ' + error.status + ' ' + error.statusText);
+      console.error(error);
+    }
+  }, [error]);
+  return children({ loading, data, error, refetchGetFavorites: refetch });
+};
+
+export const getInboxCountGET = async (Constants, _args, handlers = {}) => {
+  const url = `https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/quote_inbox_count`;
+  const options = {
+    headers: cleanHeaders({
+      Accept: 'application/json',
+      Authorization: Constants['CX_AUTH_TOKEN'],
+      'Content-Type': 'application/json',
+    }),
+  };
+  const res = await fetch(url, options);
+  return handleResponse(res, handlers);
+};
 
 export const useGetInboxCountGET = (
   args = {},
@@ -314,33 +414,31 @@ export const FetchGetInboxCountGET = ({
   return children({ loading, data, error, refetchGetInboxCount: refetch });
 };
 
-export const getMyContactsGET = (
+export const getMyContactsGET = async (
   Constants,
   { random_seed, search_term },
   handlers = {}
-) =>
-  fetch(
-    `https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/get_my_contacts?search_term=${encodeQueryParam(
-      `${
-        typeof search_term === 'string'
-          ? search_term
-          : JSON.stringify(search_term ?? '')
-      }`
-    )}&random_seed=${encodeQueryParam(
-      `${
-        typeof random_seed === 'string'
-          ? random_seed
-          : JSON.stringify(random_seed ?? '')
-      }`
-    )}`,
-    {
-      headers: {
-        Accept: 'application/json',
-        Authorization: Constants['CX_AUTH_TOKEN'],
-        'Content-Type': 'application/json',
-      },
-    }
-  ).then(res => handleResponse(res, handlers));
+) => {
+  const paramsDict = {};
+  if (search_term !== undefined) {
+    paramsDict['search_term'] = renderParam(search_term);
+  }
+  if (random_seed !== undefined) {
+    paramsDict['random_seed'] = renderParam(random_seed);
+  }
+  const url = `https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/get_my_contacts${renderQueryString(
+    paramsDict
+  )}`;
+  const options = {
+    headers: cleanHeaders({
+      Accept: 'application/json',
+      Authorization: Constants['CX_AUTH_TOKEN'],
+      'Content-Type': 'application/json',
+    }),
+  };
+  const res = await fetch(url, options);
+  return handleResponse(res, handlers);
+};
 
 export const useGetMyContactsGET = (
   args = {},
@@ -395,32 +493,37 @@ export const FetchGetMyContactsGET = ({
   return children({ loading, data, error, refetchGetMyContacts: refetch });
 };
 
-export const getProfilePOST = (Constants, { id, type }, handlers = {}) =>
-  fetch(`https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/profile`, {
-    body: JSON.stringify({ id: id, type: type }),
-    headers: {
+export const getProfilePOST = async (
+  Constants,
+  { id, refresh, type },
+  handlers = {}
+) => {
+  const url = `https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/profile`;
+  const options = {
+    body: JSON.stringify({ id: id, type: type, refresh: refresh }),
+    headers: cleanHeaders({
       Accept: 'application/json',
       Authorization: Constants['CX_AUTH_TOKEN'],
       'Content-Type': 'application/json',
-    },
+    }),
     method: 'POST',
-  }).then(res => handleResponse(res, handlers));
+  };
+  const res = await fetch(url, options);
+  return handleResponse(res, handlers);
+};
 
-export const useGetProfilePOST = (initialArgs = {}, { handlers = {} } = {}) => {
-  const queryClient = useQueryClient();
+export const useGetProfilePOST = (
+  args = {},
+  { refetchInterval, handlers = {} } = {}
+) => {
   const Constants = GlobalVariables.useValues();
-  return useMutation(
-    args => getProfilePOST(Constants, { ...initialArgs, ...args }, handlers),
+  const queryClient = useQueryClient();
+  return useQuery(
+    ['xANOGetProfilePOST', args],
+    () => getProfilePOST(Constants, args, handlers),
     {
-      onError: (err, variables, { previousValue }) => {
-        if (previousValue) {
-          return queryClient.setQueryData('profile', previousValue);
-        }
-      },
-      onSettled: () => {
-        queryClient.invalidateQueries('profile');
-        queryClient.invalidateQueries('profiles');
-      },
+      refetchInterval,
+      onSuccess: () => queryClient.invalidateQueries(['xANOGetProfilePOSTS']),
     }
   );
 };
@@ -431,6 +534,7 @@ export const FetchGetProfilePOST = ({
   handlers = {},
   refetchInterval,
   id,
+  refresh,
   type,
 }) => {
   const Constants = GlobalVariables.useValues();
@@ -441,9 +545,9 @@ export const FetchGetProfilePOST = ({
     isLoading: loading,
     data,
     error,
-    mutate: refetch,
+    refetch,
   } = useGetProfilePOST(
-    { id, type },
+    { id, refresh, type },
     { refetchInterval, handlers: { onData, ...handlers } }
   );
 
@@ -462,27 +566,28 @@ export const FetchGetProfilePOST = ({
   return children({ loading, data, error, refetchGetProfile: refetch });
 };
 
-export const getQuotesInboxGET = (
+export const getQuotesInboxGET = async (
   Constants,
   { refetch_param },
   handlers = {}
-) =>
-  fetch(
-    `https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/quote_inbox?r=${encodeQueryParam(
-      `${
-        typeof refetch_param === 'string'
-          ? refetch_param
-          : JSON.stringify(refetch_param ?? '')
-      }`
-    )}`,
-    {
-      headers: {
-        Accept: 'application/json',
-        Authorization: Constants['CX_AUTH_TOKEN'],
-        'Content-Type': 'application/json',
-      },
-    }
-  ).then(res => handleResponse(res, handlers));
+) => {
+  const paramsDict = {};
+  if (refetch_param !== undefined) {
+    paramsDict['r'] = renderParam(refetch_param);
+  }
+  const url = `https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/quote_inbox${renderQueryString(
+    paramsDict
+  )}`;
+  const options = {
+    headers: cleanHeaders({
+      Accept: 'application/json',
+      Authorization: Constants['CX_AUTH_TOKEN'],
+      'Content-Type': 'application/json',
+    }),
+  };
+  const res = await fetch(url, options);
+  return handleResponse(res, handlers);
+};
 
 export const useGetQuotesInboxGET = (
   args = {},
@@ -534,16 +639,226 @@ export const FetchGetQuotesInboxGET = ({
   return children({ loading, data, error, refetchGetQuotesInbox: refetch });
 };
 
-export const importContactsPOST = (Constants, { contacts }, handlers = {}) =>
-  fetch(`https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/import_contacts`, {
-    body: JSON.stringify({ contacts: contacts }),
-    headers: {
+export const getRandomQuoteGET = async (Constants, _args, handlers = {}) => {
+  const url = `https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/get_random_quote`;
+  const options = {
+    headers: cleanHeaders({
       Accept: 'application/json',
       Authorization: Constants['CX_AUTH_TOKEN'],
       'Content-Type': 'application/json',
-    },
+    }),
+  };
+  const res = await fetch(url, options);
+  return handleResponse(res, handlers);
+};
+
+export const useGetRandomQuoteGET = (
+  args = {},
+  { refetchInterval, handlers = {} } = {}
+) => {
+  const Constants = GlobalVariables.useValues();
+  const queryClient = useQueryClient();
+  return useQuery(
+    ['quote', args],
+    () => getRandomQuoteGET(Constants, args, handlers),
+    {
+      refetchInterval,
+      onSuccess: () => queryClient.invalidateQueries(['quotes']),
+    }
+  );
+};
+
+export const FetchGetRandomQuoteGET = ({
+  children,
+  onData = () => {},
+  handlers = {},
+  refetchInterval,
+}) => {
+  const Constants = GlobalVariables.useValues();
+  const isFocused = useIsFocused();
+  const prevIsFocused = usePrevious(isFocused);
+
+  const {
+    isLoading: loading,
+    data,
+    error,
+    refetch,
+  } = useGetRandomQuoteGET(
+    {},
+    { refetchInterval, handlers: { onData, ...handlers } }
+  );
+
+  React.useEffect(() => {
+    if (!prevIsFocused && isFocused) {
+      refetch();
+    }
+  }, [isFocused, prevIsFocused]);
+
+  React.useEffect(() => {
+    if (error) {
+      console.error('Fetch error: ' + error.status + ' ' + error.statusText);
+      console.error(error);
+    }
+  }, [error]);
+  return children({ loading, data, error, refetchGetRandomQuote: refetch });
+};
+
+export const getRecentsGET = async (Constants, _args, handlers = {}) => {
+  const url = `https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/recents`;
+  const options = {
+    headers: cleanHeaders({
+      Accept: 'application/json',
+      Authorization: Constants['CX_AUTH_TOKEN'],
+      'Content-Type': 'application/json',
+    }),
+  };
+  const res = await fetch(url, options);
+  return handleResponse(res, handlers);
+};
+
+export const useGetRecentsGET = (
+  args = {},
+  { refetchInterval, handlers = {} } = {}
+) => {
+  const Constants = GlobalVariables.useValues();
+  const queryClient = useQueryClient();
+  return useQuery(
+    ['xANOGetRecentsGET', args],
+    () => getRecentsGET(Constants, args, handlers),
+    {
+      refetchInterval,
+      onSuccess: () => queryClient.invalidateQueries(['xANOGetRecentsGETS']),
+    }
+  );
+};
+
+export const FetchGetRecentsGET = ({
+  children,
+  onData = () => {},
+  handlers = {},
+  refetchInterval,
+}) => {
+  const Constants = GlobalVariables.useValues();
+  const isFocused = useIsFocused();
+  const prevIsFocused = usePrevious(isFocused);
+
+  const {
+    isLoading: loading,
+    data,
+    error,
+    refetch,
+  } = useGetRecentsGET(
+    {},
+    { refetchInterval, handlers: { onData, ...handlers } }
+  );
+
+  React.useEffect(() => {
+    if (!prevIsFocused && isFocused) {
+      refetch();
+    }
+  }, [isFocused, prevIsFocused]);
+
+  React.useEffect(() => {
+    if (error) {
+      console.error('Fetch error: ' + error.status + ' ' + error.statusText);
+      console.error(error);
+    }
+  }, [error]);
+  return children({ loading, data, error, refetchGetRecents: refetch });
+};
+
+export const getRecentsAndFavoritesGET = async (
+  Constants,
+  _args,
+  handlers = {}
+) => {
+  const url = `https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/recents_and_favorites`;
+  const options = {
+    headers: cleanHeaders({
+      Accept: 'application/json',
+      Authorization: Constants['CX_AUTH_TOKEN'],
+      'Content-Type': 'application/json',
+    }),
+  };
+  const res = await fetch(url, options);
+  return handleResponse(res, handlers);
+};
+
+export const useGetRecentsAndFavoritesGET = (
+  args = {},
+  { refetchInterval, handlers = {} } = {}
+) => {
+  const Constants = GlobalVariables.useValues();
+  const queryClient = useQueryClient();
+  return useQuery(
+    ['xANOGetRecentsAndFavoritesGET', args],
+    () => getRecentsAndFavoritesGET(Constants, args, handlers),
+    {
+      refetchInterval,
+      onSuccess: () =>
+        queryClient.invalidateQueries(['xANOGetRecentsAndFavoritesGETS']),
+    }
+  );
+};
+
+export const FetchGetRecentsAndFavoritesGET = ({
+  children,
+  onData = () => {},
+  handlers = {},
+  refetchInterval,
+}) => {
+  const Constants = GlobalVariables.useValues();
+  const isFocused = useIsFocused();
+  const prevIsFocused = usePrevious(isFocused);
+
+  const {
+    isLoading: loading,
+    data,
+    error,
+    refetch,
+  } = useGetRecentsAndFavoritesGET(
+    {},
+    { refetchInterval, handlers: { onData, ...handlers } }
+  );
+
+  React.useEffect(() => {
+    if (!prevIsFocused && isFocused) {
+      refetch();
+    }
+  }, [isFocused, prevIsFocused]);
+
+  React.useEffect(() => {
+    if (error) {
+      console.error('Fetch error: ' + error.status + ' ' + error.statusText);
+      console.error(error);
+    }
+  }, [error]);
+  return children({
+    loading,
+    data,
+    error,
+    refetchGetRecentsAndFavorites: refetch,
+  });
+};
+
+export const importContactsPOST = async (
+  Constants,
+  { contacts },
+  handlers = {}
+) => {
+  const url = `https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/import_contacts`;
+  const options = {
+    body: JSON.stringify({ contacts: contacts }),
+    headers: cleanHeaders({
+      Accept: 'application/json',
+      Authorization: Constants['CX_AUTH_TOKEN'],
+      'Content-Type': 'application/json',
+    }),
     method: 'POST',
-  }).then(res => handleResponse(res, handlers));
+  };
+  const res = await fetch(url, options);
+  return handleResponse(res, handlers);
+};
 
 export const useImportContactsPOST = (
   args = {},
@@ -598,19 +913,24 @@ export const FetchImportContactsPOST = ({
   return children({ loading, data, error, refetchImportContacts: refetch });
 };
 
-export const searchContactsGET = (Constants, { term }, handlers = {}) =>
-  fetch(
-    `https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/search_contacts?term=${encodeQueryParam(
-      `${typeof term === 'string' ? term : JSON.stringify(term ?? '')}`
-    )}`,
-    {
-      headers: {
-        Accept: 'application/json',
-        Authorization: Constants['CX_AUTH_TOKEN'],
-        'Content-Type': 'application/json',
-      },
-    }
-  ).then(res => handleResponse(res, handlers));
+export const searchContactsGET = async (Constants, { term }, handlers = {}) => {
+  const paramsDict = {};
+  if (term !== undefined) {
+    paramsDict['term'] = renderParam(term);
+  }
+  const url = `https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/search_contacts${renderQueryString(
+    paramsDict
+  )}`;
+  const options = {
+    headers: cleanHeaders({
+      Accept: 'application/json',
+      Authorization: Constants['CX_AUTH_TOKEN'],
+      'Content-Type': 'application/json',
+    }),
+  };
+  const res = await fetch(url, options);
+  return handleResponse(res, handlers);
+};
 
 export const useSearchContactsGET = (
   args = {},
@@ -662,25 +982,172 @@ export const FetchSearchContactsGET = ({
   return children({ loading, data, error, refetchSearchContacts: refetch });
 };
 
-export const updateProfileDOBPATCH = (
+export const toggleFavoritePOST = async (
+  Constants,
+  { connect_id, type },
+  handlers = {}
+) => {
+  const url = `https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/toggle_favorites`;
+  const options = {
+    body: JSON.stringify({ type: type, connect_id: connect_id }),
+    headers: cleanHeaders({
+      Accept: 'application/json',
+      Authorization: Constants['CX_AUTH_TOKEN'],
+      'Content-Type': 'application/json',
+    }),
+    method: 'POST',
+  };
+  const res = await fetch(url, options);
+  return handleResponse(res, handlers);
+};
+
+export const useToggleFavoritePOST = (
+  args = {},
+  { refetchInterval, handlers = {} } = {}
+) => {
+  const Constants = GlobalVariables.useValues();
+  const queryClient = useQueryClient();
+  return useQuery(
+    ['xANOToggleFavoritePOST', args],
+    () => toggleFavoritePOST(Constants, args, handlers),
+    {
+      refetchInterval,
+      onSuccess: () =>
+        queryClient.invalidateQueries(['xANOToggleFavoritePOSTS']),
+    }
+  );
+};
+
+export const FetchToggleFavoritePOST = ({
+  children,
+  onData = () => {},
+  handlers = {},
+  refetchInterval,
+  connect_id,
+  type,
+}) => {
+  const Constants = GlobalVariables.useValues();
+  const isFocused = useIsFocused();
+  const prevIsFocused = usePrevious(isFocused);
+
+  const {
+    isLoading: loading,
+    data,
+    error,
+    refetch,
+  } = useToggleFavoritePOST(
+    { connect_id, type },
+    { refetchInterval, handlers: { onData, ...handlers } }
+  );
+
+  React.useEffect(() => {
+    if (!prevIsFocused && isFocused) {
+      refetch();
+    }
+  }, [isFocused, prevIsFocused]);
+
+  React.useEffect(() => {
+    if (error) {
+      console.error('Fetch error: ' + error.status + ' ' + error.statusText);
+      console.error(error);
+    }
+  }, [error]);
+  return children({ loading, data, error, refetchToggleFavorite: refetch });
+};
+
+export const toggleRecentsPOST = async (
+  Constants,
+  { connect_id, type },
+  handlers = {}
+) => {
+  const url = `https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/toggle_recents`;
+  const options = {
+    body: JSON.stringify({ type: type, connect_id: connect_id }),
+    headers: cleanHeaders({
+      Accept: 'application/json',
+      Authorization: Constants['CX_AUTH_TOKEN'],
+      'Content-Type': 'application/json',
+    }),
+    method: 'POST',
+  };
+  const res = await fetch(url, options);
+  return handleResponse(res, handlers);
+};
+
+export const useToggleRecentsPOST = (
+  args = {},
+  { refetchInterval, handlers = {} } = {}
+) => {
+  const Constants = GlobalVariables.useValues();
+  const queryClient = useQueryClient();
+  return useQuery(
+    ['xANOToggleRecentsPOST', args],
+    () => toggleRecentsPOST(Constants, args, handlers),
+    {
+      refetchInterval,
+      onSuccess: () =>
+        queryClient.invalidateQueries(['xANOToggleRecentsPOSTS']),
+    }
+  );
+};
+
+export const FetchToggleRecentsPOST = ({
+  children,
+  onData = () => {},
+  handlers = {},
+  refetchInterval,
+  connect_id,
+  type,
+}) => {
+  const Constants = GlobalVariables.useValues();
+  const isFocused = useIsFocused();
+  const prevIsFocused = usePrevious(isFocused);
+
+  const {
+    isLoading: loading,
+    data,
+    error,
+    refetch,
+  } = useToggleRecentsPOST(
+    { connect_id, type },
+    { refetchInterval, handlers: { onData, ...handlers } }
+  );
+
+  React.useEffect(() => {
+    if (!prevIsFocused && isFocused) {
+      refetch();
+    }
+  }, [isFocused, prevIsFocused]);
+
+  React.useEffect(() => {
+    if (error) {
+      console.error('Fetch error: ' + error.status + ' ' + error.statusText);
+      console.error(error);
+    }
+  }, [error]);
+  return children({ loading, data, error, refetchToggleRecents: refetch });
+};
+
+export const updateProfileDOBPATCH = async (
   Constants,
   { dob, id, type },
   handlers = {}
-) =>
-  fetch(
-    `https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/profile/${
-      typeof id === 'string' ? id : JSON.stringify(id ?? '')
-    }`,
-    {
-      body: JSON.stringify({ type: type, dob: dob }),
-      headers: {
-        Accept: 'application/json',
-        Authorization: Constants['CX_AUTH_TOKEN'],
-        'Content-Type': 'application/json',
-      },
-      method: 'PATCH',
-    }
-  ).then(res => handleResponse(res, handlers));
+) => {
+  const url = `https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/profile/${encodeQueryParam(
+    id
+  )}`;
+  const options = {
+    body: JSON.stringify({ type: type, dob: dob }),
+    headers: cleanHeaders({
+      Accept: 'application/json',
+      Authorization: Constants['CX_AUTH_TOKEN'],
+      'Content-Type': 'application/json',
+    }),
+    method: 'PATCH',
+  };
+  const res = await fetch(url, options);
+  return handleResponse(res, handlers);
+};
 
 export const useUpdateProfileDOBPATCH = (
   initialArgs = {},
@@ -705,25 +1172,26 @@ export const useUpdateProfileDOBPATCH = (
   );
 };
 
-export const updateProfileImagePATCH = (
+export const updateProfileImagePATCH = async (
   Constants,
   { id, profile_image, type },
   handlers = {}
-) =>
-  fetch(
-    `https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/profile/${
-      typeof id === 'string' ? id : JSON.stringify(id ?? '')
-    }`,
-    {
-      body: JSON.stringify({ type: type, profile_image: profile_image }),
-      headers: {
-        Accept: 'application/json',
-        Authorization: Constants['CX_AUTH_TOKEN'],
-        'Content-Type': 'application/json',
-      },
-      method: 'PATCH',
-    }
-  ).then(res => handleResponse(res, handlers));
+) => {
+  const url = `https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/profile/${encodeQueryParam(
+    id
+  )}`;
+  const options = {
+    body: JSON.stringify({ type: type, profile_image: profile_image }),
+    headers: cleanHeaders({
+      Accept: 'application/json',
+      Authorization: Constants['CX_AUTH_TOKEN'],
+      'Content-Type': 'application/json',
+    }),
+    method: 'PATCH',
+  };
+  const res = await fetch(url, options);
+  return handleResponse(res, handlers);
+};
 
 export const useUpdateProfileImagePATCH = (
   initialArgs = {},
@@ -748,25 +1216,26 @@ export const useUpdateProfileImagePATCH = (
   );
 };
 
-export const updateProfileNamePATCH = (
+export const updateProfileNamePATCH = async (
   Constants,
   { id, name, type },
   handlers = {}
-) =>
-  fetch(
-    `https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/profile/${
-      typeof id === 'string' ? id : JSON.stringify(id ?? '')
-    }`,
-    {
-      body: JSON.stringify({ type: type, name: name }),
-      headers: {
-        Accept: 'application/json',
-        Authorization: Constants['CX_AUTH_TOKEN'],
-        'Content-Type': 'application/json',
-      },
-      method: 'PATCH',
-    }
-  ).then(res => handleResponse(res, handlers));
+) => {
+  const url = `https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/profile/${encodeQueryParam(
+    id
+  )}`;
+  const options = {
+    body: JSON.stringify({ type: type, name: name }),
+    headers: cleanHeaders({
+      Accept: 'application/json',
+      Authorization: Constants['CX_AUTH_TOKEN'],
+      'Content-Type': 'application/json',
+    }),
+    method: 'PATCH',
+  };
+  const res = await fetch(url, options);
+  return handleResponse(res, handlers);
+};
 
 export const useUpdateProfileNamePATCH = (
   initialArgs = {},
@@ -791,27 +1260,118 @@ export const useUpdateProfileNamePATCH = (
   );
 };
 
-export const updateQuoteLinkPATCH = (
+export const updateProfilePhoneNumberPATCH = async (
+  Constants,
+  { id, phone_number, type },
+  handlers = {}
+) => {
+  const url = `https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/profile/${encodeQueryParam(
+    id
+  )}`;
+  const options = {
+    body: JSON.stringify({ type: type, phone_number: phone_number }),
+    headers: cleanHeaders({
+      Accept: 'application/json',
+      Authorization: Constants['CX_AUTH_TOKEN'],
+      'Content-Type': 'application/json',
+    }),
+    method: 'PATCH',
+  };
+  const res = await fetch(url, options);
+  return handleResponse(res, handlers);
+};
+
+export const useUpdateProfilePhoneNumberPATCH = (
+  initialArgs = {},
+  { handlers = {} } = {}
+) => {
+  const queryClient = useQueryClient();
+  const Constants = GlobalVariables.useValues();
+  return useMutation(
+    args =>
+      updateProfilePhoneNumberPATCH(
+        Constants,
+        { ...initialArgs, ...args },
+        handlers
+      ),
+    {
+      onError: (err, variables, { previousValue }) => {
+        if (previousValue) {
+          return queryClient.setQueryData('profile', previousValue);
+        }
+      },
+      onSettled: () => {
+        queryClient.invalidateQueries('profile');
+        queryClient.invalidateQueries('profiles');
+      },
+    }
+  );
+};
+
+export const updatePushTokenPATCH = async (
+  Constants,
+  { id, push_token, type },
+  handlers = {}
+) => {
+  const url = `https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/profile/${encodeQueryParam(
+    id
+  )}`;
+  const options = {
+    body: JSON.stringify({ type: type, push_token: push_token }),
+    headers: cleanHeaders({
+      Accept: 'application/json',
+      Authorization: Constants['CX_AUTH_TOKEN'],
+      'Content-Type': 'application/json',
+    }),
+    method: 'PATCH',
+  };
+  const res = await fetch(url, options);
+  return handleResponse(res, handlers);
+};
+
+export const useUpdatePushTokenPATCH = (
+  initialArgs = {},
+  { handlers = {} } = {}
+) => {
+  const queryClient = useQueryClient();
+  const Constants = GlobalVariables.useValues();
+  return useMutation(
+    args =>
+      updatePushTokenPATCH(Constants, { ...initialArgs, ...args }, handlers),
+    {
+      onError: (err, variables, { previousValue }) => {
+        if (previousValue) {
+          return queryClient.setQueryData('profile', previousValue);
+        }
+      },
+      onSettled: () => {
+        queryClient.invalidateQueries('profile');
+        queryClient.invalidateQueries('profiles');
+      },
+    }
+  );
+};
+
+export const updateQuoteLinkPATCH = async (
   Constants,
   { quote_links_id, visibility },
   handlers = {}
-) =>
-  fetch(
-    `https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/quote_links/${
-      typeof quote_links_id === 'string'
-        ? quote_links_id
-        : JSON.stringify(quote_links_id ?? '')
-    }`,
-    {
-      body: JSON.stringify({ visibilty: visibility }),
-      headers: {
-        Accept: 'application/json',
-        Authorization: Constants['CX_AUTH_TOKEN'],
-        'Content-Type': 'application/json',
-      },
-      method: 'PATCH',
-    }
-  ).then(res => handleResponse(res, handlers));
+) => {
+  const url = `https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/quote_links/${encodeQueryParam(
+    quote_links_id
+  )}`;
+  const options = {
+    body: JSON.stringify({ visibilty: visibility }),
+    headers: cleanHeaders({
+      Accept: 'application/json',
+      Authorization: Constants['CX_AUTH_TOKEN'],
+      'Content-Type': 'application/json',
+    }),
+    method: 'PATCH',
+  };
+  const res = await fetch(url, options);
+  return handleResponse(res, handlers);
+};
 
 export const useUpdateQuoteLinkPATCH = (
   args = {},

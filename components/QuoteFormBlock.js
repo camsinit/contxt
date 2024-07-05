@@ -1,17 +1,14 @@
 import React from 'react';
 import * as GlobalStyles from '../GlobalStyles.js';
 import * as XANOApi from '../apis/XANOApi.js';
-import AddNewContactButtonBlock from '../components/AddNewContactButtonBlock';
 import ContactsViewBlock from '../components/ContactsViewBlock';
 import ConversationBlock from '../components/ConversationBlock';
 import QuoteBlock from '../components/QuoteBlock';
-import SearchContactViewBlock from '../components/SearchContactViewBlock';
 import * as GlobalVariables from '../config/GlobalVariableContext';
-import Images from '../config/Images';
 import * as Lib from '../custom-files/Lib';
 import extractIds from '../global-functions/extractIds';
+import extractUniqueContacts from '../global-functions/extractUniqueContacts';
 import locationToGeoPointJson from '../global-functions/locationToGeoPointJson';
-import toggleRecentContacts from '../global-functions/toggleRecentContacts';
 import Breakpoints from '../utils/Breakpoints';
 import * as StyleSheet from '../utils/StyleSheet';
 import getLocationUtil from '../utils/getLocation';
@@ -23,61 +20,106 @@ import {
   Icon,
   IconButton,
   Pressable,
+  SimpleStyleFlatList,
   Surface,
-  TextInput,
   withTheme,
 } from '@draftbit/ui';
 import { H2 } from '@expo/html-elements';
-import { useIsFocused } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { BlurView } from 'expo-blur';
-import {
-  ActivityIndicator,
-  FlatList,
-  Image,
-  Modal,
-  Text,
-  View,
-} from 'react-native';
-import { Fetch } from 'react-request';
+import { Image, Modal, Text, View } from 'react-native';
 
 const QuoteFormBlock = props => {
   const { theme } = props;
   const dimensions = useWindowDimensions();
+  const navigation = useNavigation();
   const Constants = GlobalVariables.useValues();
   const Variables = Constants;
   const setGlobalVariableValue = GlobalVariables.useSetValue();
-  const [blocks, setBlocks] = React.useState([]);
+  const [blocks, setBlocks] = React.useState([
+    { id: -1, type: 'dialogue', _user: null, value: '', quote_id: '-1' },
+  ]);
   const [choosenContacts, setChoosenContacts] = React.useState([]);
   const [datePickerValue, setDatePickerValue] = React.useState(new Date());
-  const [errorMessage, setErrorMessage] = React.useState('');
   const [isAddingNewContact, setIsAddingNewContact] = React.useState(false);
   const [isImporting, setIsImporting] = React.useState(false);
-  const [isLoading, setIsLoading] = React.useState(false);
-  const [mode, setMode] = React.useState('');
-  const [newNameValue, setNewNameValue] = React.useState('');
   const [searchStringDisplayValue, setSearchStringDisplayValue] =
     React.useState('');
   const [searchStringValue, setSearchStringValue] = React.useState('');
-  const [selectedContacts, setSelectedContacts] = React.useState([]);
   const [selectedDateTime, setSelectedDateTime] = React.useState(new Date());
   const [selectedLocation, setSelectedLocation] = React.useState({});
   const [showAreYouSureModal, setShowAreYouSureModal] = React.useState(false);
   const [showChooseUserModal, setShowChooseUserModal] = React.useState(false);
   const [showRecentContactsList, setShowRecentContactsList] =
     React.useState(true);
+  const [showTutorialModal, setShowTutorialModal] = React.useState(false);
   const [date, setDate] = React.useState(new Date());
-  const onCloseFunction = () => {
-    props.onClose && props.onClose();
-  };
-
-  const toggleSelectedContact = (contact, type) => {
-    setSelectedContacts(prev => {
+  const toggleChoosenContacts = contact => {
+    setChoosenContacts(prev => {
       if (prev.findIndex(c => c.id === contact?.id) > -1) {
         return prev.filter(c => c.id !== contact?.id);
       } else {
-        return [...prev, { ...contact, type }];
+        return [...prev, contact];
       }
     });
+  };
+
+  const addTextToBlocks = () => {
+    const quote_id = props.quote_id || Lib.uniqid();
+
+    setBlocks(prev => {
+      const lastItem = prev.slice(-1)[0] || {};
+
+      if (lastItem.value === '') {
+        return [
+          ...prev.slice(0, -1),
+          {
+            id: Lib.uniqid(),
+            quote_id: quote_id,
+            type: 'description',
+            value: '',
+          },
+        ];
+      }
+
+      return [
+        ...prev,
+
+        {
+          id: Lib.uniqid(),
+          quote_id: quote_id,
+          type: 'description',
+          value: '',
+        },
+      ];
+    });
+  };
+
+  const convertToLinkArray = arr => {
+    return arr.map(contact => {
+      console.log('contact', contact);
+      return { id: contact.id, type: contact.profile_type || 'user' };
+    });
+  };
+
+  const showAddDialogButton = () => {
+    const lastItem = blocks.slice(-1)[0];
+    return !lastItem || lastItem._user || lastItem.value;
+  };
+
+  const onContactSelect = (id, contact) => {
+    setBlocks(prev => {
+      return prev.map(block => {
+        if (block.id === id) {
+          return { ...block, _user: contact };
+        }
+        return block;
+      });
+    });
+  };
+
+  const onCloseFunction = () => {
+    props.onClose && props.onClose();
   };
 
   const updateBlockValue = (id, value) => {
@@ -93,47 +135,48 @@ const QuoteFormBlock = props => {
 
   const deleteBlock = id => {
     setBlocks(prev => {
+      const dialogs = prev.filter(p => p.type === 'dialogue');
+
+      if (dialogs.length < 2) return prev;
+
       return prev.filter(p => p.id !== id);
     });
   };
 
-  const toggleChoosenContacts = contact => {
-    setChoosenContacts(prev => {
-      if (prev.findIndex(c => c.id === contact?.id) > -1) {
-        return prev.filter(c => c.id !== contact?.id);
-      } else {
-        return [...prev, contact];
+  const canSubmitQuote = () => {
+    for (let block of blocks.filter(b => b.type === 'dialogue')) {
+      if (!block?._user?.id || !block?.value) {
+        return false;
       }
-    });
-  };
+    }
 
-  const convertToLinkArray = arr => {
-    return arr.map(contact => ({ id: contact.id, type: contact.type }));
-  };
-
-  const addTextToBlocks = () => {
-    const quote_id = props.quote_id || Lib.uniqid();
-
-    setBlocks(prev => {
-      return [
-        ...prev,
-
-        {
-          id: Lib.uniqid(),
-          quote_id: quote_id,
-          type: 'description',
-          value: '',
-        },
-      ];
-    });
+    return true;
   };
 
   const onNewContactCreate = contact => {
-    return contact => {
-      toggleSelectedContact(contact, 'contact');
+    addConversationToBlocks(contact);
+  };
 
-      addConversationToBlocks(contact);
-    };
+  const showAddContextButton = () => {
+    if (blocks.length === 0) return true;
+
+    return blocks[0]?.type !== 'description';
+  };
+
+  const uniqueLinkedUsers = Variables => {
+    let uniequeUsers = [];
+    //blocks is the screen array of object  variable
+    for (let block of blocks) {
+      if (block?._user?.id) {
+        //is the user object already in the uniequeUsers array
+        if (!uniequeUsers.find(user => user.id === block?._user?.id)) {
+          //push the user object to the uniequeUsers array
+          uniequeUsers.push(block?._user);
+        }
+      }
+    }
+
+    return uniequeUsers;
   };
 
   const delayedHide = () => {
@@ -153,6 +196,20 @@ const QuoteFormBlock = props => {
     const quote_id = props.quote_id || Lib.uniqid();
 
     setBlocks(prev => {
+      // const lastItem = (prev ||[])?.slice(-1)[0] || {}
+
+      // if (lastItem.value === '') {
+
+      //   return [...prev.slice(0, -1), {
+      //     "id": Lib.uniqid(),
+      //     "quote_id": quote_id,
+      //     "type": "dialogue",
+      //     "value": "",
+      //     "_user": contact,
+      //   }
+      //   ]
+      // }
+
       return [
         ...prev,
 
@@ -160,33 +217,39 @@ const QuoteFormBlock = props => {
           id: Lib.uniqid(),
           quote_id: quote_id,
           type: 'dialogue',
-          text: '',
+          value: '',
           _user: contact,
         },
       ];
     });
   };
-  React.useEffect(() => {
-    try {
-      if (props.selected_contact) {
-        toggleSelectedContact(
-          props.selected_contact,
-          props.selected_contact_type
-        );
-      }
-    } catch (err) {
-      console.error(err);
+
+  const uniqueContactFromBlocks = () => {
+    let uniequeUsers = [];
+    for (let block of blocks) {
+      if (block?._user?.id && !uniequeUsers.includes(block?._user?.id))
+        uniequeUsers.push(block._user.id);
     }
-  }, [props.selected_contact]);
+
+    return selectedContacts.filter(sc => uniequeUsers.includes(sc.id));
+  };
+
+  const addTextToBlockBegining = () => {
+    const quote_id = props.quote_id || Lib.uniqid();
+
+    setBlocks(prev => {
+      return [
+        {
+          id: Lib.uniqid(),
+          quote_id: quote_id,
+          type: 'description',
+          value: '',
+        },
+        ...prev,
+      ];
+    });
+  };
   const xANOCreateQuotePOST = XANOApi.useCreateQuotePOST();
-  React.useEffect(() => {
-    try {
-      toggleSelectedContact(Constants['CX_USER'], 'user');
-    } catch (err) {
-      console.error(err);
-    }
-  }, []);
-  const searchInputG4eZj05mRef = React.useRef();
 
   return (
     <View
@@ -198,6 +261,7 @@ const QuoteFormBlock = props => {
           borderTopRightRadius: 16,
           borderWidth: 1,
           flex: 1,
+          marginTop: 50,
           padding: 16,
         },
         dimensions.width
@@ -214,81 +278,51 @@ const QuoteFormBlock = props => {
           dimensions.width
         )}
       >
-        {/* AbsoluteHeaderTitle */}
-        <View
-          style={StyleSheet.applyWidth(
-            { alignItems: 'center', position: 'absolute', width: '100%' },
-            dimensions.width
-          )}
-        >
-          {/* Title */}
-          <>
-            {!(props.title ?? 'New quote') ? null : (
-              <Text
-                accessible={true}
-                allowFontScaling={true}
-                style={StyleSheet.applyWidth(
-                  StyleSheet.compose(GlobalStyles.TextStyles(theme)['Text'], {
-                    fontFamily: 'Poppins_500Medium',
-                  }),
-                  dimensions.width
-                )}
-              >
-                {props.title ?? 'New quote'}
-              </Text>
-            )}
-          </>
-        </View>
         {/* ClosePressable */}
         <Pressable
           onPress={() => {
             try {
               setShowAreYouSureModal(true);
+              /* hidden 'Run a Custom Function' action */
             } catch (err) {
               console.error(err);
             }
           }}
         >
           <Circle
+            {...GlobalStyles.CircleStyles(theme)['Circle'].props}
             style={StyleSheet.applyWidth(
-              StyleSheet.compose(GlobalStyles.CircleStyles(theme)['Circle'], {
-                backgroundColor: theme.colors['Light Inverse'],
-                height: 35,
-                width: 35,
-              }),
+              StyleSheet.compose(
+                GlobalStyles.CircleStyles(theme)['Circle'].style,
+                {
+                  backgroundColor: theme.colors['Light Inverse'],
+                  height: 35,
+                  width: 35,
+                }
+              ),
               dimensions.width
             )}
           >
             <Icon
+              size={24}
               color={theme.colors['Medium']}
               name={'Ionicons/close'}
-              size={24}
             />
           </Circle>
         </Pressable>
-        {/* DonePressable */}
+
         <Pressable
-          disabled={blocks?.length === 0}
           onPress={() => {
             const handler = async () => {
               try {
-                if (props.quote_id ?? '') {
+                if (selectedLocation?.latitude) {
+                  setSelectedLocation(null);
                 } else {
-                  console.log(selectedContacts);
-                  console.log(blocks);
-                  if (selectedContacts?.length > 1) {
-                    setShowChooseUserModal(true);
+                  const locationResult = await getLocationUtil();
+                  if (locationResult) {
+                    setSelectedLocation(locationResult);
                   } else {
-                    setChoosenContacts(selectedContacts);
-                    (
-                      await xANOCreateQuotePOST.mutateAsync({
-                        blocks: blocks,
-                        date: selectedDateTime,
-                        linked_ids: convertToLinkArray(selectedContacts),
-                        location: locationToGeoPointJson(selectedLocation),
-                      })
-                    )?.json;
-                    onCloseFunction();
+                    navigation.navigate('SettingsScreen');
                   }
                 }
               } catch (err) {
@@ -297,6 +331,110 @@ const QuoteFormBlock = props => {
             };
             handler();
           }}
+          disabled={Constants['SHOW_LOCATION_TUTORIAL']}
+        >
+          <View
+            style={StyleSheet.applyWidth(
+              { alignItems: 'center', flexDirection: 'row' },
+              dimensions.width
+            )}
+          >
+            <>
+              {selectedLocation?.latitude ? null : (
+                <Icon
+                  size={24}
+                  color={theme.colors['DarkGray']}
+                  name={'Entypo/map'}
+                  style={StyleSheet.applyWidth(
+                    { marginRight: 4 },
+                    dimensions.width
+                  )}
+                />
+              )}
+            </>
+            {/* EnabledIcon */}
+            <>
+              {!selectedLocation?.latitude ? null : (
+                <Icon
+                  size={24}
+                  color={theme.colors['Primary']}
+                  name={'Entypo/map'}
+                  style={StyleSheet.applyWidth(
+                    { marginRight: 4 },
+                    dimensions.width
+                  )}
+                />
+              )}
+            </>
+          </View>
+        </Pressable>
+        <DatePicker
+          autoDismissKeyboard={true}
+          disabled={false}
+          hideLabel={false}
+          label={'Date'}
+          leftIconMode={'inset'}
+          mode={'date'}
+          onDateChange={newDatePickerValue => {
+            const date = newDatePickerValue;
+            try {
+              setDatePickerValue(newDatePickerValue);
+            } catch (err) {
+              console.error(err);
+            }
+          }}
+          borderColorActive={'rgba(0, 0, 0, 0)'}
+          date={datePickerValue}
+          format={'mmm d'}
+          labelColor={'rgba(0, 0, 0, 0)'}
+          maximumDate={new Date()}
+          style={StyleSheet.applyWidth(
+            {
+              borderColor: 'rgba(0, 0, 0, 0)',
+              color: theme.colors['Primary'],
+              fontFamily: 'Poppins_500Medium',
+              fontSize: 14,
+              zIndex: 9999,
+            },
+            dimensions.width
+          )}
+          type={'underline'}
+        />
+        {/* DonePressable */}
+        <Pressable
+          onPress={() => {
+            const handler = async () => {
+              try {
+                if (props.quote_id ?? '') {
+                } else {
+                  if (uniqueLinkedUsers(Variables, blocks)?.length > 1) {
+                    setShowChooseUserModal(true);
+                  } else {
+                    setChoosenContacts(uniqueLinkedUsers(Variables, blocks));
+                    (
+                      await xANOCreateQuotePOST.mutateAsync({
+                        blocks: blocks,
+                        date: selectedDateTime,
+                        linked_ids: convertToLinkArray(
+                          uniqueLinkedUsers(Variables, blocks)
+                        ),
+                        location: locationToGeoPointJson(selectedLocation),
+                      })
+                    )?.json;
+                    if (Constants['SHOW_LOCATION_TUTORIAL']) {
+                      setShowTutorialModal(true);
+                    } else {
+                      onCloseFunction();
+                    }
+                  }
+                }
+              } catch (err) {
+                console.error(err);
+              }
+            };
+            handler();
+          }}
+          disabled={!canSubmitQuote()}
         >
           <View
             style={StyleSheet.applyWidth(
@@ -313,12 +451,12 @@ const QuoteFormBlock = props => {
           >
             <Text
               accessible={true}
-              allowFontScaling={true}
+              {...GlobalStyles.TextStyles(theme)['Text'].props}
               style={StyleSheet.applyWidth(
-                StyleSheet.compose(GlobalStyles.TextStyles(theme)['Text'], {
-                  color: theme.colors['Medium'],
-                  fontSize: 12,
-                }),
+                StyleSheet.compose(
+                  GlobalStyles.TextStyles(theme)['Text'].style,
+                  { color: theme.colors['Medium'], fontSize: 12 }
+                ),
                 dimensions.width
               )}
             >
@@ -327,615 +465,60 @@ const QuoteFormBlock = props => {
           </View>
         </Pressable>
       </View>
-      {/* ActionButtons */}
-      <View
-        style={StyleSheet.applyWidth(
-          { flexDirection: 'row', marginTop: 12 },
-          dimensions.width
-        )}
-      >
-        {/* DateTimePicker */}
-        <View
-          style={StyleSheet.applyWidth(
-            {
-              alignItems: 'flex-end',
-              alignSelf: 'center',
-              backgroundColor: theme.colors['Light Inverse'],
-              borderRadius: 8,
-              flex: 1,
-              height: 34,
-              justifyContent: 'center',
-              marginRight: 4,
-              overflow: 'hidden',
-              paddingLeft: 16,
-              paddingRight: 16,
-            },
-            dimensions.width
-          )}
-        >
-          <DatePicker
-            autoDismissKeyboard={true}
-            borderColor={'rgba(0, 0, 0, 0)'}
-            borderColorActive={'rgba(0, 0, 0, 0)'}
-            date={datePickerValue}
-            format={'mmm d, yyyy'}
-            label={'Date'}
-            labelColor={'rgba(0, 0, 0, 0)'}
-            leftIconMode={'inset'}
-            maximumDate={new Date()}
-            mode={'date'}
-            onDateChange={newDatePickerValue => {
-              const date = newDatePickerValue;
-              try {
-                setDatePickerValue(newDatePickerValue);
-              } catch (err) {
-                console.error(err);
-              }
-            }}
-            rightIconName={'Ionicons/md-chevron-down'}
+      {/* Container */}
+      <View style={StyleSheet.applyWidth({ flex: 1 }, dimensions.width)}>
+        {/* QuoteContainer */}
+        <View style={StyleSheet.applyWidth({ flex: 1 }, dimensions.width)}>
+          <View
             style={StyleSheet.applyWidth(
-              {
-                color: theme.colors['Primary'],
-                fontFamily: 'Poppins_400Regular',
-                fontSize: 14,
-                marginBottom: 0,
-                marginTop: 0,
-                zIndex: 9999,
-              },
+              { alignSelf: 'center' },
               dimensions.width
             )}
-            type={'underline'}
-          />
-        </View>
-        {/* LocationPicker */}
-        <View
-          style={StyleSheet.applyWidth(
-            {
-              alignItems: 'center',
-              backgroundColor: theme.colors['Light Inverse'],
-              borderRadius: 8,
-              flex: 1,
-              justifyContent: 'center',
-              marginLeft: 4,
-              overflow: 'hidden',
-              paddingLeft: 16,
-              paddingRight: 16,
-            },
-            dimensions.width
-          )}
-        >
-          <Pressable
-            onPress={() => {
-              const handler = async () => {
-                try {
-                  if (selectedLocation?.latitude) {
-                    setSelectedLocation(null);
-                  } else {
-                    const locationResult = await getLocationUtil();
-                    setSelectedLocation(locationResult);
-                  }
-                } catch (err) {
-                  console.error(err);
-                }
-              };
-              handler();
-            }}
           >
-            <View
-              style={StyleSheet.applyWidth(
-                { alignItems: 'center', flexDirection: 'row' },
-                dimensions.width
-              )}
-            >
-              <>
-                {selectedLocation?.latitude ? null : (
-                  <Icon
-                    color={theme.colors['DarkGray']}
-                    name={'FontAwesome/location-arrow'}
-                    size={24}
-                    style={StyleSheet.applyWidth(
-                      { marginRight: 4 },
-                      dimensions.width
-                    )}
-                  />
-                )}
-              </>
-              {/* EnabledIcon */}
-              <>
-                {!selectedLocation?.latitude ? null : (
-                  <Icon
-                    color={theme.colors['Primary']}
-                    name={'FontAwesome/location-arrow'}
-                    size={24}
-                    style={StyleSheet.applyWidth(
-                      { marginRight: 4 },
-                      dimensions.width
-                    )}
-                  />
-                )}
-              </>
-              <Text
-                accessible={true}
-                allowFontScaling={true}
-                style={StyleSheet.applyWidth(
-                  StyleSheet.compose(GlobalStyles.TextStyles(theme)['Text'], {
-                    color: theme.colors['Medium'],
-                  }),
-                  dimensions.width
-                )}
-              >
-                {'Location'}
-              </Text>
-            </View>
-          </Pressable>
-        </View>
-      </View>
-      {/* Container */}
-      <View
-        style={StyleSheet.applyWidth(
-          { flex: 1, marginTop: 32 },
-          dimensions.width
-        )}
-      >
-        {/* QuoteContainer */}
-        <View
-          style={StyleSheet.applyWidth(
-            {
-              borderColor: theme.colors['Light Inverse'],
-              borderRadius: 12,
-              borderWidth: 1,
-              flex: 1,
-              padding: 16,
-            },
-            dimensions.width
-          )}
-        >
-          <>
-            {!(blocks?.length > 0) ? null : (
-              <FlatList
-                contentContainerStyle={StyleSheet.applyWidth(
-                  { backgroundColor: 'rgba(0, 0, 0, 0)' },
-                  dimensions.width
-                )}
-                data={blocks}
-                keyExtractor={(listData, index) =>
-                  listData?.id ?? listData?.uuid ?? index.toString()
-                }
-                keyboardShouldPersistTaps={'always'}
-                listKey={'wyTzOzbS'}
-                numColumns={1}
-                onEndReachedThreshold={0.5}
-                renderItem={({ item, index }) => {
-                  const listData = item;
-                  return (
-                    <>
-                      <View
-                        style={StyleSheet.applyWidth(
-                          { marginBottom: 8 },
-                          dimensions.width
-                        )}
-                      >
-                        <>
-                          {!(listData?.type === 'description') ? null : (
-                            <QuoteBlock
-                              editable={true}
-                              id={listData?.id}
-                              onChange={(id, value) =>
-                                updateBlockValue(id, value)
-                              }
-                              onDelete={id => deleteBlock(id)}
-                              text={listData?.value}
-                            />
-                          )}
-                        </>
-                        <>
-                          {!(listData?.type === 'dialogue') ? null : (
-                            <ConversationBlock
-                              contact={listData && listData['_user']}
-                              id={listData?.id}
-                              onChangeValue={(id, value) =>
-                                updateBlockValue(id, value)
-                              }
-                              onDelete={id => deleteBlock(id)}
-                              text={listData?.text}
-                            />
-                          )}
-                        </>
-                      </View>
-                    </>
-                  );
-                }}
-                showsHorizontalScrollIndicator={true}
-                showsVerticalScrollIndicator={true}
-              />
-            )}
-          </>
-          <>
-            {!(blocks?.length === 0) ? null : (
-              <Pressable
-                onPress={() => {
-                  try {
-                    addConversationToBlocks(Constants['CX_USER']);
-                  } catch (err) {
-                    console.error(err);
-                  }
-                }}
-              >
-                <View
-                  style={StyleSheet.applyWidth(
-                    { height: '100%', width: '100%' },
-                    dimensions.width
-                  )}
-                />
-              </Pressable>
-            )}
-          </>
-        </View>
-        {/* QuoteMenuBar */}
-        <View
-          style={StyleSheet.applyWidth(
-            {
-              backgroundColor: 'rgba(0, 0, 0, 0)',
-              flexDirection: 'row',
-              marginTop: 20,
-              paddingBottom: 5,
-              paddingTop: 5,
-            },
-            dimensions.width
-          )}
-        >
-          {/* SearchPeopleView */}
-          <View style={StyleSheet.applyWidth({ flex: 0.4 }, dimensions.width)}>
-            {/* RecentContactsList */}
+            {/* AddQuoteTextButton */}
             <>
-              {!(!searchStringValue && showRecentContactsList) ? null : (
-                <View
-                  style={StyleSheet.applyWidth(
-                    {
-                      backgroundColor: theme.colors['Background'],
-                      bottom: 36,
-                      left: -20,
-                      position: 'absolute',
-                      width: dimensions.width,
-                    },
-                    dimensions.width
-                  )}
-                >
-                  <>
-                    {isAddingNewContact ? null : (
-                      <View>
-                        {/* RecentLabel */}
-                        <Text
-                          accessible={true}
-                          allowFontScaling={true}
-                          style={StyleSheet.applyWidth(
-                            StyleSheet.compose(
-                              GlobalStyles.TextStyles(theme)['Text'],
-                              {
-                                color: theme.colors['Light'],
-                                fontFamily: 'Poppins_500Medium',
-                                fontSize: 10,
-                                marginLeft: 20,
-                              }
-                            ),
-                            dimensions.width
-                          )}
-                        >
-                          {'Recent'}
-                        </Text>
-                        <FlatList
-                          data={Constants['RECENT_CONTACTS']}
-                          keyExtractor={(listData, index) =>
-                            listData?.id ?? listData?.uuid ?? index.toString()
-                          }
-                          keyboardShouldPersistTaps={'always'}
-                          listKey={'mbeSsA2t'}
-                          numColumns={1}
-                          onEndReachedThreshold={0.5}
-                          renderItem={({ item, index }) => {
-                            const listData = item;
-                            return (
-                              <>
-                                {/* RecentItemPressable */}
-                                <Pressable
-                                  onPress={() => {
-                                    try {
-                                      toggleSelectedContact(
-                                        listData,
-                                        'contact'
-                                      );
-                                    } catch (err) {
-                                      console.error(err);
-                                    }
-                                  }}
-                                >
-                                  {/* RecentItemView */}
-                                  <View
-                                    style={StyleSheet.applyWidth(
-                                      {
-                                        alignItems: 'center',
-                                        borderColor: theme.colors['Light Gray'],
-                                        borderTopWidth: 1,
-                                        flexDirection: 'row',
-                                        paddingBottom: 7,
-                                        paddingLeft: 15,
-                                        paddingRight: 15,
-                                        paddingTop: 7,
-                                      },
-                                      dimensions.width
-                                    )}
-                                  >
-                                    {/* RecentContactView */}
-                                    <SearchContactViewBlock
-                                      contact={listData}
-                                      searchTerm={listData?.name}
-                                    />
-                                  </View>
-                                </Pressable>
-                              </>
-                            );
-                          }}
-                          showsHorizontalScrollIndicator={true}
-                          showsVerticalScrollIndicator={true}
-                        />
-                      </View>
-                    )}
-                  </>
-                  <AddNewContactButtonBlock
-                    onChange={onNewContactCreate(undefined)}
-                    onModeChange={mode => updateIsAddingNewContact(mode)}
-                  />
-                </View>
-              )}
-            </>
-            {/* SearchResults */}
-            <>
-              {!searchStringValue ? null : (
-                <View
-                  style={StyleSheet.applyWidth(
-                    {
-                      backgroundColor: theme.colors['Background'],
-                      bottom: 36,
-                      left: -20,
-                      position: 'absolute',
-                      width: dimensions.width,
-                    },
-                    dimensions.width
-                  )}
-                >
-                  <XANOApi.FetchSearchContactsGET term={searchStringValue}>
-                    {({ loading, error, data, refetchSearchContacts }) => {
-                      const fetchData = data?.json;
-                      if (loading) {
-                        return (
-                          <ActivityIndicator
-                            animating={true}
-                            hidesWhenStopped={true}
-                            size={'small'}
-                            style={StyleSheet.applyWidth(
-                              GlobalStyles.ActivityIndicatorStyles(theme)[
-                                'Activity Indicator'
-                              ],
-                              dimensions.width
-                            )}
-                          />
-                        );
-                      }
-
-                      if (error || data?.status < 200 || data?.status >= 300) {
-                        return <ActivityIndicator />;
-                      }
-
-                      return (
-                        <FlatList
-                          data={fetchData}
-                          keyExtractor={(listData, index) =>
-                            listData?.id ?? listData?.uuid ?? index.toString()
-                          }
-                          keyboardShouldPersistTaps={'always'}
-                          listKey={'gLsym6XY'}
-                          numColumns={1}
-                          onEndReachedThreshold={0.5}
-                          renderItem={({ item, index }) => {
-                            const listData = item;
-                            return (
-                              <>
-                                {/* SearchContactPressable */}
-                                <Pressable
-                                  onPress={() => {
-                                    try {
-                                      toggleSelectedContact(
-                                        listData,
-                                        'contact'
-                                      );
-                                      toggleRecentContacts(
-                                        Variables,
-                                        setGlobalVariableValue,
-                                        listData
-                                      );
-                                      addConversationToBlocks(listData);
-                                      setSearchStringValue('');
-                                      setSearchStringDisplayValue('');
-                                    } catch (err) {
-                                      console.error(err);
-                                    }
-                                  }}
-                                >
-                                  {/* SearchItemView */}
-                                  <View
-                                    style={StyleSheet.applyWidth(
-                                      {
-                                        alignItems: 'center',
-                                        borderColor: theme.colors['Light Gray'],
-                                        borderTopWidth: 1,
-                                        flexDirection: 'row',
-                                        paddingBottom: 7,
-                                        paddingLeft: 15,
-                                        paddingRight: 15,
-                                        paddingTop: 7,
-                                      },
-                                      dimensions.width
-                                    )}
-                                  >
-                                    <SearchContactViewBlock
-                                      contact={listData}
-                                      searchTerm={searchStringValue}
-                                    />
-                                  </View>
-                                </Pressable>
-                              </>
-                            );
-                          }}
-                          showsHorizontalScrollIndicator={true}
-                          showsVerticalScrollIndicator={true}
-                        />
-                      );
-                    }}
-                  </XANOApi.FetchSearchContactsGET>
-                </View>
-              )}
-            </>
-            <View
-              style={StyleSheet.applyWidth(
-                {
-                  alignItems: 'center',
-                  backgroundColor: theme.colors['Light Inverse'],
-                  borderRadius: 36,
-                  flexDirection: 'row',
-                  height: 36,
-                  overflow: 'hidden',
-                  paddingLeft: 8,
-                  paddingRight: 8,
-                },
-                dimensions.width
-              )}
-            >
-              <Pressable
-                onPress={() => {
-                  try {
-                    setShowRecentContactsList(true);
-                  } catch (err) {
-                    console.error(err);
-                  }
-                }}
-              >
-                <Image
-                  resizeMode={'contain'}
-                  source={Images.AddUserIcon}
+              {!showAddContextButton() ? null : (
+                <Button
+                  iconPosition={'left'}
+                  onPress={() => {
+                    try {
+                      addTextToBlockBegining();
+                    } catch (err) {
+                      console.error(err);
+                    }
+                  }}
+                  {...GlobalStyles.ButtonStyles(theme)['Button'].props}
                   style={StyleSheet.applyWidth(
                     StyleSheet.compose(
-                      GlobalStyles.ImageStyles(theme)['Image'],
-                      { height: 24, width: 24 }
+                      GlobalStyles.ButtonStyles(theme)['Button'].style,
+                      {
+                        backgroundColor: theme.colors['Light Inverse'],
+                        borderRadius: 32,
+                        color: theme.colors['Primary'],
+                        fontFamily: 'Poppins_400Regular',
+                        fontSize: 13,
+                        marginBottom: 12,
+                        minHeight: 38,
+                      }
                     ),
                     dimensions.width
                   )}
+                  title={'Quote setting / Context'}
                 />
-              </Pressable>
-              {/* SearchInput */}
-              <TextInput
-                allowFontScaling={true}
-                autoCapitalize={'none'}
-                autoFocus={true}
-                changeTextDelay={500}
-                clearButtonMode={'always'}
-                onBlur={() => {
-                  try {
-                    delayedHide();
-                  } catch (err) {
-                    console.error(err);
-                  }
-                }}
-                onChangeText={newSearchInputValue => {
-                  try {
-                    setSearchStringDisplayValue(newSearchInputValue);
-                  } catch (err) {
-                    console.error(err);
-                  }
-                }}
-                onChangeTextDelayed={newSearchInputValue => {
-                  try {
-                    setSearchStringValue(newSearchInputValue);
-                  } catch (err) {
-                    console.error(err);
-                  }
-                }}
-                onFocus={() => {
-                  try {
-                    if (!searchStringValue) {
-                      setSearchStringDisplayValue(undefined);
-                    }
-                    setShowRecentContactsList(true);
-                  } catch (err) {
-                    console.error(err);
-                  }
-                }}
-                placeholder={'Add Person'}
-                ref={searchInputG4eZj05mRef}
-                style={StyleSheet.applyWidth(
-                  StyleSheet.compose(
-                    GlobalStyles.TextInputStyles(theme)['Text Input'],
-                    {
-                      borderBottomWidth: 0,
-                      borderColor: null,
-                      borderLeftWidth: 0,
-                      borderRadius: null,
-                      borderRightWidth: 0,
-                      borderTopWidth: 0,
-                      fontSize: 12,
-                      lineHeight: 17,
-                      minWidth: 80,
-                      paddingBottom: 0,
-                      paddingLeft: 8,
-                      paddingRight: 4,
-                      paddingTop: 0,
-                    }
-                  ),
-                  dimensions.width
-                )}
-                value={searchStringDisplayValue}
-              />
-            </View>
-          </View>
-          {/* SelectedPeopleView */}
-          <View
-            style={StyleSheet.applyWidth(
-              {
-                alignItems: 'center',
-                backgroundColor: 'rgba(0, 0, 0, 0)',
-                flex: 0.6,
-                flexDirection: 'row',
-                paddingBottom: 6,
-                paddingLeft: 12,
-                paddingTop: 6,
-              },
-              dimensions.width
-            )}
-          >
-            <View
-              style={StyleSheet.applyWidth(
-                {
-                  alignItems: 'flex-end',
-                  backgroundColor: 'rgba(0, 0, 0, 0)',
-                  borderColor: 'rgba(0, 0, 0, 0)',
-                  flex: 1,
-                  marginRight: 4,
-                  overflow: 'hidden',
-                },
-                dimensions.width
               )}
-            >
-              <FlatList
-                contentContainerStyle={StyleSheet.applyWidth(
-                  { backgroundColor: 'rgba(0, 0, 0, 0)' },
-                  dimensions.width
-                )}
-                data={selectedContacts}
-                horizontal={true}
+            </>
+          </View>
+          <>
+            {!(blocks?.length > 0) ? null : (
+              <SimpleStyleFlatList
+                data={blocks}
+                horizontal={false}
+                inverted={false}
                 keyExtractor={(listData, index) =>
                   listData?.id ?? listData?.uuid ?? index.toString()
                 }
-                keyboardShouldPersistTaps={'always'}
-                listKey={'vCYxStHd'}
+                listKey={'FuS1pVbc'}
+                nestedScrollEnabled={false}
                 numColumns={1}
                 onEndReachedThreshold={0.5}
                 renderItem={({ item, index }) => {
@@ -943,63 +526,113 @@ const QuoteFormBlock = props => {
                   return (
                     <View
                       style={StyleSheet.applyWidth(
-                        { backgroundColor: 'rgba(0, 0, 0, 0)', marginRight: 4 },
+                        { marginBottom: 8 },
                         dimensions.width
                       )}
                     >
-                      <Pressable
-                        onPress={() => {
-                          try {
-                            addConversationToBlocks(listData);
-                          } catch (err) {
-                            console.error(err);
-                          }
-                        }}
-                        style={StyleSheet.applyWidth(
-                          {
-                            borderColor: 'rgba(0, 0, 0, 0)',
-                            borderLeftWidth: 5,
-                            borderRightWidth: 5,
-                          },
-                          dimensions.width
+                      <>
+                        {!(listData?.type === 'description') ? null : (
+                          <QuoteBlock
+                            editable={true}
+                            id={listData?.id}
+                            onChange={(id, value) =>
+                              updateBlockValue(id, value)
+                            }
+                            onDelete={id => deleteBlock(id)}
+                            text={listData?.value}
+                          />
                         )}
-                      >
-                        <ContactsViewBlock
-                          avatarSize={28}
-                          contact={listData}
-                          imageOnly={true}
-                        />
-                      </Pressable>
+                      </>
+                      <>
+                        {!(listData?.type === 'dialogue') ? null : (
+                          <ConversationBlock
+                            contact={listData?._user}
+                            id={listData?.id}
+                            onChangeContact={(id, contact) =>
+                              onContactSelect(id, contact)
+                            }
+                            onChangeValue={(id, value) =>
+                              updateBlockValue(id, value)
+                            }
+                            onDelete={id => deleteBlock(id)}
+                            text={listData?.text}
+                          />
+                        )}
+                      </>
                     </View>
                   );
                 }}
                 showsHorizontalScrollIndicator={true}
                 showsVerticalScrollIndicator={true}
+                keyboardShouldPersistTaps={'always'}
               />
-            </View>
+            )}
+          </>
+          {/* Add Dialogue */}
+          <>
+            {!showAddDialogButton() ? null : (
+              <Pressable
+                onPress={() => {
+                  try {
+                    addConversationToBlocks(undefined);
+                    /* hidden 'Log to Console' action */
+                  } catch (err) {
+                    console.error(err);
+                  }
+                }}
+              >
+                <View
+                  style={StyleSheet.applyWidth(
+                    {
+                      alignItems: 'center',
+                      flexDirection: 'row',
+                      marginTop: 12,
+                    },
+                    dimensions.width
+                  )}
+                >
+                  <Circle
+                    {...GlobalStyles.CircleStyles(theme)['Circle'].props}
+                    style={StyleSheet.applyWidth(
+                      StyleSheet.compose(
+                        GlobalStyles.CircleStyles(theme)['Circle'].style,
+                        {
+                          backgroundColor: 'rgba(0, 0, 0, 0)',
+                          borderColor: theme.colors['Light Inverse'],
+                          borderStyle: 'dashed',
+                          borderWidth: 1.5,
+                          height: 35,
+                          marginRight: 12,
+                          width: 35,
+                        }
+                      ),
+                      dimensions.width
+                    )}
+                  >
+                    <Icon
+                      size={24}
+                      color={theme.colors['Light Inverse']}
+                      name={'AntDesign/question'}
+                    />
+                  </Circle>
 
-            <Pressable
-              onPress={() => {
-                try {
-                  addTextToBlocks();
-                } catch (err) {
-                  console.error(err);
-                }
-              }}
-            >
-              <Image
-                resizeMode={'cover'}
-                source={Images.DescriptionIconV4}
-                style={StyleSheet.applyWidth(
-                  StyleSheet.compose(GlobalStyles.ImageStyles(theme)['Image'], {
-                    height: 28,
-                    width: 28,
-                  }),
-                  dimensions.width
-                )}
-              />
-            </Pressable>
-          </View>
+                  <Text
+                    accessible={true}
+                    {...GlobalStyles.TextStyles(theme)['Text'].props}
+                    style={StyleSheet.applyWidth(
+                      StyleSheet.compose(
+                        GlobalStyles.TextStyles(theme)['Text'].style,
+                        { color: theme.colors['Light Inverse'], fontSize: 18 }
+                      ),
+                      dimensions.width
+                    )}
+                  >
+                    {'Add Dialogue'}
+                  </Text>
+                </View>
+              </Pressable>
+            )}
+          </>
         </View>
       </View>
       {/* ChooseUserModal */}
@@ -1013,20 +646,22 @@ const QuoteFormBlock = props => {
           >
             <BlurView
               intensity={50}
+              tint={'default'}
+              {...GlobalStyles.BlurViewStyles(theme)['Blur View'].props}
               style={StyleSheet.applyWidth(
                 StyleSheet.compose(
-                  GlobalStyles.BlurViewStyles(theme)['Blur View'],
+                  GlobalStyles.BlurViewStyles(theme)['Blur View'].style,
                   { alignItems: 'center', justifyContent: 'center' }
                 ),
                 dimensions.width
               )}
-              tint={'default'}
             >
               <Surface
+                {...GlobalStyles.SurfaceStyles(theme)['Surface'].props}
                 elevation={3}
                 style={StyleSheet.applyWidth(
                   StyleSheet.compose(
-                    GlobalStyles.SurfaceStyles(theme)['Surface'],
+                    GlobalStyles.SurfaceStyles(theme)['Surface'].style,
                     {
                       alignItems: 'center',
                       backgroundColor: theme.colors['Light Inverse'],
@@ -1041,22 +676,39 @@ const QuoteFormBlock = props => {
                   dimensions.width
                 )}
               >
-                <H2
+                <IconButton
+                  onPress={() => {
+                    try {
+                      setShowChooseUserModal(false);
+                    } catch (err) {
+                      console.error(err);
+                    }
+                  }}
+                  size={32}
+                  icon={'AntDesign/closecircleo'}
                   style={StyleSheet.applyWidth(
-                    GlobalStyles.H2Styles(theme)['H2'],
+                    { left: 16, position: 'absolute', top: 16 },
+                    dimensions.width
+                  )}
+                />
+                <H2
+                  selectable={false}
+                  {...GlobalStyles.H2Styles(theme)['H2'].props}
+                  style={StyleSheet.applyWidth(
+                    GlobalStyles.H2Styles(theme)['H2'].style,
                     dimensions.width
                   )}
                 >
                   {"Who's Quote"}
                 </H2>
-                <FlatList
-                  data={selectedContacts}
-                  horizontal={true}
+                <SimpleStyleFlatList
+                  data={extractUniqueContacts(blocks)}
+                  inverted={false}
                   keyExtractor={(listData, index) =>
                     listData?.id ?? listData?.uuid ?? index.toString()
                   }
-                  keyboardShouldPersistTaps={'always'}
-                  listKey={'YVliBnBJ'}
+                  listKey={'CABuSbEb'}
+                  nestedScrollEnabled={false}
                   numColumns={1}
                   onEndReachedThreshold={0.5}
                   renderItem={({ item, index }) => {
@@ -1100,11 +752,12 @@ const QuoteFormBlock = props => {
                   }}
                   showsHorizontalScrollIndicator={true}
                   showsVerticalScrollIndicator={true}
+                  horizontal={true}
+                  keyboardShouldPersistTaps={'always'}
                 />
                 {/* SubmitButton */}
                 <Button
-                  disabled={choosenContacts?.length === 0}
-                  disabledOpacity={0.2}
+                  iconPosition={'left'}
                   onPress={() => {
                     const handler = async () => {
                       try {
@@ -1116,16 +769,23 @@ const QuoteFormBlock = props => {
                             location: locationToGeoPointJson(selectedLocation),
                           })
                         )?.json;
-                        onCloseFunction();
+                        if (Constants['SHOW_LOCATION_TUTORIAL']) {
+                          undefined;
+                        } else {
+                          onCloseFunction();
+                        }
                       } catch (err) {
                         console.error(err);
                       }
                     };
                     handler();
                   }}
+                  {...GlobalStyles.ButtonStyles(theme)['Button'].props}
+                  disabled={choosenContacts?.length === 0}
+                  disabledOpacity={0.2}
                   style={StyleSheet.applyWidth(
                     StyleSheet.compose(
-                      GlobalStyles.ButtonStyles(theme)['Button'],
+                      GlobalStyles.ButtonStyles(theme)['Button'].style,
                       { marginTop: 25, minHeight: 40, width: '100%' }
                     ),
                     dimensions.width
@@ -1140,14 +800,17 @@ const QuoteFormBlock = props => {
       {/* Are You Sure Modal  */}
       <Modal
         animationType={'none'}
+        supportedOrientations={['portrait', 'landscape']}
         transparent={true}
         visible={showAreYouSureModal}
       >
         <BlurView
           intensity={50}
+          tint={'default'}
+          {...GlobalStyles.BlurViewStyles(theme)['Blur View'].props}
           style={StyleSheet.applyWidth(
             StyleSheet.compose(
-              GlobalStyles.BlurViewStyles(theme)['Blur View'],
+              GlobalStyles.BlurViewStyles(theme)['Blur View'].style,
               {
                 alignItems: 'center',
                 backgroundColor: 'rgba(58, 58, 58, 0.09)',
@@ -1156,21 +819,24 @@ const QuoteFormBlock = props => {
             ),
             dimensions.width
           )}
-          tint={'default'}
         >
           <Surface
             elevation={0}
+            {...GlobalStyles.SurfaceStyles(theme)['Surface'].props}
             style={StyleSheet.applyWidth(
-              StyleSheet.compose(GlobalStyles.SurfaceStyles(theme)['Surface'], {
-                alignItems: 'center',
-                backgroundColor: 'rgb(255, 255, 255)',
-                borderRadius: 16,
-                paddingBottom: 40,
-                paddingLeft: 20,
-                paddingRight: 20,
-                paddingTop: 40,
-                width: '90%',
-              }),
+              StyleSheet.compose(
+                GlobalStyles.SurfaceStyles(theme)['Surface'].style,
+                {
+                  alignItems: 'center',
+                  backgroundColor: 'rgb(255, 255, 255)',
+                  borderRadius: 16,
+                  paddingBottom: 40,
+                  paddingLeft: 20,
+                  paddingRight: 20,
+                  paddingTop: 40,
+                  width: '90%',
+                }
+              ),
               dimensions.width
             )}
           >
@@ -1181,8 +847,6 @@ const QuoteFormBlock = props => {
               )}
             >
               <IconButton
-                color={theme.colors['Medium']}
-                icon={'Feather/x'}
                 onPress={() => {
                   try {
                     setShowAreYouSureModal(false);
@@ -1191,12 +855,16 @@ const QuoteFormBlock = props => {
                   }
                 }}
                 size={32}
+                color={theme.colors['Medium']}
+                icon={'Feather/x'}
               />
             </View>
 
             <H2
+              selectable={false}
+              {...GlobalStyles.H2Styles(theme)['H2'].props}
               style={StyleSheet.applyWidth(
-                StyleSheet.compose(GlobalStyles.H2Styles(theme)['H2'], {
+                StyleSheet.compose(GlobalStyles.H2Styles(theme)['H2'].style, {
                   fontSize: 28,
                   paddingBottom: 15,
                 }),
@@ -1208,13 +876,12 @@ const QuoteFormBlock = props => {
 
             <Text
               accessible={true}
-              allowFontScaling={true}
+              {...GlobalStyles.TextStyles(theme)['Text'].props}
               style={StyleSheet.applyWidth(
-                StyleSheet.compose(GlobalStyles.TextStyles(theme)['Text'], {
-                  fontSize: 20,
-                  paddingBottom: 15,
-                  textAlign: 'center',
-                }),
+                StyleSheet.compose(
+                  GlobalStyles.TextStyles(theme)['Text'].style,
+                  { fontSize: 20, paddingBottom: 15, textAlign: 'center' }
+                ),
                 dimensions.width
               )}
             >
@@ -1222,18 +889,21 @@ const QuoteFormBlock = props => {
             </Text>
             {/* Close Button */}
             <Button
-              disabled={isImporting}
-              loading={isImporting}
+              iconPosition={'left'}
               onPress={() => {
                 try {
+                  setShowAreYouSureModal(false);
                   onCloseFunction();
                 } catch (err) {
                   console.error(err);
                 }
               }}
+              {...GlobalStyles.ButtonStyles(theme)['OutlineButton'].props}
+              disabled={isImporting}
+              loading={isImporting}
               style={StyleSheet.applyWidth(
                 StyleSheet.compose(
-                  GlobalStyles.ButtonStyles(theme)['OutlineButton'],
+                  GlobalStyles.ButtonStyles(theme)['OutlineButton'].style,
                   {
                     backgroundColor: '"rgb(242, 242, 247)"',
                     borderColor: 'rgb(242, 242, 247)',
@@ -1253,6 +923,96 @@ const QuoteFormBlock = props => {
             />
           </Surface>
         </BlurView>
+      </Modal>
+      {/* Tutorial Modal */}
+      <Modal
+        animationType={'none'}
+        supportedOrientations={['portrait', 'landscape']}
+        transparent={true}
+        visible={showTutorialModal}
+      >
+        <Surface
+          elevation={0}
+          {...GlobalStyles.SurfaceStyles(theme)['Surface'].props}
+          style={StyleSheet.applyWidth(
+            StyleSheet.compose(
+              GlobalStyles.SurfaceStyles(theme)['Surface'].style,
+              {
+                alignItems: 'center',
+                backgroundColor: 'rgb(255, 255, 255)',
+                borderRadius: 16,
+                height: '100%',
+                paddingBottom: 40,
+                paddingLeft: 20,
+                paddingRight: 20,
+                paddingTop: 40,
+                width: '100%',
+              }
+            ),
+            dimensions.width
+          )}
+        >
+          <H2
+            selectable={false}
+            {...GlobalStyles.H2Styles(theme)['H2'].props}
+            style={StyleSheet.applyWidth(
+              StyleSheet.compose(GlobalStyles.H2Styles(theme)['H2'].style, {
+                fontSize: 28,
+                paddingBottom: 15,
+              }),
+              dimensions.width
+            )}
+          >
+            {'Quote Box\n'}
+          </H2>
+          <Image
+            resizeMode={'cover'}
+            source={{
+              uri: 'https://static.draftbit.com/images/placeholder-image.png',
+            }}
+            {...GlobalStyles.ImageStyles(theme)['Image'].props}
+            style={StyleSheet.applyWidth(
+              GlobalStyles.ImageStyles(theme)['Image'].style,
+              dimensions.width
+            )}
+          />
+          {/* ViewQuoteButton */}
+          <Button
+            iconPosition={'left'}
+            onPress={() => {
+              try {
+                setGlobalVariableValue({
+                  key: 'SHOW_LOCATION_TUTORIAL',
+                  value: false,
+                });
+                setShowTutorialModal(false);
+                onCloseFunction();
+              } catch (err) {
+                console.error(err);
+              }
+            }}
+            {...GlobalStyles.ButtonStyles(theme)['Button'].props}
+            disabled={isImporting}
+            loading={isImporting}
+            style={StyleSheet.applyWidth(
+              StyleSheet.compose(
+                GlobalStyles.ButtonStyles(theme)['Button'].style,
+                {
+                  borderColor: 'rgb(242, 242, 247)',
+                  borderRadius: 50,
+                  borderWidth: 1.5,
+                  fontFamily: 'Poppins_600SemiBold',
+                  fontSize: 20,
+                  marginTop: 20,
+                  paddingLeft: 20,
+                  paddingRight: 20,
+                }
+              ),
+              dimensions.width
+            )}
+            title={'Continue'}
+          />
+        </Surface>
       </Modal>
     </View>
   );

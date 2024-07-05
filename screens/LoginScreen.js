@@ -95,7 +95,13 @@ const LoginScreen = props => {
           return;
         }
         const authMeResult = (await AuthApiApi.authMeGET(Constants))?.json;
-        console.log(authMeResult);
+        /* hidden 'Log to Console' action */
+        if (!authMeResult?.message) {
+          setGlobalVariableValue({
+            key: 'CX_USER',
+            value: authMeResult,
+          });
+        }
         if (!authMeResult?.message) {
           navigation.navigate('HomeScreen');
         }
@@ -107,7 +113,7 @@ const LoginScreen = props => {
   }, [isFocused]);
 
   return (
-    <ScreenContainer hasSafeArea={true} scrollable={false}>
+    <ScreenContainer scrollable={false} hasSafeArea={true}>
       {/* Header */}
       <View
         style={StyleSheet.applyWidth(
@@ -134,21 +140,25 @@ const LoginScreen = props => {
           }}
         >
           <Surface
+            {...GlobalStyles.SurfaceStyles(theme)['Surface'].props}
             elevation={1}
             style={StyleSheet.applyWidth(
-              StyleSheet.compose(GlobalStyles.SurfaceStyles(theme)['Surface'], {
-                alignItems: 'center',
-                borderColor: theme.colors['Light Inverse'],
-                borderRadius: 8,
-                borderWidth: 1,
-                height: 40,
-                justifyContent: 'center',
-                width: 40,
-              }),
+              StyleSheet.compose(
+                GlobalStyles.SurfaceStyles(theme)['Surface'].style,
+                {
+                  alignItems: 'center',
+                  borderColor: theme.colors['Light Inverse'],
+                  borderRadius: 8,
+                  borderWidth: 1,
+                  height: 40,
+                  justifyContent: 'center',
+                  width: 40,
+                }
+              ),
               dimensions.width
             )}
           >
-            <Icon name={'Entypo/chevron-left'} size={24} />
+            <Icon size={24} name={'Entypo/chevron-left'} />
           </Surface>
         </Pressable>
         <Icon name={'MaterialCommunityIcons/star-four-points'} size={32} />
@@ -164,8 +174,10 @@ const LoginScreen = props => {
           >
             {/* HeaderText */}
             <H2
+              selectable={false}
+              {...GlobalStyles.H2Styles(theme)['H2'].props}
               style={StyleSheet.applyWidth(
-                StyleSheet.compose(GlobalStyles.H2Styles(theme)['H2'], {
+                StyleSheet.compose(GlobalStyles.H2Styles(theme)['H2'].style, {
                   alignSelf: 'center',
                   fontSize: 32,
                 }),
@@ -207,10 +219,12 @@ const LoginScreen = props => {
                 {/* ErrorText 2 */}
                 <Text
                   accessible={true}
+                  {...GlobalStyles.TextStyles(theme)['Text'].props}
                   style={StyleSheet.applyWidth(
-                    StyleSheet.compose(GlobalStyles.TextStyles(theme)['Text'], {
-                      color: theme.colors['Error'],
-                    }),
+                    StyleSheet.compose(
+                      GlobalStyles.TextStyles(theme)['Text'].style,
+                      { color: theme.colors['Error'] }
+                    ),
                     dimensions.width
                   )}
                 >
@@ -218,6 +232,7 @@ const LoginScreen = props => {
                 </Text>
                 {/* ContinueButton */}
                 <Button
+                  iconPosition={'left'}
                   onPress={() => {
                     const handler = async () => {
                       try {
@@ -242,9 +257,10 @@ const LoginScreen = props => {
                     };
                     handler();
                   }}
+                  {...GlobalStyles.ButtonStyles(theme)['Button'].props}
                   style={StyleSheet.applyWidth(
                     StyleSheet.compose(
-                      GlobalStyles.ButtonStyles(theme)['Button'],
+                      GlobalStyles.ButtonStyles(theme)['Button'].style,
                       { marginTop: 60 }
                     ),
                     dimensions.width
@@ -255,10 +271,12 @@ const LoginScreen = props => {
 
               <Text
                 accessible={true}
+                {...GlobalStyles.TextStyles(theme)['Text'].props}
                 style={StyleSheet.applyWidth(
-                  StyleSheet.compose(GlobalStyles.TextStyles(theme)['Text'], {
-                    textAlign: 'center',
-                  }),
+                  StyleSheet.compose(
+                    GlobalStyles.TextStyles(theme)['Text'].style,
+                    { textAlign: 'center' }
+                  ),
                   dimensions.width
                 )}
               >
@@ -272,8 +290,9 @@ const LoginScreen = props => {
                       console.error(err);
                     }
                   }}
+                  {...GlobalStyles.LinkStyles(theme)['Link'].props}
                   style={StyleSheet.applyWidth(
-                    GlobalStyles.LinkStyles(theme)['Link'],
+                    GlobalStyles.LinkStyles(theme)['Link'].style,
                     dimensions.width
                   )}
                   title={'Sign Up'}
@@ -294,8 +313,10 @@ const LoginScreen = props => {
           >
             {/* HeaderText */}
             <H2
+              selectable={false}
+              {...GlobalStyles.H2Styles(theme)['H2'].props}
               style={StyleSheet.applyWidth(
-                StyleSheet.compose(GlobalStyles.H2Styles(theme)['H2'], {
+                StyleSheet.compose(GlobalStyles.H2Styles(theme)['H2'].style, {
                   fontSize: 32,
                 }),
                 dimensions.width
@@ -306,8 +327,9 @@ const LoginScreen = props => {
             {/* InnerText */}
             <Text
               accessible={true}
+              {...GlobalStyles.TextStyles(theme)['Text'].props}
               style={StyleSheet.applyWidth(
-                GlobalStyles.TextStyles(theme)['Text'],
+                GlobalStyles.TextStyles(theme)['Text'].style,
                 dimensions.width
               )}
             >
@@ -336,9 +358,9 @@ const LoginScreen = props => {
                 <PinInput
                   autoComplete={'one-time-code'}
                   blurOnFull={true}
-                  cellCount={5}
                   changeTextDelay={500}
                   clearOnCellFocus={true}
+                  focusedBorderColor={theme.colors.primary}
                   keyboardType={'number-pad'}
                   onChangeText={newPinInputValue => {
                     try {
@@ -370,7 +392,7 @@ const LoginScreen = props => {
                           setCodeValue('');
                           setPhoneNumberValue('');
                           setCurrentForm('number');
-                          navigation.navigate('ContactsImportScreen');
+                          navigation.navigate('HomeScreen');
                         }
                       } catch (err) {
                         console.error(err);
@@ -381,9 +403,12 @@ const LoginScreen = props => {
                   renderItem={({ cellValue, isFocused }) => {
                     return null;
                   }}
+                  secureTextEntry={false}
+                  {...GlobalStyles.PinInputStyles(theme)['Pin Input'].props}
+                  cellCount={5}
                   style={StyleSheet.applyWidth(
                     StyleSheet.compose(
-                      GlobalStyles.PinInputStyles(theme)['Pin Input'],
+                      GlobalStyles.PinInputStyles(theme)['Pin Input'].style,
                       { borderColor: theme.colors['Divider'], borderRadius: 12 }
                     ),
                     dimensions.width
@@ -393,10 +418,12 @@ const LoginScreen = props => {
                 {/* ErrorText 3 */}
                 <Text
                   accessible={true}
+                  {...GlobalStyles.TextStyles(theme)['Text'].props}
                   style={StyleSheet.applyWidth(
-                    StyleSheet.compose(GlobalStyles.TextStyles(theme)['Text'], {
-                      color: theme.colors['Error'],
-                    }),
+                    StyleSheet.compose(
+                      GlobalStyles.TextStyles(theme)['Text'].style,
+                      { color: theme.colors['Error'] }
+                    ),
                     dimensions.width
                   )}
                 >
@@ -406,9 +433,10 @@ const LoginScreen = props => {
                   {!(timerValue > 0) ? null : (
                     <Text
                       accessible={true}
+                      {...GlobalStyles.TextStyles(theme)['Text'].props}
                       style={StyleSheet.applyWidth(
                         StyleSheet.compose(
-                          GlobalStyles.TextStyles(theme)['Text'],
+                          GlobalStyles.TextStyles(theme)['Text'].style,
                           {
                             color: theme.colors['Light'],
                             fontFamily: 'Poppins_500Medium',
@@ -447,9 +475,10 @@ const LoginScreen = props => {
                         };
                         handler();
                       }}
+                      {...GlobalStyles.LinkStyles(theme)['Link'].props}
                       style={StyleSheet.applyWidth(
                         StyleSheet.compose(
-                          GlobalStyles.LinkStyles(theme)['Link'],
+                          GlobalStyles.LinkStyles(theme)['Link'].style,
                           {
                             textAlign: 'center',
                             textDecorationLine: 'underline',
@@ -465,18 +494,21 @@ const LoginScreen = props => {
 
               <Text
                 accessible={true}
+                {...GlobalStyles.TextStyles(theme)['Text'].props}
                 style={StyleSheet.applyWidth(
-                  StyleSheet.compose(GlobalStyles.TextStyles(theme)['Text'], {
-                    textAlign: 'center',
-                  }),
+                  StyleSheet.compose(
+                    GlobalStyles.TextStyles(theme)['Text'].style,
+                    { textAlign: 'center' }
+                  ),
                   dimensions.width
                 )}
               >
                 {'Already have an account? '}
                 <Link
                   accessible={true}
+                  {...GlobalStyles.LinkStyles(theme)['Link'].props}
                   style={StyleSheet.applyWidth(
-                    GlobalStyles.LinkStyles(theme)['Link'],
+                    GlobalStyles.LinkStyles(theme)['Link'].style,
                     dimensions.width
                   )}
                   title={'Login In'}

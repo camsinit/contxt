@@ -11,18 +11,22 @@ import React from 'react';
 import * as AuthApiApi from './apis/AuthApiApi.js';
 import * as XANOApi from './apis/XANOApi.js';
 import * as GlobalVariables from './config/GlobalVariableContext';
-import getContacts from './global-functions/getContacts';
 import randomNumber from './global-functions/randomNumber';
 import requestContactsPermissions from './global-functions/requestContactsPermissions';
 import Breakpoints from './utils/Breakpoints';
 import useWindowDimensions from './utils/useWindowDimensions';
 
-import ContactsImportScreen from './screens/ContactsImportScreen';
+import AddQuoteHelpScreen from './screens/AddQuoteHelpScreen';
 import HomeScreen from './screens/HomeScreen';
-import InboxScreen from './screens/InboxScreen';
 import LoginScreen from './screens/LoginScreen';
-import OnboardingScreen from './screens/OnboardingScreen';
+import Onboarding1WelcomeScreen from './screens/Onboarding1WelcomeScreen';
+import Onboarding2NameScreen from './screens/Onboarding2NameScreen';
+import Onboarding3PhoneScreen from './screens/Onboarding3PhoneScreen';
+import Onboarding4DOBScreen from './screens/Onboarding4DOBScreen';
+import Onboarding5ContactsImportScreen from './screens/Onboarding5ContactsImportScreen';
+import Onboarding6NotificationsScreen from './screens/Onboarding6NotificationsScreen';
 import ProfileScreen from './screens/ProfileScreen';
+import QuoteBoxScreen from './screens/QuoteBoxScreen';
 import SettingsScreen from './screens/SettingsScreen';
 import SignupScreen from './screens/SignupScreen';
 
@@ -59,7 +63,7 @@ export default function RootAppNavigator() {
       <Stack.Navigator
         initialRouteName="OnboardingScreen"
         screenOptions={({ navigation }) => ({
-          gestureEnabled: false,
+          gestureEnabled: true,
           headerBackImage:
             Platform.OS === 'android' ? DefaultAndroidBackIcon : null,
           headerShown: false,
@@ -73,18 +77,18 @@ export default function RootAppNavigator() {
           })}
         />
         <Stack.Screen
-          name="OnboardingScreen"
-          component={OnboardingScreen}
+          name="Onboarding1WelcomeScreen"
+          component={Onboarding1WelcomeScreen}
           options={({ navigation }) => ({
             gestureEnabled: true,
-            title: 'Onboarding',
+            title: 'Onboarding - 1 Welcome Screen',
           })}
         />
         <Stack.Screen
-          name="InboxScreen"
-          component={InboxScreen}
+          name="QuoteBoxScreen"
+          component={QuoteBoxScreen}
           options={({ navigation }) => ({
-            title: 'Inbox',
+            title: 'Quote Box',
           })}
         />
         <Stack.Screen
@@ -116,10 +120,45 @@ export default function RootAppNavigator() {
           })}
         />
         <Stack.Screen
-          name="ContactsImportScreen"
-          component={ContactsImportScreen}
+          name="Onboarding5ContactsImportScreen"
+          component={Onboarding5ContactsImportScreen}
           options={({ navigation }) => ({
-            title: 'Contacts Import',
+            title: 'Onboarding - 5 Contacts Import',
+          })}
+        />
+        <Stack.Screen
+          name="Onboarding2NameScreen"
+          component={Onboarding2NameScreen}
+          options={({ navigation }) => ({
+            title: 'Onboarding - 2 Name',
+          })}
+        />
+        <Stack.Screen
+          name="Onboarding3PhoneScreen"
+          component={Onboarding3PhoneScreen}
+          options={({ navigation }) => ({
+            title: 'Onboarding - 3 Phone',
+          })}
+        />
+        <Stack.Screen
+          name="Onboarding6NotificationsScreen"
+          component={Onboarding6NotificationsScreen}
+          options={({ navigation }) => ({
+            title: 'Onboarding -  6  Notifications',
+          })}
+        />
+        <Stack.Screen
+          name="AddQuoteHelpScreen"
+          component={AddQuoteHelpScreen}
+          options={({ navigation }) => ({
+            title: 'Add Quote Help Screen',
+          })}
+        />
+        <Stack.Screen
+          name="Onboarding4DOBScreen"
+          component={Onboarding4DOBScreen}
+          options={({ navigation }) => ({
+            title: 'Onboarding - 4 DOB',
           })}
         />
       </Stack.Navigator>

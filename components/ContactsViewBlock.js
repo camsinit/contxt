@@ -44,6 +44,36 @@ const ContactsViewBlock = props => {
     return Variables?.CX_USER?.id === props?.contact?.id;
   };
 
+  const randomPastelColor = inputString => {
+    function stringToHue(str) {
+      // A simple hash function to convert a string to a number
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) {
+        const character = str.charCodeAt(i);
+        hash = (hash << 5) - hash + character;
+        hash = hash & hash; // Convert to 32bit integer
+      }
+      return Math.abs(hash) % 360; // Ensure the hue is between 0 and 359
+    }
+
+    // Use the hashed string to generate a hue
+    const hue = stringToHue(inputString || '');
+
+    // Set saturation and lightness to get a pastel color.
+    const saturation = 60 + (hue % 21); // 60% to 80%, based on hue
+    const lightness = 85 + (hue % 11); // 85% to 95%, based on hue
+
+    // Return the pastel color in HSL format
+    return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+  };
+  React.useEffect(() => {
+    try {
+      /* hidden 'Log to Console' action */
+    } catch (err) {
+      console.error(err);
+    }
+  }, []);
+
   return (
     <View
       style={StyleSheet.applyWidth(
@@ -60,28 +90,170 @@ const ContactsViewBlock = props => {
       >
         {/* AvatarView */}
         <Surface
+          elevation={0}
+          {...GlobalStyles.SurfaceStyles(theme)['Surface'].props}
           style={StyleSheet.applyWidth(
-            StyleSheet.compose(GlobalStyles.SurfaceStyles(theme)['Surface'], {
-              borderRadius: 40,
-              height: props.avatarSize ?? 40,
-              minHeight: [
-                { minWidth: Breakpoints.Mobile, value: null },
-                { minWidth: Breakpoints.Mobile, value: props.avatarSize ?? 40 },
-              ],
-              overflow: 'hidden',
-              width: props.avatarSize ?? 40,
-            }),
+            StyleSheet.compose(
+              GlobalStyles.SurfaceStyles(theme)['Surface'].style,
+              {
+                borderRadius: 40,
+                height: props.avatarSize ?? 40,
+                minHeight: [
+                  { minWidth: Breakpoints.Mobile, value: null },
+                  {
+                    minWidth: Breakpoints.Mobile,
+                    value: props.avatarSize ?? 40,
+                  },
+                ],
+                overflow: 'hidden',
+                width: props.avatarSize ?? 40,
+              }
+            ),
             dimensions.width
           )}
         >
           <>
-            {(props.contact ?? (() => {}))?.profile_image?.url ? null : (
+            {(
+              props.contact ?? {
+                id: 9743,
+                dob: null,
+                name: 'Cam ❤️ Lindsay',
+                _user: {
+                  id: 1,
+                  name: 'Cam Lindsay',
+                  last_name: 'Lindsay',
+                  created_at: 1710858691391,
+                  first_name: 'Cam',
+                  profile_image: {
+                    url: 'https://xxxn-hde9-kulk.n7c.xano.io/vault/eh5MAgN4/WVhHvWQ9n5a12nUSLIzvQqqAjjU/0NbFKw../file-799c21.jpeg',
+                    meta: { width: 762, height: 1143 },
+                    mime: 'image/jpeg',
+                    name: 'file-799c21.jpeg',
+                    path: '/vault/eh5MAgN4/WVhHvWQ9n5a12nUSLIzvQqqAjjU/0NbFKw../file-799c21.jpeg',
+                    size: 72133,
+                    type: 'image',
+                    access: 'public',
+                  },
+                },
+                emails: [],
+                last_name: 'Lindsay',
+                created_at: 1710906669157,
+                first_name: 'Cam ❤️',
+                owner_user_id: 9,
+                phone_numbers: ['16178003804'],
+                profile_image: null,
+                connected_user_id: 1,
+              }
+            )?.profile_image?.url ? null : (
               <Circle
+                {...GlobalStyles.CircleStyles(theme)['Circle'].props}
                 style={StyleSheet.applyWidth(
                   StyleSheet.compose(
-                    GlobalStyles.CircleStyles(theme)['Circle'],
+                    GlobalStyles.CircleStyles(theme)['Circle'].style,
                     {
-                      backgroundColor: theme.colors['DarkGray'],
+                      backgroundColor: randomPastelColor(
+                        (
+                          props.contact ?? {
+                            id: 9743,
+                            dob: null,
+                            name: 'Cam ❤️ Lindsay',
+                            _user: {
+                              id: 1,
+                              name: 'Cam Lindsay',
+                              last_name: 'Lindsay',
+                              created_at: 1710858691391,
+                              first_name: 'Cam',
+                              profile_image: {
+                                url: 'https://xxxn-hde9-kulk.n7c.xano.io/vault/eh5MAgN4/WVhHvWQ9n5a12nUSLIzvQqqAjjU/0NbFKw../file-799c21.jpeg',
+                                meta: { width: 762, height: 1143 },
+                                mime: 'image/jpeg',
+                                name: 'file-799c21.jpeg',
+                                path: '/vault/eh5MAgN4/WVhHvWQ9n5a12nUSLIzvQqqAjjU/0NbFKw../file-799c21.jpeg',
+                                size: 72133,
+                                type: 'image',
+                                access: 'public',
+                              },
+                            },
+                            emails: [],
+                            last_name: 'Lindsay',
+                            created_at: 1710906669157,
+                            first_name: 'Cam ❤️',
+                            owner_user_id: 9,
+                            phone_numbers: ['16178003804'],
+                            profile_image: null,
+                            connected_user_id: 1,
+                          }
+                        )?.name
+                      ),
+                      borderColor: theme.colors['Strong'],
+                      borderStyle: 'solid',
+                      borderWidth:
+                        (
+                          props.contact ?? {
+                            id: 9743,
+                            dob: null,
+                            name: 'Cam ❤️ Lindsay',
+                            _user: {
+                              id: 1,
+                              name: 'Cam Lindsay',
+                              last_name: 'Lindsay',
+                              created_at: 1710858691391,
+                              first_name: 'Cam',
+                              profile_image: {
+                                url: 'https://xxxn-hde9-kulk.n7c.xano.io/vault/eh5MAgN4/WVhHvWQ9n5a12nUSLIzvQqqAjjU/0NbFKw../file-799c21.jpeg',
+                                meta: { width: 762, height: 1143 },
+                                mime: 'image/jpeg',
+                                name: 'file-799c21.jpeg',
+                                path: '/vault/eh5MAgN4/WVhHvWQ9n5a12nUSLIzvQqqAjjU/0NbFKw../file-799c21.jpeg',
+                                size: 72133,
+                                type: 'image',
+                                access: 'public',
+                              },
+                            },
+                            emails: [],
+                            last_name: 'Lindsay',
+                            created_at: 1710906669157,
+                            first_name: 'Cam ❤️',
+                            owner_user_id: 9,
+                            phone_numbers: ['16178003804'],
+                            profile_image: null,
+                            connected_user_id: 1,
+                          }
+                        )?.profile_type === 'user' &&
+                        (
+                          props.contact ?? {
+                            id: 9743,
+                            dob: null,
+                            name: 'Cam ❤️ Lindsay',
+                            _user: {
+                              id: 1,
+                              name: 'Cam Lindsay',
+                              last_name: 'Lindsay',
+                              created_at: 1710858691391,
+                              first_name: 'Cam',
+                              profile_image: {
+                                url: 'https://xxxn-hde9-kulk.n7c.xano.io/vault/eh5MAgN4/WVhHvWQ9n5a12nUSLIzvQqqAjjU/0NbFKw../file-799c21.jpeg',
+                                meta: { width: 762, height: 1143 },
+                                mime: 'image/jpeg',
+                                name: 'file-799c21.jpeg',
+                                path: '/vault/eh5MAgN4/WVhHvWQ9n5a12nUSLIzvQqqAjjU/0NbFKw../file-799c21.jpeg',
+                                size: 72133,
+                                type: 'image',
+                                access: 'public',
+                              },
+                            },
+                            emails: [],
+                            last_name: 'Lindsay',
+                            created_at: 1710906669157,
+                            first_name: 'Cam ❤️',
+                            owner_user_id: 9,
+                            phone_numbers: ['16178003804'],
+                            profile_image: null,
+                            connected_user_id: 1,
+                          }
+                        )?.completed_onboarding
+                          ? 3
+                          : 0,
                       height: props.avatarSize ?? 40,
                       width: props.avatarSize ?? 40,
                     }
@@ -92,32 +264,135 @@ const ContactsViewBlock = props => {
                 {/* InitialsText */}
                 <Text
                   accessible={true}
-                  allowFontScaling={true}
+                  {...GlobalStyles.TextStyles(theme)['Text'].props}
                   style={StyleSheet.applyWidth(
-                    StyleSheet.compose(GlobalStyles.TextStyles(theme)['Text'], {
-                      fontSize: 15,
-                    }),
+                    StyleSheet.compose(
+                      GlobalStyles.TextStyles(theme)['Text'].style,
+                      { fontSize: 15 }
+                    ),
                     dimensions.width
                   )}
                 >
-                  {getInitials((props.contact ?? (() => {}))?.name)}
+                  {getInitials(
+                    (
+                      props.contact ?? {
+                        id: 9743,
+                        dob: null,
+                        name: 'Cam ❤️ Lindsay',
+                        _user: {
+                          id: 1,
+                          name: 'Cam Lindsay',
+                          last_name: 'Lindsay',
+                          created_at: 1710858691391,
+                          first_name: 'Cam',
+                          profile_image: {
+                            url: 'https://xxxn-hde9-kulk.n7c.xano.io/vault/eh5MAgN4/WVhHvWQ9n5a12nUSLIzvQqqAjjU/0NbFKw../file-799c21.jpeg',
+                            meta: { width: 762, height: 1143 },
+                            mime: 'image/jpeg',
+                            name: 'file-799c21.jpeg',
+                            path: '/vault/eh5MAgN4/WVhHvWQ9n5a12nUSLIzvQqqAjjU/0NbFKw../file-799c21.jpeg',
+                            size: 72133,
+                            type: 'image',
+                            access: 'public',
+                          },
+                        },
+                        emails: [],
+                        last_name: 'Lindsay',
+                        created_at: 1710906669157,
+                        first_name: 'Cam ❤️',
+                        owner_user_id: 9,
+                        phone_numbers: ['16178003804'],
+                        profile_image: null,
+                        connected_user_id: 1,
+                      }
+                    )?.name
+                  )}
                 </Text>
               </Circle>
             )}
           </>
+          {/* ContactImage */}
           <>
-            {!(props.contact ?? (() => {}))?.profile_image?.url ? null : (
+            {!(
+              props.contact ?? {
+                id: 9743,
+                dob: null,
+                name: 'Cam ❤️ Lindsay',
+                _user: {
+                  id: 1,
+                  name: 'Cam Lindsay',
+                  last_name: 'Lindsay',
+                  created_at: 1710858691391,
+                  first_name: 'Cam',
+                  profile_image: {
+                    url: 'https://xxxn-hde9-kulk.n7c.xano.io/vault/eh5MAgN4/WVhHvWQ9n5a12nUSLIzvQqqAjjU/0NbFKw../file-799c21.jpeg',
+                    meta: { width: 762, height: 1143 },
+                    mime: 'image/jpeg',
+                    name: 'file-799c21.jpeg',
+                    path: '/vault/eh5MAgN4/WVhHvWQ9n5a12nUSLIzvQqqAjjU/0NbFKw../file-799c21.jpeg',
+                    size: 72133,
+                    type: 'image',
+                    access: 'public',
+                  },
+                },
+                emails: [],
+                last_name: 'Lindsay',
+                created_at: 1710906669157,
+                first_name: 'Cam ❤️',
+                owner_user_id: 9,
+                phone_numbers: ['16178003804'],
+                profile_image: null,
+                connected_user_id: 1,
+              }
+            )?.profile_image?.url ? null : (
               <Image
                 resizeMode={'cover'}
+                {...GlobalStyles.ImageStyles(theme)['Image'].props}
                 source={{
-                  uri: `${(props.contact ?? (() => {}))?.profile_image?.url}`,
+                  uri: `${
+                    (
+                      props.contact ?? {
+                        id: 9743,
+                        dob: null,
+                        name: 'Cam ❤️ Lindsay',
+                        _user: {
+                          id: 1,
+                          name: 'Cam Lindsay',
+                          last_name: 'Lindsay',
+                          created_at: 1710858691391,
+                          first_name: 'Cam',
+                          profile_image: {
+                            url: 'https://xxxn-hde9-kulk.n7c.xano.io/vault/eh5MAgN4/WVhHvWQ9n5a12nUSLIzvQqqAjjU/0NbFKw../file-799c21.jpeg',
+                            meta: { width: 762, height: 1143 },
+                            mime: 'image/jpeg',
+                            name: 'file-799c21.jpeg',
+                            path: '/vault/eh5MAgN4/WVhHvWQ9n5a12nUSLIzvQqqAjjU/0NbFKw../file-799c21.jpeg',
+                            size: 72133,
+                            type: 'image',
+                            access: 'public',
+                          },
+                        },
+                        emails: [],
+                        last_name: 'Lindsay',
+                        created_at: 1710906669157,
+                        first_name: 'Cam ❤️',
+                        owner_user_id: 9,
+                        phone_numbers: ['16178003804'],
+                        profile_image: null,
+                        connected_user_id: 1,
+                      }
+                    )?.profile_image?.url
+                  }`,
                 }}
                 style={StyleSheet.applyWidth(
-                  StyleSheet.compose(GlobalStyles.ImageStyles(theme)['Image'], {
-                    borderRadius: props.avatarSize ?? 40,
-                    height: props.avatarSize ?? 40,
-                    width: props.avatarSize ?? 40,
-                  }),
+                  StyleSheet.compose(
+                    GlobalStyles.ImageStyles(theme)['Image'].style,
+                    {
+                      borderRadius: props.avatarSize ?? 40,
+                      height: props.avatarSize ?? 40,
+                      width: props.avatarSize ?? 40,
+                    }
+                  ),
                   dimensions.width
                 )}
               />
@@ -136,11 +411,12 @@ const ContactsViewBlock = props => {
               {/* NameText */}
               <Text
                 accessible={true}
-                allowFontScaling={true}
+                {...GlobalStyles.TextStyles(theme)['Text'].props}
                 style={StyleSheet.applyWidth(
-                  StyleSheet.compose(GlobalStyles.TextStyles(theme)['Text'], {
-                    fontFamily: 'Poppins_500Medium',
-                  }),
+                  StyleSheet.compose(
+                    GlobalStyles.TextStyles(theme)['Text'].style,
+                    { fontFamily: 'Poppins_500Medium' }
+                  ),
                   dimensions.width
                 )}
               >
@@ -157,7 +433,40 @@ const ContactsViewBlock = props => {
                   {isMe(Variables) ? null : (
                     <HighligtedTextBlock
                       searchWords={stringToArray(props.searchTerm ?? '')}
-                      text={(props.contact ?? (() => {}))?.name}
+                      text={
+                        (
+                          props.contact ?? {
+                            id: 9743,
+                            dob: null,
+                            name: 'Cam ❤️ Lindsay',
+                            _user: {
+                              id: 1,
+                              name: 'Cam Lindsay',
+                              last_name: 'Lindsay',
+                              created_at: 1710858691391,
+                              first_name: 'Cam',
+                              profile_image: {
+                                url: 'https://xxxn-hde9-kulk.n7c.xano.io/vault/eh5MAgN4/WVhHvWQ9n5a12nUSLIzvQqqAjjU/0NbFKw../file-799c21.jpeg',
+                                meta: { width: 762, height: 1143 },
+                                mime: 'image/jpeg',
+                                name: 'file-799c21.jpeg',
+                                path: '/vault/eh5MAgN4/WVhHvWQ9n5a12nUSLIzvQqqAjjU/0NbFKw../file-799c21.jpeg',
+                                size: 72133,
+                                type: 'image',
+                                access: 'public',
+                              },
+                            },
+                            emails: [],
+                            last_name: 'Lindsay',
+                            created_at: 1710906669157,
+                            first_name: 'Cam ❤️',
+                            owner_user_id: 9,
+                            phone_numbers: ['16178003804'],
+                            profile_image: null,
+                            connected_user_id: 1,
+                          }
+                        )?.name
+                      }
                     />
                   )}
                 </>
@@ -168,10 +477,10 @@ const ContactsViewBlock = props => {
                 {!(props.quoteText ?? '') ? null : (
                   <Text
                     accessible={true}
-                    allowFontScaling={true}
+                    {...GlobalStyles.TextStyles(theme)['Text'].props}
                     style={StyleSheet.applyWidth(
                       StyleSheet.compose(
-                        GlobalStyles.TextStyles(theme)['Text'],
+                        GlobalStyles.TextStyles(theme)['Text'].style,
                         {
                           color: theme.colors['Light'],
                           fontFamily: 'Poppins_300Light',

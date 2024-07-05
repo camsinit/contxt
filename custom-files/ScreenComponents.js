@@ -1,5 +1,5 @@
 // This import is required if you are defining react components in this module.
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Text from '@sanar/react-native-highlight-text';
 import PInput from 'react-native-phone-number-input';
 import { View } from 'react-native';
@@ -7,6 +7,9 @@ import { BlurView } from 'expo-blur';
 import * as Animatable from 'react-native-animatable';
 import * as StyleSheet from '../utils/StyleSheet';
 import * as GlobalStyles from '../GlobalStyles.js';
+import ViewShot from 'react-native-view-shot';
+import * as Sharing from 'expo-sharing';
+
 import useWindowDimensions from '../utils/useWindowDimensions';
 
 export const HighlightText = ({
@@ -18,7 +21,9 @@ export const HighlightText = ({
     return (
       <Text
         highlightStyle={{ backgroundColor: 'lightgrey' }}
-        searchWords={searchWords}
+        searchWords={searchWords.map(w =>
+          w.replaceAll('(', '').replaceAll(')', '')
+        )}
         textToHighlight={textToHighlight}
         // style={{
         //   textShadowColor: 'rgba(0, 0, 0, 0.25)',
@@ -31,7 +36,9 @@ export const HighlightText = ({
     return (
       <Text
         highlightStyle={{ color: 'rgba(0,0,0,1)' }}
-        searchWords={searchWords}
+        searchWords={searchWords.map(w =>
+          w.replaceAll('(', '').replaceAll(')', '')
+        )}
         textToHighlight={textToHighlight}
         style={{
           color: 'rgba(0,0,0,0.25)',
@@ -41,7 +48,12 @@ export const HighlightText = ({
   }
 };
 
-export const PhoneInput = ({ number, setNumber, theme }) => {
+export const PhoneInput = ({
+  number,
+  setNumber,
+  theme,
+  style = { marginTop: 20 },
+}) => {
   const [value, setValue] = useState(number);
   const [formattedValue, setFormattedValue] = useState('');
 
@@ -50,7 +62,7 @@ export const PhoneInput = ({ number, setNumber, theme }) => {
   }, [value]);
 
   return (
-    <View style={{ marginTop: 20 }}>
+    <View style={style}>
       <PInput
         defaultValue={value}
         defaultCode="US"
@@ -142,7 +154,7 @@ export function ModalView({ theme, show, hide, children }) {
     >
       <Animatable.View
         animation={show ? 'fadeInUp' : 'fadeOutDown'}
-        duration={500}
+        duration={300}
         style={{
           position: 'absolute',
           // top: 60,
@@ -156,5 +168,32 @@ export function ModalView({ theme, show, hide, children }) {
         <View style={{ flex: 1 }}>{children}</View>
       </Animatable.View>
     </BlurView>
+  );
+}
+
+export function ViewShotView({ children, share, setShare }) {
+  const ref = useRef();
+
+  const takeScreenShot = () => {
+    ref.current.capture().then(uri => {
+      // console.log('do something with ', uri);
+      Sharing.shareAsync(uri);
+    });
+  };
+
+  useEffect(() => {
+    if (share) {
+      takeScreenShot();
+      setShare(false);
+    }
+  }, [share]);
+
+  return (
+    <ViewShot
+      ref={ref}
+      options={{ fileName: 'Your-File-Name', format: 'jpg', quality: 0.9 }}
+    >
+      {children}
+    </ViewShot>
   );
 }

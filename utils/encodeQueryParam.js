@@ -19,12 +19,35 @@ if (Platform.OS === 'ios') {
   }
 }
 
-const encodeQueryParam = param => {
-  if (isIos17OrNewer) {
+const isUrlEncoded = s => {
+  if (typeof s !== 'string' || !s.match(/%[0-9A-F][0-9A-F]/)) {
+    return false;
+  }
+  try {
+    const decoded = decodeURIComponent(s);
+    return decoded !== s;
+  } catch (_e) {
+    return false;
+  }
+};
+
+export const encodeQueryParam = param => {
+  if (isIos17OrNewer || isUrlEncoded(param)) {
     return param;
   } else {
     return encodeURIComponent(param);
   }
+};
+
+export const renderParam = value =>
+  typeof value === 'string' ? value : JSON.stringify(value);
+
+export const renderQueryString = paramsDict => {
+  const filtered = Object.entries(paramsDict).filter(kv => kv[1] !== undefined);
+  const queries = filtered.map(
+    ([k, v]) => `${encodeQueryParam(k)}=${encodeQueryParam(v)}`
+  );
+  return !queries.length ? '' : '?' + queries.join('&');
 };
 
 export default encodeQueryParam;

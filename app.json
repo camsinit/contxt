@@ -1,27 +1,37 @@
 {
   "expo": {
-    "name": "Contxt",
-    "slug": "contxt",
-    "scheme": "untitled-app",
-    "description": "Your place for quotes n jokes",
-    "privacy": "unlisted",
-    "platforms": [
-      "ios",
-      "android",
-      "web"
-    ],
-    "version": "1.15.0",
-    "orientation": "default",
+    "ios": {
+      "config": {
+        "usesNonExemptEncryption": false
+      },
+      "infoPlist": {},
+      "bundleIdentifier": "wiki.contxt.app",
+      "usesIcloudStorage": false,
+      "buildNumber": "1.0.0"
+    },
+    "web": {
+      "themeColor": "#000000"
+    },
     "icon": "./assets/app/icon.png",
-    "backgroundColor": "#FFFFFF",
+    "name": "Contxt",
+    "slug": "wiki.contxt.app",
+    "extra": {
+      "eas": {
+        "projectId": ""
+      }
+    },
+    "scheme": "untitled-app",
     "splash": {
       "image": "./assets/app/splash.png",
       "resizeMode": "cover",
       "backgroundColor": "#FFFFFF"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "android": {
+      "package": "com.draftbit.untitledapp",
+      "permissions": [],
+      "versionCode": 34,
+      "adaptiveIcon": {}
+    },
     "plugins": [
       [
         "expo-screen-orientation",
@@ -36,35 +46,58 @@
             "deploymentTarget": "14.0"
           }
         }
+      ],
+      [
+        "./plugins/privacy-info-plugin",
+        {
+          "NSPrivacyAccessedAPITypes": [
+            {
+              "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryDiskSpace",
+              "NSPrivacyAccessedAPITypeReasons": [
+                "E174.1"
+              ]
+            },
+            {
+              "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryFileTimestamp",
+              "NSPrivacyAccessedAPITypeReasons": [
+                "DDA9.1"
+              ]
+            },
+            {
+              "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
+              "NSPrivacyAccessedAPITypeReasons": [
+                "CA92.1"
+              ]
+            },
+            {
+              "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategorySystemBootTime",
+              "NSPrivacyAccessedAPITypeReasons": [
+                "35F9.1"
+              ]
+            }
+          ]
+        }
       ]
     ],
-    "ios": {
-      "bundleIdentifier": "com.contxt.app",
-      "buildNumber": "1.15.0",
-      "infoPlist": {},
-      "usesIcloudStorage": false,
-      "config": {
-        "usesNonExemptEncryption": false
-      }
-    },
-    "android": {
-      "versionCode": 15,
-      "package": "com.draftbit.untitledapp",
-      "permissions": [],
-      "adaptiveIcon": {}
-    },
-    "androidStatusBar": {},
-    "androidNavigationBar": {},
-    "web": {
-      "themeColor": "#000000"
-    },
+    "privacy": "unlisted",
+    "version": "1.34.0",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "description": "Your place for quotes n jokes",
+    "orientation": "default",
+    "iosStatusBar": {},
     "notification": {
       "androidMode": "default"
     },
-    "extra": {
-      "eas": {
-        "projectId": ""
-      }
-    }
+    "backgroundColor": "#FFFFFF",
+    "allowFontScaling": true,
+    "androidStatusBar": {},
+    "androidNavigationBar": {},
+    "assetBundlePatterns": [
+      "**/*"
+    ]
   }
 }

@@ -1,0 +1,63 @@
+const {
+  createRunOncePlugin,
+  withXcodeProject,
+} = require('@expo/config-plugins');
+const {
+  addResourceFileToGroup,
+  getProjectName,
+} = require('@expo/config-plugins/build/ios/utils/Xcodeproj.js');
+const plist = require('@expo/plist').default;
+const fs = require('fs');
+const path = require('path');
+
+// Plugin to add required iOS privacy config
+// Based on https://github.com/expo/expo/pull/28005 and https://github.com/expo/expo/pull/28223
+// Required on Expo versions <= 49.
+// Expo 50+ have direct integration with expo.ios.privacyManifests config of app.json
+
+const withPrivacyInfo = (
+  config,
+  {
+    NSPrivacyAccessedAPITypes = [],
+    NSPrivacyCollectedDataTypes = [],
+    NSPrivacyTracking = false,
+    NSPrivacyTrackingDomains = [],
+  }
+) => {
+  return withXcodeProject(config, async projectConfig => {
+    const project = projectConfig.modRequest;
+    const projectRoot = project.projectRoot;
+    const platformProjectRoot = project.platformProjectRoot;
+    const projectName = getProjectName(projectRoot);
+
+    const privacyFilePath = path.join(
+      platformProjectRoot,
+      projectName,
+      'PrivacyInfo.xcprivacy'
+    );
+
+    const contents = plist.build({
+      NSPrivacyCollectedDataTypes,
+      NSPrivacyTracking,
+      NSPrivacyTrackingDomains,
+      NSPrivacyAccessedAPITypes,
+    });
+
+    fs.writeFileSync(privacyFilePath, contents);
+
+    projectConfig.modResults = addResourceFileToGroup({
+      filepath: privacyFilePath,
+      groupName: projectName,
+      project: projectConfig.modResults,
+      isBuildFile: true,
+      verbose: true,
+    });
+    return projectConfig;
+  });
+};
+
+module.exports = createRunOncePlugin(
+  withPrivacyInfo,
+  'withPrivacyInfo',
+  '1.0.1'
+);

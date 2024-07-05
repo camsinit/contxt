@@ -13,8 +13,6 @@ function Block({ navigation }) {
             Contacts.Fields.Image,
           ],
         });
-
-        console.log(data.length);
       }
     })();
   }, []);

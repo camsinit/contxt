@@ -53,9 +53,9 @@ const ConversationViewBlock = props => {
       {/* NameText */}
       <Text
         accessible={true}
-        allowFontScaling={true}
+        {...GlobalStyles.TextStyles(theme)['Text'].props}
         style={StyleSheet.applyWidth(
-          StyleSheet.compose(GlobalStyles.TextStyles(theme)['Text'], {
+          StyleSheet.compose(GlobalStyles.TextStyles(theme)['Text'].style, {
             fontFamily: 'Poppins_600SemiBold',
           }),
           dimensions.width

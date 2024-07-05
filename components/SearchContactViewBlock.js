@@ -17,6 +17,10 @@ const SearchContactViewBlock = props => {
     return Variables?.CX_USER?.id === props?.contact?.id;
   };
 
+  const stringToArray = str => {
+    return (str || '').split(' ');
+  };
+
   const getInitials = name => {
     // Check if the input is a valid string
     if (typeof name !== 'string' || name.trim().length === 0) {
@@ -40,10 +44,6 @@ const SearchContactViewBlock = props => {
     return initials.toUpperCase(); // Return the initials in uppercase
   };
 
-  const stringToArray = str => {
-    return str.split(' ');
-  };
-
   return (
     <View
       style={StyleSheet.applyWidth(
@@ -60,16 +60,22 @@ const SearchContactViewBlock = props => {
       >
         {/* AvatarView */}
         <Surface
+          elevation={0}
+          {...GlobalStyles.SurfaceStyles(theme)['Surface'].props}
           style={StyleSheet.applyWidth(
-            StyleSheet.compose(GlobalStyles.SurfaceStyles(theme)['Surface'], {
-              borderRadius: 40,
-              marginRight: 10,
-              minHeight: 28,
-              overflow: 'hidden',
-            }),
+            StyleSheet.compose(
+              GlobalStyles.SurfaceStyles(theme)['Surface'].style,
+              {
+                borderRadius: 40,
+                marginRight: 10,
+                minHeight: 28,
+                overflow: 'hidden',
+              }
+            ),
             dimensions.width
           )}
         >
+          {/* Circle 2 */}
           <>
             {(
               props.contact ?? {
@@ -82,11 +88,36 @@ const SearchContactViewBlock = props => {
               }
             )?.profile_image?.url ? null : (
               <Circle
+                {...GlobalStyles.CircleStyles(theme)['Circle'].props}
                 style={StyleSheet.applyWidth(
                   StyleSheet.compose(
-                    GlobalStyles.CircleStyles(theme)['Circle'],
+                    GlobalStyles.CircleStyles(theme)['Circle'].style,
                     {
                       backgroundColor: theme.colors['DarkGray'],
+                      borderColor: theme.colors['Blue'],
+                      borderWidth:
+                        (
+                          props.contact ?? {
+                            id: '1',
+                            name: 'Sefa Yasin Okumus',
+                            image: {
+                              url: 'https://randomuser.me/api/portraits/med/men/5.jpg',
+                            },
+                            phoneNumbers: ['+905322536737', '+902164745516'],
+                          }
+                        )?.profile_type === 'user' &&
+                        (
+                          props.contact ?? {
+                            id: '1',
+                            name: 'Sefa Yasin Okumus',
+                            image: {
+                              url: 'https://randomuser.me/api/portraits/med/men/5.jpg',
+                            },
+                            phoneNumbers: ['+905322536737', '+902164745516'],
+                          }
+                        )?.completed_onboarding
+                          ? 3
+                          : 0,
                       height: 28,
                       width: 28,
                     }
@@ -97,11 +128,12 @@ const SearchContactViewBlock = props => {
                 {/* InitialsText */}
                 <Text
                   accessible={true}
-                  allowFontScaling={true}
+                  {...GlobalStyles.TextStyles(theme)['Text'].props}
                   style={StyleSheet.applyWidth(
-                    StyleSheet.compose(GlobalStyles.TextStyles(theme)['Text'], {
-                      fontSize: 13,
-                    }),
+                    StyleSheet.compose(
+                      GlobalStyles.TextStyles(theme)['Text'].style,
+                      { fontSize: 13 }
+                    ),
                     dimensions.width
                   )}
                 >
@@ -134,6 +166,7 @@ const SearchContactViewBlock = props => {
             )?.profile_image?.url ? null : (
               <Image
                 resizeMode={'cover'}
+                {...GlobalStyles.ImageStyles(theme)['Image'].props}
                 source={{
                   uri: `${
                     (
@@ -149,11 +182,10 @@ const SearchContactViewBlock = props => {
                   }`,
                 }}
                 style={StyleSheet.applyWidth(
-                  StyleSheet.compose(GlobalStyles.ImageStyles(theme)['Image'], {
-                    borderRadius: 40,
-                    height: 28,
-                    width: 28,
-                  }),
+                  StyleSheet.compose(
+                    GlobalStyles.ImageStyles(theme)['Image'].style,
+                    { borderRadius: 40, height: 28, width: 28 }
+                  ),
                   dimensions.width
                 )}
               />
@@ -165,9 +197,9 @@ const SearchContactViewBlock = props => {
           {/* NameText */}
           <Text
             accessible={true}
-            allowFontScaling={true}
+            {...GlobalStyles.TextStyles(theme)['Text'].props}
             style={StyleSheet.applyWidth(
-              StyleSheet.compose(GlobalStyles.TextStyles(theme)['Text'], {
+              StyleSheet.compose(GlobalStyles.TextStyles(theme)['Text'].style, {
                 fontFamily: 'Poppins_500Medium',
               }),
               dimensions.width
@@ -179,16 +211,41 @@ const SearchContactViewBlock = props => {
                   highlightMode={'search'}
                   searchWords={stringToArray(props.searchTerm ?? 'sefa')}
                   text={
-                    (
-                      props.contact ?? {
-                        id: '1',
-                        name: 'Sefa Yasin Okumus',
-                        image: {
-                          url: 'https://randomuser.me/api/portraits/med/men/5.jpg',
-                        },
-                        phoneNumbers: ['+905322536737', '+902164745516'],
-                      }
-                    )?.name
+                    props.nameOnly ?? false
+                      ? stringToArray(
+                          (
+                            props.contact ?? {
+                              id: '1',
+                              name: 'Sefa Yasin Okumus',
+                              image: {
+                                url: 'https://randomuser.me/api/portraits/med/men/5.jpg',
+                              },
+                              phoneNumbers: ['+905322536737', '+902164745516'],
+                            }
+                          )?.name
+                        ) &&
+                        stringToArray(
+                          (
+                            props.contact ?? {
+                              id: '1',
+                              name: 'Sefa Yasin Okumus',
+                              image: {
+                                url: 'https://randomuser.me/api/portraits/med/men/5.jpg',
+                              },
+                              phoneNumbers: ['+905322536737', '+902164745516'],
+                            }
+                          )?.name
+                        )[0]
+                      : (
+                          props.contact ?? {
+                            id: '1',
+                            name: 'Sefa Yasin Okumus',
+                            image: {
+                              url: 'https://randomuser.me/api/portraits/med/men/5.jpg',
+                            },
+                            phoneNumbers: ['+905322536737', '+902164745516'],
+                          }
+                        )?.name
                   }
                 />
               )}
@@ -210,13 +267,16 @@ const SearchContactViewBlock = props => {
             {!(props.quoteText ?? '') ? null : (
               <Text
                 accessible={true}
-                allowFontScaling={true}
+                {...GlobalStyles.TextStyles(theme)['Text'].props}
                 style={StyleSheet.applyWidth(
-                  StyleSheet.compose(GlobalStyles.TextStyles(theme)['Text'], {
-                    color: theme.colors['Light'],
-                    fontFamily: 'Poppins_300Light',
-                    fontSize: 12,
-                  }),
+                  StyleSheet.compose(
+                    GlobalStyles.TextStyles(theme)['Text'].style,
+                    {
+                      color: theme.colors['Light'],
+                      fontFamily: 'Poppins_300Light',
+                      fontSize: 12,
+                    }
+                  ),
                   dimensions.width
                 )}
               >

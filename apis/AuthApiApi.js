@@ -9,17 +9,28 @@ import useFetch from 'react-fetch-hook';
 import { useIsFocused } from '@react-navigation/native';
 import { handleResponse, isOkStatus } from '../utils/handleRestApiResponse';
 import usePrevious from '../utils/usePrevious';
-import encodeQueryParam from '../utils/encodeQueryParam';
+import {
+  encodeQueryParam,
+  renderParam,
+  renderQueryString,
+} from '../utils/encodeQueryParam';
 import * as GlobalVariables from '../config/GlobalVariableContext';
 
-export const authMeGET = (Constants, _args, handlers = {}) =>
-  fetch(`https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/auth/me`, {
-    headers: {
+const cleanHeaders = headers =>
+  Object.fromEntries(Object.entries(headers).filter(kv => kv[1] != null));
+
+export const authMeGET = async (Constants, _args, handlers = {}) => {
+  const url = `https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/auth/me`;
+  const options = {
+    headers: cleanHeaders({
       Accept: 'application/json',
       Authorization: Constants['CX_AUTH_TOKEN'],
       'Content-Type': 'application/json',
-    },
-  }).then(res => handleResponse(res, handlers));
+    }),
+  };
+  const res = await fetch(url, options);
+  return handleResponse(res, handlers);
+};
 
 export const useAuthMeGET = (
   args = {},
@@ -69,12 +80,19 @@ export const FetchAuthMeGET = ({
   return children({ loading, data, error, refetchAuthMe: refetch });
 };
 
-export const loginPOST = (Constants, { code, phone }, handlers = {}) =>
-  fetch(`https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/auth/login`, {
+export const loginPOST = async (Constants, { code, phone }, handlers = {}) => {
+  const url = `https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/auth/login`;
+  const options = {
     body: JSON.stringify({ phone: phone, code: code }),
-    headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+    headers: cleanHeaders({
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    }),
     method: 'POST',
-  }).then(res => handleResponse(res, handlers));
+  };
+  const res = await fetch(url, options);
+  return handleResponse(res, handlers);
+};
 
 export const useLoginPOST = (
   args = {},
@@ -129,12 +147,19 @@ export const FetchLoginPOST = ({
   return children({ loading, data, error, refetchLogin: refetch });
 };
 
-export const resendPOST = (Constants, { phone }, handlers = {}) =>
-  fetch(`https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/auth/resend_code`, {
+export const resendPOST = async (Constants, { phone }, handlers = {}) => {
+  const url = `https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/auth/resend_code`;
+  const options = {
     body: JSON.stringify({ phone: phone }),
-    headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+    headers: cleanHeaders({
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    }),
     method: 'POST',
-  }).then(res => handleResponse(res, handlers));
+  };
+  const res = await fetch(url, options);
+  return handleResponse(res, handlers);
+};
 
 export const useResendPOST = (
   args = {},
@@ -188,21 +213,28 @@ export const FetchResendPOST = ({
   return children({ loading, data, error, refetchResend: refetch });
 };
 
-export const signupPOST = (
+export const signupPOST = async (
   Constants,
   { dob, first_name, last_name, phone },
   handlers = {}
-) =>
-  fetch(`https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/auth/signup`, {
+) => {
+  const url = `https://xxxn-hde9-kulk.n7c.xano.io/api:zur83CUB/auth/signup`;
+  const options = {
     body: JSON.stringify({
       phone: phone,
       first_name: first_name,
       last_name: last_name,
       dob: dob,
     }),
-    headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+    headers: cleanHeaders({
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    }),
     method: 'POST',
-  }).then(res => handleResponse(res, handlers));
+  };
+  const res = await fetch(url, options);
+  return handleResponse(res, handlers);
+};
 
 export const useSignupPOST = (
   args = {},
