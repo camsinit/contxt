@@ -1,0 +1,45 @@
+name: iOS Build
+
+on:
+  push:
+    branches:
+      - update-dependencies
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '18'
+
+    - name: Install Yarn
+      run: npm install -g yarn
+
+    - name: Install dependencies
+      run: yarn install
+
+    - name: Set up Expo CLI
+      run: yarn global add expo-cli
+
+    - name: Log in to Expo
+      run: expo login -u ${{ secrets.ExpoUsername }} -p ${{ secrets.ExpoPassword }}
+
+    - name: Set up EAS CLI
+      run: npm install -g eas-cli
+
+    - name: Set up environment variables
+      run: echo "REACT_APP_BASE_URL=${{ secrets.REACT_APP_BASE_URL }}" >> $GITHUB_ENV
+
+    - name: Install CocoaPods
+      run: pod install --project-directory=ios
+
+    - name: Build iOS app
+      run: eas build --platform ios --non-interactive
+      env:
+        EXPO_TOKEN: ${{ secrets.ContxtAccessToken }}
