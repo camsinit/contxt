@@ -3,6 +3,7 @@ import * as GlobalStyles from '../GlobalStyles.js';
 import * as AuthApiApi from '../apis/AuthApiApi.js';
 import * as GlobalVariables from '../config/GlobalVariableContext';
 import Images from '../config/Images';
+import palettes from '../themes/palettes';
 import Breakpoints from '../utils/Breakpoints';
 import * as StyleSheet from '../utils/StyleSheet';
 import useWindowDimensions from '../utils/useWindowDimensions';
@@ -80,7 +81,7 @@ const Onboarding1WelcomeScreen = props => {
             {...GlobalStyles.H1Styles(theme)['H1'].props}
             style={StyleSheet.applyWidth(
               StyleSheet.compose(GlobalStyles.H1Styles(theme)['H1'].style, {
-                color: theme.colors['Medium'],
+                color: theme.colors.text.medium,
                 fontFamily: 'System',
                 fontSize: 24,
                 fontWeight: '400',

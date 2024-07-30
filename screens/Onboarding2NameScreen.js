@@ -1,6 +1,7 @@
 import React from 'react';
 import * as GlobalStyles from '../GlobalStyles.js';
 import * as GlobalVariables from '../config/GlobalVariableContext';
+import palettes from '../themes/palettes';
 import Breakpoints from '../utils/Breakpoints';
 import * as StyleSheet from '../utils/StyleSheet';
 import useWindowDimensions from '../utils/useWindowDimensions';
@@ -86,7 +87,7 @@ const Onboarding2NameScreen = props => {
                 GlobalStyles.SurfaceStyles(theme)['Surface'].style,
                 {
                   alignItems: 'center',
-                  borderColor: theme.colors['Light Inverse'],
+                  borderColor: palettes.Brand['Light Inverse'],
                   borderRadius: 8,
                   borderWidth: 1,
                   height: 40,
@@ -190,7 +191,7 @@ const Onboarding2NameScreen = props => {
                 autoCapitalize={'words'}
                 autoComplete={'given-name'}
                 placeholder={'Enter your name'}
-                placeholderTextColor={theme.colors['Secondary']}
+                placeholderTextColor={theme.colors.branding.secondary}
                 style={StyleSheet.applyWidth(
                   StyleSheet.compose(
                     GlobalStyles.TextInputStyles(theme)['Text Input'].style,
@@ -238,7 +239,7 @@ const Onboarding2NameScreen = props => {
                 autoCapitalize={'words'}
                 autoComplete={'family-name'}
                 placeholder={'Enter your lastname'}
-                placeholderTextColor={theme.colors['Secondary']}
+                placeholderTextColor={theme.colors.branding.secondary}
                 style={StyleSheet.applyWidth(
                   StyleSheet.compose(
                     GlobalStyles.TextInputStyles(theme)['Text Input'].style,
@@ -261,7 +262,7 @@ const Onboarding2NameScreen = props => {
             {...GlobalStyles.TextStyles(theme)['Text'].props}
             style={StyleSheet.applyWidth(
               StyleSheet.compose(GlobalStyles.TextStyles(theme)['Text'].style, {
-                color: theme.colors['Error'],
+                color: theme.colors.background.danger,
               }),
               dimensions.width
             )}

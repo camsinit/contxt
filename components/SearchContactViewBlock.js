@@ -2,6 +2,7 @@ import React from 'react';
 import * as GlobalStyles from '../GlobalStyles.js';
 import HighligtedTextBlock from '../components/HighligtedTextBlock';
 import * as GlobalVariables from '../config/GlobalVariableContext';
+import palettes from '../themes/palettes';
 import Breakpoints from '../utils/Breakpoints';
 import * as StyleSheet from '../utils/StyleSheet';
 import useWindowDimensions from '../utils/useWindowDimensions';
@@ -93,8 +94,8 @@ const SearchContactViewBlock = props => {
                   StyleSheet.compose(
                     GlobalStyles.CircleStyles(theme)['Circle'].style,
                     {
-                      backgroundColor: theme.colors['DarkGray'],
-                      borderColor: theme.colors['Blue'],
+                      backgroundColor: palettes.App.DarkGray,
+                      borderColor: palettes.App.Blue,
                       borderWidth:
                         (
                           props.contact ?? {
@@ -272,7 +273,7 @@ const SearchContactViewBlock = props => {
                   StyleSheet.compose(
                     GlobalStyles.TextStyles(theme)['Text'].style,
                     {
-                      color: theme.colors['Light'],
+                      color: theme.colors.text.light,
                       fontFamily: 'Poppins_300Light',
                       fontSize: 12,
                     }

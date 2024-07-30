@@ -2,6 +2,7 @@ import React from 'react';
 import * as GlobalStyles from '../GlobalStyles.js';
 import * as XANOApi from '../apis/XANOApi.js';
 import * as GlobalVariables from '../config/GlobalVariableContext';
+import palettes from '../themes/palettes';
 import Breakpoints from '../utils/Breakpoints';
 import * as StyleSheet from '../utils/StyleSheet';
 import useWindowDimensions from '../utils/useWindowDimensions';
@@ -57,7 +58,7 @@ const AddNewContactButtonBlock = props => {
         style={StyleSheet.applyWidth(
           {
             alignItems: 'center',
-            backgroundColor: theme.colors['Light Gray'],
+            backgroundColor: palettes.App['Light Gray'],
             borderRadius: 36,
             flexDirection: 'row',
             minHeight: 40,
@@ -189,7 +190,7 @@ const AddNewContactButtonBlock = props => {
                         )?.json;
                         setIsLoading(false);
                         if (!addContactResult?.message) {
-                          props.onChange?.(addContactResult);
+                          props.onChange?.(undefined);
                         }
                         setErrorMessage(addContactResult?.message);
                         setNewNameValue('');
@@ -251,7 +252,7 @@ const AddNewContactButtonBlock = props => {
                   /* hidden 'Set Variable' action */
                   console.log('resultt', addContactResult);
                   if (!addContactResult?.message) {
-                    props.onChange?.(addContactResult);
+                    props.onChange?.(undefined);
                   }
                   setNewNameValue('');
                   setPhoneNumberValue('');
@@ -278,7 +279,7 @@ const AddNewContactButtonBlock = props => {
             style={StyleSheet.applyWidth(
               {
                 alignItems: 'center',
-                backgroundColor: theme.colors['Surface'],
+                backgroundColor: palettes.Brand.Surface,
                 borderRadius: 30,
                 justifyContent: 'center',
                 paddingBottom: 2,
@@ -297,7 +298,7 @@ const AddNewContactButtonBlock = props => {
                   style={StyleSheet.applyWidth(
                     StyleSheet.compose(
                       GlobalStyles.TextStyles(theme)['Text'].style,
-                      { color: theme.colors['Medium'], fontSize: 12 }
+                      { color: theme.colors.text.medium, fontSize: 12 }
                     ),
                     dimensions.width
                   )}
@@ -338,7 +339,7 @@ const AddNewContactButtonBlock = props => {
             {...GlobalStyles.TextStyles(theme)['Text'].props}
             style={StyleSheet.applyWidth(
               StyleSheet.compose(GlobalStyles.TextStyles(theme)['Text'].style, {
-                color: theme.colors['Error'],
+                color: theme.colors.background.danger,
                 fontSize: 11,
               }),
               dimensions.width

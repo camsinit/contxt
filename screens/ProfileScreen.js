@@ -10,8 +10,10 @@ import * as ScreenComponents from '../custom-files/ScreenComponents';
 import cleanNumber from '../global-functions/cleanNumber';
 import formatDate from '../global-functions/formatDate';
 import formatPhoneNumbers from '../global-functions/formatPhoneNumbers';
+import palettes from '../themes/palettes';
 import * as Utils from '../utils';
 import Breakpoints from '../utils/Breakpoints';
+import * as DateUtils from '../utils/DateUtils';
 import * as StyleSheet from '../utils/StyleSheet';
 import openImagePickerUtil from '../utils/openImagePicker';
 import useWindowDimensions from '../utils/useWindowDimensions';
@@ -210,7 +212,7 @@ const ProfileScreen = props => {
                       }}
                     >
                       <Icon
-                        color={theme.colors['DarkGray']}
+                        color={palettes.App.DarkGray}
                         name={'EvilIcons/gear'}
                         size={36}
                       />
@@ -303,7 +305,7 @@ const ProfileScreen = props => {
                         style={StyleSheet.applyWidth(
                           {
                             alignItems: 'center',
-                            borderColor: theme.colors['Light Gray'],
+                            borderColor: palettes.App['Light Gray'],
                             borderRadius: 150,
                             borderWidth: 1,
                             height: 150,
@@ -353,7 +355,7 @@ const ProfileScreen = props => {
                         style={StyleSheet.applyWidth(
                           {
                             alignItems: 'center',
-                            borderColor: theme.colors['Light Gray'],
+                            borderColor: palettes.App['Light Gray'],
                             borderRadius: 150,
                             borderWidth: 1,
                             height: 150,
@@ -424,7 +426,7 @@ const ProfileScreen = props => {
                               style={StyleSheet.applyWidth(
                                 {
                                   alignItems: 'center',
-                                  backgroundColor: theme.colors['Overlay'],
+                                  backgroundColor: palettes.App.Overlay,
                                   flex: 1,
                                   justifyContent: 'center',
                                 },
@@ -442,7 +444,7 @@ const ProfileScreen = props => {
                                         GlobalStyles.TextStyles(theme)['Text']
                                           .style,
                                         {
-                                          color: theme.colors['Background'],
+                                          color: theme.colors.background.brand,
                                           fontSize: 20,
                                         }
                                       ),
@@ -469,7 +471,7 @@ const ProfileScreen = props => {
                                         )['Activity Indicator'].style,
                                         {
                                           borderColor:
-                                            theme.colors['Background'],
+                                            theme.colors.background.brand,
                                         }
                                       ),
                                       dimensions.width
@@ -576,7 +578,7 @@ const ProfileScreen = props => {
                               style={StyleSheet.applyWidth(
                                 {
                                   alignItems: 'center',
-                                  backgroundColor: theme.colors['Overlay'],
+                                  backgroundColor: palettes.App.Overlay,
                                   borderRadius: 8,
                                   bottom: 0,
                                   flex: 1,
@@ -597,7 +599,7 @@ const ProfileScreen = props => {
                                 {...GlobalStyles.ActivityIndicatorStyles(theme)[
                                   'Activity Indicator'
                                 ].props}
-                                color={theme.colors['Background']}
+                                color={theme.colors.background.brand}
                                 style={StyleSheet.applyWidth(
                                   GlobalStyles.ActivityIndicatorStyles(theme)[
                                     'Activity Indicator'
@@ -624,7 +626,7 @@ const ProfileScreen = props => {
                     style={StyleSheet.applyWidth(
                       {
                         alignItems: 'center',
-                        backgroundColor: theme.colors['Light Gray'],
+                        backgroundColor: palettes.App['Light Gray'],
                         borderRadius: 8,
                         flex: 1,
                         height: 40,
@@ -730,7 +732,7 @@ const ProfileScreen = props => {
                                   'Text Input'
                                 ].style,
                                 {
-                                  color: theme.colors['Strong'],
+                                  color: theme.colors.text.strong,
                                   fontFamily: 'Poppins_600SemiBold',
                                   paddingBottom: 0,
                                   paddingLeft: 0,
@@ -751,7 +753,7 @@ const ProfileScreen = props => {
                           style={StyleSheet.applyWidth(
                             {
                               alignItems: 'center',
-                              backgroundColor: theme.colors['Overlay'],
+                              backgroundColor: palettes.App.Overlay,
                               borderRadius: 8,
                               bottom: 0,
                               flex: 1,
@@ -773,7 +775,7 @@ const ProfileScreen = props => {
                             {...GlobalStyles.ActivityIndicatorStyles(theme)[
                               'Activity Indicator'
                             ].props}
-                            color={theme.colors['Background']}
+                            color={theme.colors.background.brand}
                             style={StyleSheet.applyWidth(
                               GlobalStyles.ActivityIndicatorStyles(theme)[
                                 'Activity Indicator'
@@ -790,7 +792,7 @@ const ProfileScreen = props => {
                     style={StyleSheet.applyWidth(
                       {
                         alignItems: 'center',
-                        backgroundColor: theme.colors['Light Gray'],
+                        backgroundColor: palettes.App['Light Gray'],
                         borderRadius: 8,
                         flex: 1,
                         height: 40,
@@ -886,11 +888,11 @@ const ProfileScreen = props => {
                             format={'mmm d, yyyy'}
                             labelColor={'rgba(0, 0, 0, 0)'}
                             maximumDate={new Date()}
-                            rightIconName={'Ionicons/md-chevron-down'}
+                            rightIconName={'Ionicons/chevron-down'}
                             style={StyleSheet.applyWidth(
                               {
                                 borderColor: 'rgba(0, 0, 0, 0)',
-                                color: theme.colors['Primary'],
+                                color: theme.colors.branding.primary,
                                 fontFamily: 'Poppins_600SemiBold',
                                 fontSize: 14,
                                 marginBottom: 0,
@@ -907,7 +909,7 @@ const ProfileScreen = props => {
                                 style={StyleSheet.applyWidth(
                                   {
                                     alignItems: 'center',
-                                    backgroundColor: theme.colors['Overlay'],
+                                    backgroundColor: palettes.App.Overlay,
                                     borderRadius: 8,
                                     bottom: 0,
                                     flex: 1,
@@ -930,7 +932,7 @@ const ProfileScreen = props => {
                                   {...GlobalStyles.ActivityIndicatorStyles(
                                     theme
                                   )['Activity Indicator'].props}
-                                  color={theme.colors['Background']}
+                                  color={theme.colors.background.brand}
                                   style={StyleSheet.applyWidth(
                                     GlobalStyles.ActivityIndicatorStyles(theme)[
                                       'Activity Indicator'
@@ -994,7 +996,7 @@ const ProfileScreen = props => {
                         style={StyleSheet.applyWidth(
                           {
                             alignItems: 'center',
-                            backgroundColor: theme.colors['Light Gray'],
+                            backgroundColor: palettes.App['Light Gray'],
                             borderRadius: 8,
                             flex: 1,
                             height: 40,
@@ -1039,7 +1041,7 @@ const ProfileScreen = props => {
                                 <>
                                   {!fetchData?._is_favorite ? null : (
                                     <Icon
-                                      color={theme.colors['Error']}
+                                      color={theme.colors.background.danger}
                                       name={'AntDesign/heart'}
                                       size={18}
                                     />
@@ -1093,7 +1095,7 @@ const ProfileScreen = props => {
                     style={StyleSheet.applyWidth(
                       {
                         alignItems: 'center',
-                        borderColor: theme.colors['DarkGray'],
+                        borderColor: palettes.App.DarkGray,
                         borderRadius: 50,
                         borderWidth: 1,
                         flex: 1,
@@ -1107,7 +1109,7 @@ const ProfileScreen = props => {
                     {/* SearchIcon */}
                     <Icon
                       size={24}
-                      color={theme.colors['DarkGray']}
+                      color={palettes.App.DarkGray}
                       name={'Ionicons/search'}
                     />
                     <TextInput
@@ -1126,7 +1128,7 @@ const ProfileScreen = props => {
                         .props}
                       clearButtonMode={'always'}
                       placeholder={'Search'}
-                      placeholderTextColor={theme.colors['DarkGray']}
+                      placeholderTextColor={palettes.App.DarkGray}
                       style={StyleSheet.applyWidth(
                         StyleSheet.compose(
                           GlobalStyles.TextInputStyles(theme)['Text Input']

@@ -11,6 +11,7 @@ import * as GlobalVariables from '../config/GlobalVariableContext';
 import Images from '../config/Images';
 import * as ScreenComponents from '../custom-files/ScreenComponents';
 import requestContactsPermissions from '../global-functions/requestContactsPermissions';
+import palettes from '../themes/palettes';
 import * as Utils from '../utils';
 import Breakpoints from '../utils/Breakpoints';
 import * as StyleSheet from '../utils/StyleSheet';
@@ -105,7 +106,7 @@ const HomeScreen = props => {
       scrollable={false}
       hasSafeArea={true}
       style={StyleSheet.applyWidth(
-        { backgroundColor: theme.colors['Background'] },
+        { backgroundColor: theme.colors.background.brand },
         dimensions.width
       )}
     >
@@ -115,7 +116,7 @@ const HomeScreen = props => {
         style={StyleSheet.applyWidth(
           {
             alignItems: 'center',
-            backgroundColor: theme.colors['Secondary'],
+            backgroundColor: theme.colors.branding.secondary,
             borderRadius: 10,
             flexDirection: 'row',
             marginBottom: 12,
@@ -131,7 +132,7 @@ const HomeScreen = props => {
         {/* SearchIcon */}
         <Icon
           size={24}
-          color={theme.colors['DarkGray']}
+          color={palettes.App.DarkGray}
           name={'Ionicons/search'}
         />
         <View style={StyleSheet.applyWidth({ flex: 1 }, dimensions.width)}>
@@ -160,7 +161,7 @@ const HomeScreen = props => {
             clearButtonMode={'always'}
             keyboardType={'default'}
             placeholder={'Search'}
-            placeholderTextColor={theme.colors['DarkGray']}
+            placeholderTextColor={palettes.App.DarkGray}
             ref={textInputT7ND9LrzRef}
             spellcheck={true}
             style={StyleSheet.applyWidth(
@@ -344,7 +345,7 @@ const HomeScreen = props => {
               <View
                 style={StyleSheet.applyWidth(
                   {
-                    backgroundColor: theme.colors['Secondary'],
+                    backgroundColor: theme.colors.branding.secondary,
                     borderRadius: 30,
                     height: 115,
                     justifyContent: 'center',
@@ -458,7 +459,7 @@ const HomeScreen = props => {
                                     GlobalStyles.CircleStyles(theme)['Circle']
                                       .style,
                                     {
-                                      backgroundColor: theme.colors['Surface'],
+                                      backgroundColor: palettes.Brand.Surface,
                                       height: 65,
                                       width: 65,
                                     }
@@ -514,7 +515,7 @@ const HomeScreen = props => {
               <View
                 style={StyleSheet.applyWidth(
                   {
-                    backgroundColor: theme.colors['Secondary'],
+                    backgroundColor: theme.colors.branding.secondary,
                     borderRadius: 30,
                     height: 115,
                     justifyContent: 'center',
@@ -655,7 +656,7 @@ const HomeScreen = props => {
                           StyleSheet.compose(
                             GlobalStyles.TextStyles(theme)['Text'].style,
                             {
-                              color: theme.colors['Light'],
+                              color: theme.colors.text.light,
                               fontFamily: 'Poppins_500Medium',
                               marginTop: 12,
                             }
@@ -723,7 +724,7 @@ const HomeScreen = props => {
                               StyleSheet.compose(
                                 GlobalStyles.TextStyles(theme)['Text'].style,
                                 {
-                                  color: theme.colors['Light'],
+                                  color: theme.colors.text.light,
                                   fontFamily: 'Poppins_500Medium',
                                   marginTop: 12,
                                 }
@@ -794,7 +795,7 @@ const HomeScreen = props => {
             {
               alignItems: 'center',
               alignSelf: 'center',
-              backgroundColor: theme.colors['Primary'],
+              backgroundColor: theme.colors.branding.primary,
               borderRadius: 100,
               bottom: 20,
               height: 60,
@@ -817,7 +818,7 @@ const HomeScreen = props => {
             }}
           >
             <Icon
-              color={theme.colors['Background']}
+              color={theme.colors.background.brand}
               name={'Feather/plus'}
               size={50}
             />
@@ -852,7 +853,7 @@ const HomeScreen = props => {
                     GlobalStyles.SurfaceStyles(theme)['Surface'].style,
                     {
                       alignItems: 'center',
-                      backgroundColor: theme.colors['Light Inverse'],
+                      backgroundColor: palettes.Brand['Light Inverse'],
                       borderRadius: 16,
                       paddingBottom: 40,
                       paddingLeft: 20,
@@ -952,7 +953,7 @@ const HomeScreen = props => {
                 GlobalStyles.SurfaceStyles(theme)['Surface'].style,
                 {
                   alignItems: 'center',
-                  backgroundColor: theme.colors['Light Inverse'],
+                  backgroundColor: palettes.Brand['Light Inverse'],
                   borderRadius: 16,
                   paddingBottom: 40,
                   paddingLeft: 20,

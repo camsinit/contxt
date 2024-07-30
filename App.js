@@ -79,7 +79,11 @@ const App = () => {
     >
       <GlobalVariableProvider>
         <QueryClientProvider client={queryClient}>
-          <ThemeProvider theme={Draftbit}>
+          <ThemeProvider
+            themes={[Draftbit]}
+            breakpoints={{}}
+            initialThemeName={Draftbit.name}
+          >
             <AppNavigator />
           </ThemeProvider>
         </QueryClientProvider>

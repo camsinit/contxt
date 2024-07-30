@@ -4,6 +4,7 @@ import * as AuthApiApi from '../apis/AuthApiApi.js';
 import * as GlobalVariables from '../config/GlobalVariableContext';
 import * as ScreenComponents from '../custom-files/ScreenComponents';
 import cleanNumber from '../global-functions/cleanNumber';
+import palettes from '../themes/palettes';
 import * as Utils from '../utils';
 import Breakpoints from '../utils/Breakpoints';
 import * as StyleSheet from '../utils/StyleSheet';
@@ -119,7 +120,7 @@ const Onboarding3PhoneScreen = props => {
                 GlobalStyles.SurfaceStyles(theme)['Surface'].style,
                 {
                   alignItems: 'center',
-                  borderColor: theme.colors['Light Inverse'],
+                  borderColor: palettes.Brand['Light Inverse'],
                   borderRadius: 8,
                   borderWidth: 1,
                   height: 40,
@@ -197,7 +198,7 @@ const Onboarding3PhoneScreen = props => {
                       StyleSheet.compose(
                         GlobalStyles.TextStyles(theme)['Text'].style,
                         {
-                          color: theme.colors['Strong'],
+                          color: theme.colors.text.strong,
                           fontFamily: 'Poppins_400Regular_Italic',
                           fontSize: 12,
                           marginTop: 12,
@@ -226,7 +227,7 @@ const Onboarding3PhoneScreen = props => {
                   style={StyleSheet.applyWidth(
                     StyleSheet.compose(
                       GlobalStyles.TextStyles(theme)['Text'].style,
-                      { color: theme.colors['Error'] }
+                      { color: theme.colors.background.danger }
                     ),
                     dimensions.width
                   )}
@@ -336,7 +337,7 @@ const Onboarding3PhoneScreen = props => {
                     blurOnFull={true}
                     changeTextDelay={500}
                     clearOnCellFocus={true}
-                    focusedBorderColor={theme.colors.primary}
+                    focusedBorderColor={theme.colors.branding.primary}
                     keyboardType={'number-pad'}
                     onChangeText={newPinInputValue => {
                       try {
@@ -385,7 +386,7 @@ const Onboarding3PhoneScreen = props => {
                       StyleSheet.compose(
                         GlobalStyles.PinInputStyles(theme)['Pin Input'].style,
                         {
-                          borderColor: theme.colors['Divider'],
+                          borderColor: theme.colors.border.brand,
                           borderRadius: 12,
                         }
                       ),
@@ -400,7 +401,7 @@ const Onboarding3PhoneScreen = props => {
                     style={StyleSheet.applyWidth(
                       StyleSheet.compose(
                         GlobalStyles.TextStyles(theme)['Text'].style,
-                        { color: theme.colors['Error'] }
+                        { color: theme.colors.background.danger }
                       ),
                       dimensions.width
                     )}
@@ -416,7 +417,7 @@ const Onboarding3PhoneScreen = props => {
                           StyleSheet.compose(
                             GlobalStyles.TextStyles(theme)['Text'].style,
                             {
-                              color: theme.colors['Light'],
+                              color: theme.colors.text.light,
                               fontFamily: 'Poppins_500Medium',
                               textAlign: 'center',
                             }

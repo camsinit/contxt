@@ -9,6 +9,7 @@ import * as Lib from '../custom-files/Lib';
 import extractIds from '../global-functions/extractIds';
 import extractUniqueContacts from '../global-functions/extractUniqueContacts';
 import locationToGeoPointJson from '../global-functions/locationToGeoPointJson';
+import palettes from '../themes/palettes';
 import Breakpoints from '../utils/Breakpoints';
 import * as StyleSheet from '../utils/StyleSheet';
 import getLocationUtil from '../utils/getLocation';
@@ -255,8 +256,8 @@ const QuoteFormBlock = props => {
     <View
       style={StyleSheet.applyWidth(
         {
-          backgroundColor: theme.colors['Background'],
-          borderColor: theme.colors['Light Gray'],
+          backgroundColor: theme.colors.background.brand,
+          borderColor: palettes.App['Light Gray'],
           borderTopLeftRadius: 16,
           borderTopRightRadius: 16,
           borderWidth: 1,
@@ -295,7 +296,7 @@ const QuoteFormBlock = props => {
               StyleSheet.compose(
                 GlobalStyles.CircleStyles(theme)['Circle'].style,
                 {
-                  backgroundColor: theme.colors['Light Inverse'],
+                  backgroundColor: palettes.Brand['Light Inverse'],
                   height: 35,
                   width: 35,
                 }
@@ -305,7 +306,7 @@ const QuoteFormBlock = props => {
           >
             <Icon
               size={24}
-              color={theme.colors['Medium']}
+              color={theme.colors.text.medium}
               name={'Ionicons/close'}
             />
           </Circle>
@@ -318,7 +319,9 @@ const QuoteFormBlock = props => {
                 if (selectedLocation?.latitude) {
                   setSelectedLocation(null);
                 } else {
-                  const locationResult = await getLocationUtil();
+                  const locationResult = await getLocationUtil({
+                    accuracy: 'Highest',
+                  });
                   if (locationResult) {
                     setSelectedLocation(locationResult);
                   } else {
@@ -343,7 +346,7 @@ const QuoteFormBlock = props => {
               {selectedLocation?.latitude ? null : (
                 <Icon
                   size={24}
-                  color={theme.colors['DarkGray']}
+                  color={palettes.App.DarkGray}
                   name={'Entypo/map'}
                   style={StyleSheet.applyWidth(
                     { marginRight: 4 },
@@ -357,7 +360,7 @@ const QuoteFormBlock = props => {
               {!selectedLocation?.latitude ? null : (
                 <Icon
                   size={24}
-                  color={theme.colors['Primary']}
+                  color={theme.colors.branding.primary}
                   name={'Entypo/map'}
                   style={StyleSheet.applyWidth(
                     { marginRight: 4 },
@@ -391,7 +394,7 @@ const QuoteFormBlock = props => {
           style={StyleSheet.applyWidth(
             {
               borderColor: 'rgba(0, 0, 0, 0)',
-              color: theme.colors['Primary'],
+              color: theme.colors.branding.primary,
               fontFamily: 'Poppins_500Medium',
               fontSize: 14,
               zIndex: 9999,
@@ -439,7 +442,7 @@ const QuoteFormBlock = props => {
           <View
             style={StyleSheet.applyWidth(
               {
-                backgroundColor: theme.colors['Light Inverse'],
+                backgroundColor: palettes.Brand['Light Inverse'],
                 borderRadius: 32,
                 paddingBottom: 8,
                 paddingLeft: 16,
@@ -455,7 +458,7 @@ const QuoteFormBlock = props => {
               style={StyleSheet.applyWidth(
                 StyleSheet.compose(
                   GlobalStyles.TextStyles(theme)['Text'].style,
-                  { color: theme.colors['Medium'], fontSize: 12 }
+                  { color: theme.colors.text.medium, fontSize: 12 }
                 ),
                 dimensions.width
               )}
@@ -492,9 +495,9 @@ const QuoteFormBlock = props => {
                     StyleSheet.compose(
                       GlobalStyles.ButtonStyles(theme)['Button'].style,
                       {
-                        backgroundColor: theme.colors['Light Inverse'],
+                        backgroundColor: palettes.Brand['Light Inverse'],
                         borderRadius: 32,
-                        color: theme.colors['Primary'],
+                        color: theme.colors.branding.primary,
                         fontFamily: 'Poppins_400Regular',
                         fontSize: 13,
                         marginBottom: 12,
@@ -598,7 +601,7 @@ const QuoteFormBlock = props => {
                         GlobalStyles.CircleStyles(theme)['Circle'].style,
                         {
                           backgroundColor: 'rgba(0, 0, 0, 0)',
-                          borderColor: theme.colors['Light Inverse'],
+                          borderColor: palettes.Brand['Light Inverse'],
                           borderStyle: 'dashed',
                           borderWidth: 1.5,
                           height: 35,
@@ -611,7 +614,7 @@ const QuoteFormBlock = props => {
                   >
                     <Icon
                       size={24}
-                      color={theme.colors['Light Inverse']}
+                      color={palettes.Brand['Light Inverse']}
                       name={'AntDesign/question'}
                     />
                   </Circle>
@@ -622,7 +625,7 @@ const QuoteFormBlock = props => {
                     style={StyleSheet.applyWidth(
                       StyleSheet.compose(
                         GlobalStyles.TextStyles(theme)['Text'].style,
-                        { color: theme.colors['Light Inverse'], fontSize: 18 }
+                        { color: palettes.Brand['Light Inverse'], fontSize: 18 }
                       ),
                       dimensions.width
                     )}
@@ -664,7 +667,7 @@ const QuoteFormBlock = props => {
                     GlobalStyles.SurfaceStyles(theme)['Surface'].style,
                     {
                       alignItems: 'center',
-                      backgroundColor: theme.colors['Light Inverse'],
+                      backgroundColor: palettes.Brand['Light Inverse'],
                       borderRadius: 16,
                       paddingBottom: 40,
                       paddingLeft: 20,
@@ -728,7 +731,7 @@ const QuoteFormBlock = props => {
                             {
                               alignContent: 'center',
                               alignItems: 'center',
-                              borderColor: theme.colors['Green'],
+                              borderColor: palettes.App.Green,
                               borderRadius: 50,
                               borderWidth: choosenContacts.includes(listData)
                                 ? 5
@@ -813,7 +816,7 @@ const QuoteFormBlock = props => {
               GlobalStyles.BlurViewStyles(theme)['Blur View'].style,
               {
                 alignItems: 'center',
-                backgroundColor: 'rgba(58, 58, 58, 0.09)',
+                backgroundColor: '"rgba(58, 58, 58, 0.09)"',
                 justifyContent: 'center',
               }
             ),
@@ -828,7 +831,7 @@ const QuoteFormBlock = props => {
                 GlobalStyles.SurfaceStyles(theme)['Surface'].style,
                 {
                   alignItems: 'center',
-                  backgroundColor: 'rgb(255, 255, 255)',
+                  backgroundColor: '"rgb(255, 255, 255)"',
                   borderRadius: 16,
                   paddingBottom: 40,
                   paddingLeft: 20,
@@ -855,7 +858,7 @@ const QuoteFormBlock = props => {
                   }
                 }}
                 size={32}
-                color={theme.colors['Medium']}
+                color={theme.colors.text.medium}
                 icon={'Feather/x'}
               />
             </View>
@@ -909,7 +912,7 @@ const QuoteFormBlock = props => {
                     borderColor: 'rgb(242, 242, 247)',
                     borderRadius: 50,
                     borderWidth: 1.5,
-                    color: 'rgb(99, 99, 102)',
+                    color: '"rgb(99, 99, 102)"',
                     fontFamily: 'Poppins_600SemiBold',
                     fontSize: 20,
                     marginTop: 20,
@@ -939,7 +942,7 @@ const QuoteFormBlock = props => {
               GlobalStyles.SurfaceStyles(theme)['Surface'].style,
               {
                 alignItems: 'center',
-                backgroundColor: 'rgb(255, 255, 255)',
+                backgroundColor: '"rgb(255, 255, 255)"',
                 borderRadius: 16,
                 height: '100%',
                 paddingBottom: 40,

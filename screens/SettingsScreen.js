@@ -7,6 +7,7 @@ import getContactPermissionsStatus from '../global-functions/getContactPermissio
 import getLocationPermissionsStatus from '../global-functions/getLocationPermissionsStatus';
 import getNotificationPermissionsStatus from '../global-functions/getNotificationPermissionsStatus';
 import requestLocationPermissions from '../global-functions/requestLocationPermissions';
+import palettes from '../themes/palettes';
 import Breakpoints from '../utils/Breakpoints';
 import * as StyleSheet from '../utils/StyleSheet';
 import getPushTokenUtil from '../utils/getPushToken';
@@ -62,7 +63,7 @@ const SettingsScreen = props => {
       <View
         style={StyleSheet.applyWidth(
           {
-            backgroundColor: theme.colors['EEEEEE'],
+            backgroundColor: palettes.App.EEEEEE,
             borderTopLeftRadius: 25,
             borderTopRightRadius: 25,
             flex: 1,
@@ -178,7 +179,7 @@ const SettingsScreen = props => {
                 StyleSheet.compose(
                   GlobalStyles.TextStyles(theme)['Text'].style,
                   {
-                    color: theme.colors['Custom Gray'],
+                    color: palettes.App['Custom Gray'],
                     fontFamily: 'System',
                     fontSize: 12,
                     fontWeight: '600',
@@ -233,7 +234,7 @@ const SettingsScreen = props => {
                       StyleSheet.compose(
                         GlobalStyles.TextStyles(theme)['Text'].style,
                         {
-                          color: theme.colors['Custom Gray'],
+                          color: palettes.App['Custom Gray'],
                           fontFamily: 'System',
                           fontSize: 12,
                           fontWeight: '600',
@@ -293,7 +294,7 @@ const SettingsScreen = props => {
                       StyleSheet.compose(
                         GlobalStyles.TextStyles(theme)['Text'].style,
                         {
-                          color: theme.colors['Custom Gray'],
+                          color: palettes.App['Custom Gray'],
                           fontFamily: 'System',
                           fontSize: 12,
                           fontWeight: '600',
@@ -350,7 +351,7 @@ const SettingsScreen = props => {
                       StyleSheet.compose(
                         GlobalStyles.TextStyles(theme)['Text'].style,
                         {
-                          color: theme.colors['Custom Gray'],
+                          color: palettes.App['Custom Gray'],
                           fontFamily: 'System',
                           fontSize: 12,
                           fontWeight: '600',
@@ -377,7 +378,7 @@ const SettingsScreen = props => {
                 StyleSheet.compose(
                   GlobalStyles.TextStyles(theme)['Text'].style,
                   {
-                    color: theme.colors['Custom Gray'],
+                    color: palettes.App['Custom Gray'],
                     fontFamily: 'System',
                     fontSize: 12,
                     fontWeight: '600',
@@ -422,7 +423,7 @@ const SettingsScreen = props => {
                     StyleSheet.compose(
                       GlobalStyles.TextStyles(theme)['Text'].style,
                       {
-                        color: theme.colors['Custom Gray'],
+                        color: palettes.App['Custom Gray'],
                         fontFamily: 'System',
                         fontSize: 12,
                         fontWeight: '600',
@@ -470,7 +471,7 @@ const SettingsScreen = props => {
                     StyleSheet.compose(
                       GlobalStyles.TextStyles(theme)['Text'].style,
                       {
-                        color: theme.colors['Custom Red'],
+                        color: palettes.App['Custom Red'],
                         fontFamily: 'System',
                         fontSize: 12,
                         fontWeight: '600',

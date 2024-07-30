@@ -6,6 +6,7 @@ import Images from '../config/Images';
 import getContacts from '../global-functions/getContacts';
 import randomNumber from '../global-functions/randomNumber';
 import requestContactsPermissions from '../global-functions/requestContactsPermissions';
+import palettes from '../themes/palettes';
 import Breakpoints from '../utils/Breakpoints';
 import * as StyleSheet from '../utils/StyleSheet';
 import useWindowDimensions from '../utils/useWindowDimensions';
@@ -87,7 +88,7 @@ const Onboarding5ContactsImportScreen = props => {
                 GlobalStyles.SurfaceStyles(theme)['Surface'].style,
                 {
                   alignItems: 'center',
-                  borderColor: theme.colors['Light Inverse'],
+                  borderColor: palettes.Brand['Light Inverse'],
                   borderRadius: 8,
                   borderWidth: 1,
                   height: 40,
@@ -253,7 +254,7 @@ const Onboarding5ContactsImportScreen = props => {
               GlobalStyles.SurfaceStyles(theme)['Surface'].style,
               {
                 alignItems: 'center',
-                backgroundColor: theme.colors['Background'],
+                backgroundColor: theme.colors.background.brand,
                 borderRadius: 16,
                 height: '100%',
                 justifyContent: 'center',
@@ -333,7 +334,7 @@ const Onboarding5ContactsImportScreen = props => {
                     GlobalStyles.SurfaceStyles(theme)['Surface'].style,
                     {
                       alignItems: 'center',
-                      backgroundColor: theme.colors['Light Inverse'],
+                      backgroundColor: palettes.Brand['Light Inverse'],
                       borderRadius: 16,
                       paddingBottom: 40,
                       paddingLeft: 20,

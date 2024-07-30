@@ -2,12 +2,14 @@ import * as StyleSheet from './utils/StyleSheet';
 
 import Breakpoints from './utils/Breakpoints';
 
+import palettes from './themes/palettes';
+
 export const CircleStyles = theme =>
   StyleSheet.create({
     Circle: {
       style: {
         alignItems: 'center',
-        backgroundColor: theme.colors.primary,
+        backgroundColor: theme.colors.branding.primary,
         justifyContent: 'center',
       },
       props: {},
@@ -18,7 +20,7 @@ export const TextStyles = theme =>
   StyleSheet.create({
     Text: {
       style: {
-        color: theme.colors['Primary'],
+        color: theme.colors.branding.primary,
         fontFamily: 'Poppins_400Regular',
       },
       props: {},
@@ -45,7 +47,11 @@ export const SVGStyles = theme =>
 export const H2Styles = theme =>
   StyleSheet.create({
     H2: {
-      style: { color: theme.colors.strong, fontSize: 24, fontWeight: 'bold' },
+      style: {
+        color: theme.colors.text.strong,
+        fontSize: 24,
+        fontWeight: 'bold',
+      },
       props: {},
     },
   });
@@ -53,7 +59,11 @@ export const H2Styles = theme =>
 export const H1Styles = theme =>
   StyleSheet.create({
     H1: {
-      style: { color: theme.colors.strong, fontSize: 32, fontWeight: 'bold' },
+      style: {
+        color: theme.colors.text.strong,
+        fontSize: 32,
+        fontWeight: 'bold',
+      },
       props: {},
     },
   });
@@ -62,7 +72,7 @@ export const ButtonStyles = theme =>
   StyleSheet.create({
     Button: {
       style: {
-        backgroundColor: theme.colors.primary,
+        backgroundColor: theme.colors.branding.primary,
         borderRadius: 8,
         fontFamily: 'Poppins_700Bold',
         fontSize: 16,
@@ -74,10 +84,10 @@ export const ButtonStyles = theme =>
     OutlineButton: {
       style: {
         backgroundColor: 'rgba(0, 0, 0, 0)',
-        borderColor: theme.colors['Primary'],
+        borderColor: theme.colors.branding.primary,
         borderRadius: 8,
         borderWidth: 1,
-        color: theme.colors['Primary'],
+        color: theme.colors.branding.primary,
         fontFamily: 'Poppins_700Bold',
         fontSize: 16,
         minHeight: 56,
@@ -92,7 +102,7 @@ export const TextInputStyles = theme =>
     'Text Area': {
       style: {
         borderBottomWidth: 1,
-        borderColor: theme.colors.divider,
+        borderColor: theme.colors.border.brand,
         borderLeftWidth: 1,
         borderRadius: 8,
         borderRightWidth: 1,
@@ -108,7 +118,7 @@ export const TextInputStyles = theme =>
     'Text Input': {
       style: {
         borderBottomWidth: 1,
-        borderColor: theme.colors.divider,
+        borderColor: theme.colors.border.brand,
         borderLeftWidth: 1,
         borderRadius: 8,
         borderRightWidth: 1,
@@ -126,7 +136,10 @@ export const TextInputStyles = theme =>
 export const LinkStyles = theme =>
   StyleSheet.create({
     Link: {
-      style: { color: theme.colors.primary, fontFamily: 'Poppins_600SemiBold' },
+      style: {
+        color: theme.colors.branding.primary,
+        fontFamily: 'Poppins_600SemiBold',
+      },
       props: {},
     },
   });
@@ -136,10 +149,10 @@ export const PinInputStyles = theme =>
     'Pin Input': {
       style: {
         alignItems: 'center',
-        borderColor: theme.colors.medium,
+        borderColor: theme.colors.text.medium,
         borderRadius: 5,
         borderWidth: 1,
-        color: theme.colors.strong,
+        color: theme.colors.text.strong,
         flex: 1,
         fontSize: 25,
         justifyContent: 'center',

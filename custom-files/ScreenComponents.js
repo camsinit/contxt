@@ -1,3 +1,4 @@
+import palettes from '../themes/palettes';
 // This import is required if you are defining react components in this module.
 import React, { useState, useEffect, useRef } from 'react';
 import Text from '@sanar/react-native-highlight-text';
@@ -78,14 +79,14 @@ export const PhoneInput = ({
           minHeight: 48,
           borderWidth: 1,
           borderRadius: 8,
-          borderColor: theme.colors['Divider'],
+          borderColor: theme.colors.border.brand,
           paddingRight: 1,
           width: '100%',
         }}
         textContainerStyle={{
           height: 48,
           borderRadius: 8,
-          backgroundColor: theme.colors['Background'],
+          backgroundColor: theme.colors.background.brand,
         }}
         flagButtonStyle={{
           borderTopLeftRadius: 8,
@@ -104,8 +105,8 @@ export const PhoneInput = ({
           fontFamily: 'Poppins_400Regular',
         }}
         textInputProps={{
-          placeholderTextColor: theme.colors['Secondary'],
-          selectionColor: theme.colors['Secondary'],
+          placeholderTextColor: theme.colors.branding.secondary,
+          selectionColor: theme.colors.branding.secondary,
         }}
         autoFocus={false}
         countryPickerProps={{

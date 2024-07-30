@@ -1,10 +1,10 @@
 import { I18nManager, Platform, StyleSheet, Text, View } from 'react-native';
 import { systemWeights } from 'react-native-typography';
-import { Icon, Touchable } from '@draftbit/ui';
+import { Icon, Touchable, useTheme } from '@draftbit/ui';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import theme from './themes/Draftbit.js';
+import palettes from './themes/palettes.js';
 import LinkingConfiguration from './LinkingConfiguration.js';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import React from 'react';
@@ -47,6 +47,7 @@ function DefaultAndroidBackIcon({ tintColor }) {
 }
 
 export default function RootAppNavigator() {
+  const theme = useTheme();
   const Constants = GlobalVariables.useValues();
 
   return (

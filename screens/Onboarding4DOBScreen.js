@@ -2,6 +2,7 @@ import React from 'react';
 import * as GlobalStyles from '../GlobalStyles.js';
 import * as XANOApi from '../apis/XANOApi.js';
 import * as GlobalVariables from '../config/GlobalVariableContext';
+import palettes from '../themes/palettes';
 import Breakpoints from '../utils/Breakpoints';
 import * as StyleSheet from '../utils/StyleSheet';
 import useWindowDimensions from '../utils/useWindowDimensions';
@@ -76,7 +77,7 @@ const Onboarding4DOBScreen = props => {
                 GlobalStyles.SurfaceStyles(theme)['Surface'].style,
                 {
                   alignItems: 'center',
-                  borderColor: theme.colors['Light Inverse'],
+                  borderColor: palettes.Brand['Light Inverse'],
                   borderRadius: 8,
                   borderWidth: 1,
                   height: 40,
@@ -215,7 +216,7 @@ const Onboarding4DOBScreen = props => {
             <View
               style={StyleSheet.applyWidth(
                 {
-                  borderColor: theme.colors['Divider'],
+                  borderColor: theme.colors.border.brand,
                   borderRadius: 8,
                   borderWidth: 1,
                   height: 48,
@@ -239,7 +240,7 @@ const Onboarding4DOBScreen = props => {
                 }}
                 date={dobValue}
                 label={''}
-                labelColor={theme.colors['Strong']}
+                labelColor={theme.colors.text.strong}
                 labelSize={0}
                 maximumDate={new Date()}
                 style={StyleSheet.applyWidth(
@@ -268,7 +269,7 @@ const Onboarding4DOBScreen = props => {
             {...GlobalStyles.TextStyles(theme)['Text'].props}
             style={StyleSheet.applyWidth(
               StyleSheet.compose(GlobalStyles.TextStyles(theme)['Text'].style, {
-                color: theme.colors['Error'],
+                color: theme.colors.background.danger,
               }),
               dimensions.width
             )}

@@ -6,6 +6,7 @@ import QuoteCardBlock from '../components/QuoteCardBlock';
 import * as GlobalVariables from '../config/GlobalVariableContext';
 import Images from '../config/Images';
 import randomNumber from '../global-functions/randomNumber';
+import palettes from '../themes/palettes';
 import Breakpoints from '../utils/Breakpoints';
 import * as StyleSheet from '../utils/StyleSheet';
 import useWindowDimensions from '../utils/useWindowDimensions';
@@ -199,7 +200,7 @@ const QuoteBoxScreen = props => {
           }}
         >
           <Icon
-            color={theme.colors['DarkGray']}
+            color={palettes.App.DarkGray}
             name={'Entypo/chevron-thin-left'}
             size={36}
           />
@@ -237,7 +238,7 @@ const QuoteBoxScreen = props => {
                   style={StyleSheet.applyWidth(
                     StyleSheet.compose(
                       GlobalStyles.TextStyles(theme)['Text'].style,
-                      { color: theme.colors['DarkGray'] }
+                      { color: palettes.App.DarkGray }
                     ),
                     dimensions.width
                   )}
@@ -450,7 +451,7 @@ const QuoteBoxScreen = props => {
                               StyleSheet.compose(
                                 GlobalStyles.TextStyles(theme)['Text'].style,
                                 {
-                                  color: theme.colors['DarkGray'],
+                                  color: palettes.App.DarkGray,
                                   fontFamily: 'Poppins_500Medium',
                                   fontSize: 16,
                                   marginRight: 4,
@@ -537,8 +538,8 @@ const QuoteBoxScreen = props => {
                   <View
                     style={StyleSheet.applyWidth(
                       {
-                        backgroundColor: 'rgba(41, 96, 203, 0.15)',
-                        borderColor: theme.colors['Blue'],
+                        backgroundColor: '"rgba(41, 96, 203, 0.15)"',
+                        borderColor: palettes.App.Blue,
                         borderRadius: 50,
                         borderWidth: 1,
                         flexDirection: 'row',
@@ -551,7 +552,7 @@ const QuoteBoxScreen = props => {
                     )}
                   >
                     <Icon
-                      color={theme.colors['Blue']}
+                      color={palettes.App.Blue}
                       name={'Ionicons/lock-closed'}
                       size={19}
                       style={StyleSheet.applyWidth(
@@ -567,7 +568,7 @@ const QuoteBoxScreen = props => {
                         StyleSheet.compose(
                           GlobalStyles.TextStyles(theme)['Text'].style,
                           {
-                            color: theme.colors['Blue'],
+                            color: palettes.App.Blue,
                             fontFamily: 'Poppins_500Medium',
                             fontSize: 12,
                           }
@@ -615,8 +616,8 @@ const QuoteBoxScreen = props => {
                     style={StyleSheet.applyWidth(
                       {
                         alignItems: 'center',
-                        backgroundColor: theme.colors['LightRed'],
-                        borderColor: theme.colors['Red'],
+                        backgroundColor: palettes.App.LightRed,
+                        borderColor: palettes.App.Red,
                         borderRadius: 50,
                         borderWidth: 1,
                         flexDirection: 'row',
@@ -630,7 +631,7 @@ const QuoteBoxScreen = props => {
                     {/* Trash */}
                     <Icon
                       size={24}
-                      color={theme.colors['Red']}
+                      color={palettes.App.Red}
                       name={'Ionicons/close'}
                     />
                   </View>
@@ -670,8 +671,8 @@ const QuoteBoxScreen = props => {
                   <View
                     style={StyleSheet.applyWidth(
                       {
-                        backgroundColor: theme.colors['LightGreen'],
-                        borderColor: theme.colors['Green'],
+                        backgroundColor: palettes.App.LightGreen,
+                        borderColor: palettes.App.Green,
                         borderRadius: 50,
                         borderWidth: 1,
                         flexDirection: 'row',
@@ -684,8 +685,8 @@ const QuoteBoxScreen = props => {
                     )}
                   >
                     <Icon
-                      color={theme.colors['Green']}
-                      name={'Ionicons/ios-people'}
+                      color={palettes.App.Green}
+                      name={'Ionicons/people'}
                       size={19}
                       style={StyleSheet.applyWidth(
                         { marginRight: 8 },
@@ -700,7 +701,7 @@ const QuoteBoxScreen = props => {
                         StyleSheet.compose(
                           GlobalStyles.TextStyles(theme)['Text'].style,
                           {
-                            color: theme.colors['Green'],
+                            color: palettes.App.Green,
                             fontFamily: 'Poppins_500Medium',
                             fontSize: 12,
                           }
@@ -733,7 +734,7 @@ const QuoteBoxScreen = props => {
               GlobalStyles.BlurViewStyles(theme)['Blur View'].style,
               {
                 alignItems: 'center',
-                backgroundColor: 'rgba(58, 58, 58, 0.09)',
+                backgroundColor: '"rgba(58, 58, 58, 0.09)"',
                 justifyContent: 'center',
               }
             ),
@@ -748,7 +749,7 @@ const QuoteBoxScreen = props => {
                 GlobalStyles.SurfaceStyles(theme)['Surface'].style,
                 {
                   alignItems: 'center',
-                  backgroundColor: 'rgb(255, 255, 255)',
+                  backgroundColor: '"rgb(255, 255, 255)"',
                   borderRadius: 16,
                   paddingBottom: 40,
                   paddingLeft: 20,
@@ -788,7 +789,7 @@ const QuoteBoxScreen = props => {
                     }
                   }}
                   size={32}
-                  color={theme.colors['Medium']}
+                  color={theme.colors.text.medium}
                   icon={'Feather/x'}
                 />
               </View>
@@ -828,7 +829,7 @@ const QuoteBoxScreen = props => {
                     style={StyleSheet.applyWidth(
                       StyleSheet.compose(
                         GlobalStyles.TextStyles(theme)['Text'].style,
-                        { color: theme.colors['DarkGray'] }
+                        { color: palettes.App.DarkGray }
                       ),
                       dimensions.width
                     )}
@@ -891,7 +892,7 @@ const QuoteBoxScreen = props => {
                     borderColor: 'rgb(242, 242, 247)',
                     borderRadius: 50,
                     borderWidth: 1.5,
-                    color: 'rgb(99, 99, 102)',
+                    color: '"rgb(99, 99, 102)"',
                     fontFamily: 'Poppins_600SemiBold',
                     fontSize: 20,
                     marginTop: 20,
@@ -922,7 +923,7 @@ const QuoteBoxScreen = props => {
               GlobalStyles.BlurViewStyles(theme)['Blur View'].style,
               {
                 alignItems: 'center',
-                backgroundColor: 'rgba(58, 58, 58, 0.09)',
+                backgroundColor: '"rgba(58, 58, 58, 0.09)"',
                 justifyContent: 'center',
               }
             ),
@@ -937,7 +938,7 @@ const QuoteBoxScreen = props => {
                 GlobalStyles.SurfaceStyles(theme)['Surface'].style,
                 {
                   alignItems: 'center',
-                  backgroundColor: 'rgb(255, 255, 255)',
+                  backgroundColor: '"rgb(255, 255, 255)"',
                   borderRadius: 16,
                   paddingBottom: 40,
                   paddingLeft: 20,
@@ -977,7 +978,7 @@ const QuoteBoxScreen = props => {
                     }
                   }}
                   size={32}
-                  color={theme.colors['Medium']}
+                  color={theme.colors.text.medium}
                   icon={'Feather/x'}
                 />
               </View>
@@ -1017,7 +1018,7 @@ const QuoteBoxScreen = props => {
                     style={StyleSheet.applyWidth(
                       StyleSheet.compose(
                         GlobalStyles.TextStyles(theme)['Text'].style,
-                        { color: theme.colors['DarkGray'] }
+                        { color: palettes.App.DarkGray }
                       ),
                       dimensions.width
                     )}
@@ -1080,7 +1081,7 @@ const QuoteBoxScreen = props => {
                     borderColor: 'rgb(242, 242, 247)',
                     borderRadius: 50,
                     borderWidth: 1.5,
-                    color: 'rgb(99, 99, 102)',
+                    color: '"rgb(99, 99, 102)"',
                     fontFamily: 'Poppins_600SemiBold',
                     fontSize: 20,
                     marginTop: 20,
@@ -1111,7 +1112,7 @@ const QuoteBoxScreen = props => {
               GlobalStyles.BlurViewStyles(theme)['Blur View'].style,
               {
                 alignItems: 'center',
-                backgroundColor: 'rgba(58, 58, 58, 0.09)',
+                backgroundColor: '"rgba(58, 58, 58, 0.09)"',
                 justifyContent: 'center',
               }
             ),
@@ -1126,7 +1127,7 @@ const QuoteBoxScreen = props => {
                 GlobalStyles.SurfaceStyles(theme)['Surface'].style,
                 {
                   alignItems: 'center',
-                  backgroundColor: 'rgb(255, 255, 255)',
+                  backgroundColor: '"rgb(255, 255, 255)"',
                   borderRadius: 16,
                   paddingBottom: 40,
                   paddingLeft: 20,
@@ -1166,7 +1167,7 @@ const QuoteBoxScreen = props => {
                     }
                   }}
                   size={32}
-                  color={theme.colors['Medium']}
+                  color={theme.colors.text.medium}
                   icon={'Feather/x'}
                 />
               </View>
@@ -1206,7 +1207,7 @@ const QuoteBoxScreen = props => {
                     style={StyleSheet.applyWidth(
                       StyleSheet.compose(
                         GlobalStyles.TextStyles(theme)['Text'].style,
-                        { color: theme.colors['DarkGray'] }
+                        { color: palettes.App.DarkGray }
                       ),
                       dimensions.width
                     )}
@@ -1248,7 +1249,7 @@ const QuoteBoxScreen = props => {
               GlobalStyles.SurfaceStyles(theme)['Surface'].style,
               {
                 alignItems: 'center',
-                backgroundColor: 'rgb(255, 255, 255)',
+                backgroundColor: '"rgb(255, 255, 255)"',
                 borderRadius: 16,
                 height: '100%',
                 paddingBottom: 40,

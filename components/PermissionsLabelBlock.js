@@ -1,5 +1,6 @@
 import React from 'react';
 import * as GlobalStyles from '../GlobalStyles.js';
+import palettes from '../themes/palettes';
 import Breakpoints from '../utils/Breakpoints';
 import * as StyleSheet from '../utils/StyleSheet';
 import useWindowDimensions from '../utils/useWindowDimensions';
@@ -22,7 +23,7 @@ const PermissionsLabelBlock = props => {
             )}
           >
             <Icon
-              color={theme.colors['custom green']}
+              color={palettes.App['custom green']}
               name={'Ionicons/checkmark-sharp'}
               size={16}
             />
@@ -33,7 +34,7 @@ const PermissionsLabelBlock = props => {
                 StyleSheet.compose(
                   GlobalStyles.TextStyles(theme)['Text'].style,
                   {
-                    color: theme.colors['custom green'],
+                    color: palettes.App['custom green'],
                     fontFamily: 'System',
                     fontSize: 12,
                     fontWeight: '600',
@@ -45,7 +46,7 @@ const PermissionsLabelBlock = props => {
               {'Working'}
             </Text>
             <IconButton
-              color={theme.colors['custom green']}
+              color={palettes.App['custom green']}
               icon={'AntDesign/right'}
               size={16}
             />
@@ -62,7 +63,7 @@ const PermissionsLabelBlock = props => {
             )}
           >
             <Icon
-              color={theme.colors['Custom Red']}
+              color={palettes.App['Custom Red']}
               name={'Ionicons/warning'}
               size={16}
             />
@@ -73,7 +74,7 @@ const PermissionsLabelBlock = props => {
                 StyleSheet.compose(
                   GlobalStyles.TextStyles(theme)['Text'].style,
                   {
-                    color: theme.colors['Custom Red'],
+                    color: palettes.App['Custom Red'],
                     fontFamily: 'System',
                     fontSize: 12,
                     fontWeight: '600',
@@ -85,7 +86,7 @@ const PermissionsLabelBlock = props => {
               {'Denied'}
             </Text>
             <IconButton
-              color={theme.colors['Custom Red']}
+              color={palettes.App['Custom Red']}
               icon={'AntDesign/right'}
               size={16}
             />

@@ -2,6 +2,7 @@ import React from 'react';
 import * as GlobalStyles from '../GlobalStyles.js';
 import HighligtedTextBlock from '../components/HighligtedTextBlock';
 import * as GlobalVariables from '../config/GlobalVariableContext';
+import palettes from '../themes/palettes';
 import Breakpoints from '../utils/Breakpoints';
 import * as StyleSheet from '../utils/StyleSheet';
 import useWindowDimensions from '../utils/useWindowDimensions';
@@ -185,7 +186,7 @@ const ContactsViewBlock = props => {
                           }
                         )?.name
                       ),
-                      borderColor: theme.colors['Strong'],
+                      borderColor: theme.colors.text.strong,
                       borderStyle: 'solid',
                       borderWidth:
                         (
@@ -482,7 +483,7 @@ const ContactsViewBlock = props => {
                       StyleSheet.compose(
                         GlobalStyles.TextStyles(theme)['Text'].style,
                         {
-                          color: theme.colors['Light'],
+                          color: theme.colors.text.light,
                           fontFamily: 'Poppins_300Light',
                           fontSize: 12,
                         }

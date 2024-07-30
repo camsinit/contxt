@@ -4,6 +4,7 @@ import * as AuthApiApi from '../apis/AuthApiApi.js';
 import * as GlobalVariables from '../config/GlobalVariableContext';
 import * as ScreenComponents from '../custom-files/ScreenComponents';
 import cleanNumber from '../global-functions/cleanNumber';
+import palettes from '../themes/palettes';
 import * as Utils from '../utils';
 import Breakpoints from '../utils/Breakpoints';
 import * as StyleSheet from '../utils/StyleSheet';
@@ -147,7 +148,7 @@ const LoginScreen = props => {
                 GlobalStyles.SurfaceStyles(theme)['Surface'].style,
                 {
                   alignItems: 'center',
-                  borderColor: theme.colors['Light Inverse'],
+                  borderColor: palettes.Brand['Light Inverse'],
                   borderRadius: 8,
                   borderWidth: 1,
                   height: 40,
@@ -223,7 +224,7 @@ const LoginScreen = props => {
                   style={StyleSheet.applyWidth(
                     StyleSheet.compose(
                       GlobalStyles.TextStyles(theme)['Text'].style,
-                      { color: theme.colors['Error'] }
+                      { color: theme.colors.background.danger }
                     ),
                     dimensions.width
                   )}
@@ -360,7 +361,7 @@ const LoginScreen = props => {
                   blurOnFull={true}
                   changeTextDelay={500}
                   clearOnCellFocus={true}
-                  focusedBorderColor={theme.colors.primary}
+                  focusedBorderColor={theme.colors.branding.primary}
                   keyboardType={'number-pad'}
                   onChangeText={newPinInputValue => {
                     try {
@@ -409,7 +410,10 @@ const LoginScreen = props => {
                   style={StyleSheet.applyWidth(
                     StyleSheet.compose(
                       GlobalStyles.PinInputStyles(theme)['Pin Input'].style,
-                      { borderColor: theme.colors['Divider'], borderRadius: 12 }
+                      {
+                        borderColor: theme.colors.border.brand,
+                        borderRadius: 12,
+                      }
                     ),
                     dimensions.width
                   )}
@@ -422,7 +426,7 @@ const LoginScreen = props => {
                   style={StyleSheet.applyWidth(
                     StyleSheet.compose(
                       GlobalStyles.TextStyles(theme)['Text'].style,
-                      { color: theme.colors['Error'] }
+                      { color: theme.colors.background.danger }
                     ),
                     dimensions.width
                   )}
@@ -438,7 +442,7 @@ const LoginScreen = props => {
                         StyleSheet.compose(
                           GlobalStyles.TextStyles(theme)['Text'].style,
                           {
-                            color: theme.colors['Light'],
+                            color: theme.colors.text.light,
                             fontFamily: 'Poppins_500Medium',
                             textAlign: 'center',
                           }

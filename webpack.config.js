@@ -13,6 +13,13 @@ module.exports = async function (env, argv) {
 
   const config = await createExpoWebpackConfigAsync(enviroment, argv);
 
+  // Addresses missing 'crypto' package on Expo 50. See https://github.com/expo/expo/issues/26706
+  // Temporary workaround until we migrate from '@expo/webpack-config' to expo router
+  config.resolve.fallback = {
+    ...config.resolve.fallback,
+    crypto: require.resolve('expo-crypto'),
+  };
+
   // Added at Customer Request to fix Victory Charts for Web Apps
   config.resolve.alias['victory-native'] = 'victory';
 

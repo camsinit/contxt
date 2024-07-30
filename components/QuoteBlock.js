@@ -2,9 +2,10 @@ import React from 'react';
 import * as GlobalStyles from '../GlobalStyles.js';
 import HighligtedTextBlock from '../components/HighligtedTextBlock';
 import * as GlobalVariables from '../config/GlobalVariableContext';
-import { parseBoolean } from '../utils';
+import palettes from '../themes/palettes';
 import Breakpoints from '../utils/Breakpoints';
 import * as StyleSheet from '../utils/StyleSheet';
+import parseBoolean from '../utils/parseBoolean';
 import useWindowDimensions from '../utils/useWindowDimensions';
 import { IconButton, TextInput, Touchable, withTheme } from '@draftbit/ui';
 import { Text, View } from 'react-native';
@@ -52,7 +53,7 @@ const QuoteBlock = props => {
               onBlur={() => {
                 try {
                   setEditMode(false);
-                  props.onChange?.(props.id ?? '', quoteValue);
+                  props.onChange?.(undefined, undefined);
                 } catch (err) {
                   console.error(err);
                 }
@@ -60,10 +61,10 @@ const QuoteBlock = props => {
               onChangeText={newQuoteTextInputValue => {
                 try {
                   if (newQuoteTextInputValue === '') {
-                    props.onDelete?.(props.id ?? '');
+                    props.onDelete?.(undefined);
                   } else {
                     setQuoteValue(newQuoteTextInputValue);
-                    props.onChange?.(props.id ?? '', newQuoteTextInputValue);
+                    props.onChange?.(undefined, undefined);
                   }
                 } catch (err) {
                   console.error(err);
@@ -85,7 +86,7 @@ const QuoteBlock = props => {
                     borderRadius: null,
                     borderRightWidth: 0,
                     borderTopWidth: 0,
-                    color: theme.colors['DarkGray'],
+                    color: palettes.App.DarkGray,
                     fontFamily: 'Poppins_400Regular_Italic',
                     paddingBottom: 0,
                     paddingLeft: 0,
@@ -110,7 +111,7 @@ const QuoteBlock = props => {
             {...GlobalStyles.TextStyles(theme)['Text'].props}
             style={StyleSheet.applyWidth(
               StyleSheet.compose(GlobalStyles.TextStyles(theme)['Text'].style, {
-                color: theme.colors['DarkGray'],
+                color: palettes.App.DarkGray,
                 textAlign: 'center',
               }),
               dimensions.width
@@ -130,7 +131,7 @@ const QuoteBlock = props => {
                   style={StyleSheet.applyWidth(
                     StyleSheet.compose(
                       GlobalStyles.TextStyles(theme)['Text'].style,
-                      { color: theme.colors['DarkGray'], textAlign: 'center' }
+                      { color: palettes.App.DarkGray, textAlign: 'center' }
                     ),
                     dimensions.width
                   )}
@@ -161,7 +162,7 @@ const QuoteBlock = props => {
                   style={StyleSheet.applyWidth(
                     StyleSheet.compose(
                       GlobalStyles.TextStyles(theme)['Text'].style,
-                      { color: theme.colors['DarkGray'], textAlign: 'center' }
+                      { color: palettes.App.DarkGray, textAlign: 'center' }
                     ),
                     dimensions.width
                   )}

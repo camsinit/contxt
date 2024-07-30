@@ -2,6 +2,7 @@ import React from 'react';
 import * as GlobalStyles from '../GlobalStyles.js';
 import * as XANOApi from '../apis/XANOApi.js';
 import * as GlobalVariables from '../config/GlobalVariableContext';
+import palettes from '../themes/palettes';
 import Breakpoints from '../utils/Breakpoints';
 import * as StyleSheet from '../utils/StyleSheet';
 import useWindowDimensions from '../utils/useWindowDimensions';
@@ -96,7 +97,7 @@ const HeaderBlock = props => {
                       StyleSheet.compose(
                         GlobalStyles.CircleStyles(theme)['Circle'].style,
                         {
-                          backgroundColor: theme.colors['Error'],
+                          backgroundColor: theme.colors.background.danger,
                           height: 15,
                           position: 'absolute',
                           right: -5,
@@ -112,7 +113,7 @@ const HeaderBlock = props => {
                       style={StyleSheet.applyWidth(
                         StyleSheet.compose(
                           GlobalStyles.TextStyles(theme)['Text'].style,
-                          { color: theme.colors['Background'], fontSize: 9 }
+                          { color: theme.colors.background.brand, fontSize: 9 }
                         ),
                         dimensions.width
                       )}

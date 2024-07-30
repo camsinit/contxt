@@ -1,5 +1,6 @@
 import React from 'react';
 import * as ScreenComponents from '../custom-files/ScreenComponents';
+import palettes from '../themes/palettes';
 import * as Utils from '../utils';
 import useWindowDimensions from '../utils/useWindowDimensions';
 import { withTheme } from '@draftbit/ui';

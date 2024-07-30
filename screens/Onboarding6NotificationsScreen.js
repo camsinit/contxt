@@ -3,6 +3,7 @@ import * as GlobalStyles from '../GlobalStyles.js';
 import * as XANOApi from '../apis/XANOApi.js';
 import * as GlobalVariables from '../config/GlobalVariableContext';
 import Images from '../config/Images';
+import palettes from '../themes/palettes';
 import Breakpoints from '../utils/Breakpoints';
 import * as StyleSheet from '../utils/StyleSheet';
 import getPushTokenUtil from '../utils/getPushToken';
@@ -33,7 +34,7 @@ const Onboarding6NotificationsScreen = props => {
       scrollable={false}
       hasSafeArea={true}
       style={StyleSheet.applyWidth(
-        { backgroundColor: 'rgb(238, 238, 238)' },
+        { backgroundColor: '"rgb(238, 238, 238)"' },
         dimensions.width
       )}
     >
@@ -42,7 +43,7 @@ const Onboarding6NotificationsScreen = props => {
         style={StyleSheet.applyWidth(
           {
             alignItems: 'center',
-            backgroundColor: 'rgb(238, 238, 238)',
+            backgroundColor: '"rgb(238, 238, 238)"',
             flexDirection: 'row',
             justifyContent: 'space-between',
             padding: 20,
@@ -67,7 +68,7 @@ const Onboarding6NotificationsScreen = props => {
                 GlobalStyles.SurfaceStyles(theme)['Surface'].style,
                 {
                   alignItems: 'center',
-                  borderColor: theme.colors['Light Inverse'],
+                  borderColor: palettes.Brand['Light Inverse'],
                   borderRadius: 8,
                   borderWidth: 1,
                   height: 40,
@@ -103,7 +104,7 @@ const Onboarding6NotificationsScreen = props => {
         extraScrollHeight={50}
         keyboardShouldPersistTaps={'always'}
         style={StyleSheet.applyWidth(
-          { backgroundColor: theme.colors['Surface'], flex: 1, padding: 20 },
+          { backgroundColor: palettes.Brand.Surface, flex: 1, padding: 20 },
           dimensions.width
         )}
         viewIsInsideTabBar={true}
@@ -161,7 +162,7 @@ const Onboarding6NotificationsScreen = props => {
             {...GlobalStyles.TextStyles(theme)['Text'].props}
             style={StyleSheet.applyWidth(
               StyleSheet.compose(GlobalStyles.TextStyles(theme)['Text'].style, {
-                color: theme.colors['Error'],
+                color: theme.colors.background.danger,
               }),
               dimensions.width
             )}

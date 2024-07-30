@@ -8,6 +8,7 @@ import * as GlobalVariables from '../config/GlobalVariableContext';
 import * as ScreenComponents from '../custom-files/ScreenComponents';
 import extractUniqueContacts from '../global-functions/extractUniqueContacts';
 import timeFromNow from '../global-functions/timeFromNow';
+import palettes from '../themes/palettes';
 import * as Utils from '../utils';
 import Breakpoints from '../utils/Breakpoints';
 import * as StyleSheet from '../utils/StyleSheet';
@@ -67,7 +68,7 @@ const QuoteCardBlock = props => {
               StyleSheet.compose(
                 GlobalStyles.SurfaceStyles(theme)['Surface'].style,
                 {
-                  borderColor: theme.colors['Light Inverse'],
+                  borderColor: palettes.Brand['Light Inverse'],
                   borderRadius: 16,
                   borderWidth: 1,
                   marginLeft: 2,
@@ -149,7 +150,7 @@ const QuoteCardBlock = props => {
                       <View
                         style={StyleSheet.applyWidth(
                           {
-                            borderColor: theme.colors['Background'],
+                            borderColor: theme.colors.background.brand,
                             borderRadius: 30,
                             borderWidth: 3,
                             marginRight: multiply(index, -10),
@@ -247,7 +248,7 @@ const QuoteCardBlock = props => {
                           )?.visibilty === 'public'
                         ) ? null : (
                           <Icon
-                            color={theme.colors['Green']}
+                            color={palettes.App.Green}
                             name={'MaterialIcons/public'}
                             size={17}
                           />
@@ -298,7 +299,7 @@ const QuoteCardBlock = props => {
                           )?.visibilty === 'denied'
                         ) ? null : (
                           <Icon
-                            color={theme.colors['Error']}
+                            color={theme.colors.background.danger}
                             name={'MaterialIcons/block'}
                             size={17}
                           />
@@ -349,7 +350,7 @@ const QuoteCardBlock = props => {
                           )?.visibilty === 'private'
                         ) ? null : (
                           <Icon
-                            color={theme.colors['Blue']}
+                            color={palettes.App.Blue}
                             name={'MaterialCommunityIcons/shield-account'}
                             size={17}
                           />
@@ -400,7 +401,7 @@ const QuoteCardBlock = props => {
                           )?.visibilty === 'unset'
                         ) ? null : (
                           <Icon
-                            color={theme.colors['Medium']}
+                            color={theme.colors.text.medium}
                             name={'AntDesign/clockcircleo'}
                             size={17}
                           />
@@ -418,7 +419,7 @@ const QuoteCardBlock = props => {
                         StyleSheet.compose(
                           GlobalStyles.TextStyles(theme)['Text'].style,
                           {
-                            color: theme.colors['DarkGray'],
+                            color: palettes.App.DarkGray,
                             fontFamily: 'Poppins_500Medium',
                           }
                         ),
@@ -493,7 +494,7 @@ const QuoteCardBlock = props => {
                               }
                             }}
                             size={32}
-                            color={theme.colors['Error']}
+                            color={theme.colors.background.danger}
                             disabled={isDeleting}
                             icon={'EvilIcons/trash'}
                           />
@@ -615,6 +616,7 @@ const QuoteCardBlock = props => {
       {/* DeleteModal */}
       <Modal
         animationType={'none'}
+        supportedOrientations={['portrait', 'landscape']}
         transparent={true}
         visible={showDeleteModal}
       >
@@ -626,7 +628,7 @@ const QuoteCardBlock = props => {
               GlobalStyles.BlurViewStyles(theme)['Blur View'].style,
               {
                 alignItems: 'center',
-                backgroundColor: 'rgba(58, 58, 58, 0.09)',
+                backgroundColor: '"rgba(58, 58, 58, 0.09)"',
                 justifyContent: 'center',
               }
             ),
@@ -642,7 +644,7 @@ const QuoteCardBlock = props => {
                 GlobalStyles.SurfaceStyles(theme)['Surface'].style,
                 {
                   alignItems: 'center',
-                  backgroundColor: 'rgb(255, 255, 255)',
+                  backgroundColor: '"rgb(255, 255, 255)"',
                   borderRadius: 16,
                   paddingBottom: 40,
                   paddingLeft: 20,
@@ -682,7 +684,7 @@ const QuoteCardBlock = props => {
                     }
                   }}
                   size={32}
-                  color={theme.colors['Medium']}
+                  color={theme.colors.text.medium}
                   icon={'Feather/x'}
                 />
               </View>
@@ -722,7 +724,7 @@ const QuoteCardBlock = props => {
               style={StyleSheet.applyWidth(
                 StyleSheet.compose(
                   GlobalStyles.TextStyles(theme)['Text'].style,
-                  { color: theme.colors['Error'] }
+                  { color: theme.colors.background.danger }
                 ),
                 dimensions.width
               )}
@@ -758,7 +760,7 @@ const QuoteCardBlock = props => {
                         borderColor: 'rgb(242, 242, 247)',
                         borderRadius: 50,
                         borderWidth: 1.5,
-                        color: 'rgb(99, 99, 102)',
+                        color: '"rgb(99, 99, 102)"',
                         fontFamily: 'Poppins_600SemiBold',
                         fontSize: 20,
                         marginTop: 20,
@@ -850,7 +852,7 @@ const QuoteCardBlock = props => {
                         borderColor: 'rgb(242, 242, 247)',
                         borderRadius: 50,
                         borderWidth: 1.5,
-                        color: 'rgb(99, 99, 102)',
+                        color: '"rgb(99, 99, 102)"',
                         fontFamily: 'Poppins_600SemiBold',
                         fontSize: 20,
                         marginTop: 20,

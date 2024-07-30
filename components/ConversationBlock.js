@@ -5,6 +5,7 @@ import AddNewContactButtonBlock from '../components/AddNewContactButtonBlock';
 import SearchContactViewBlock from '../components/SearchContactViewBlock';
 import * as GlobalVariables from '../config/GlobalVariableContext';
 import Images from '../config/Images';
+import palettes from '../themes/palettes';
 import Breakpoints from '../utils/Breakpoints';
 import * as StyleSheet from '../utils/StyleSheet';
 import useWindowDimensions from '../utils/useWindowDimensions';
@@ -97,7 +98,7 @@ const ConversationBlock = props => {
                       StyleSheet.compose(
                         GlobalStyles.CircleStyles(theme)['Circle'].style,
                         {
-                          backgroundColor: theme.colors['DarkGray'],
+                          backgroundColor: palettes.App.DarkGray,
                           height: 40,
                           width: 40,
                         }
@@ -152,7 +153,7 @@ const ConversationBlock = props => {
                   GlobalStyles.CircleStyles(theme)['Circle'].style,
                   {
                     backgroundColor: 'rgba(0, 0, 0, 0)',
-                    borderColor: theme.colors['Light Inverse'],
+                    borderColor: palettes.Brand['Light Inverse'],
                     borderStyle: 'solid',
                     borderWidth: 1.5,
                     height: 40,
@@ -164,7 +165,7 @@ const ConversationBlock = props => {
             >
               <Icon
                 size={24}
-                color={theme.colors['Light Inverse']}
+                color={palettes.Brand['Light Inverse']}
                 name={'AntDesign/question'}
               />
             </Circle>
@@ -180,7 +181,7 @@ const ConversationBlock = props => {
                 StyleSheet.compose(
                   GlobalStyles.SurfaceStyles(theme)['Surface'].style,
                   {
-                    borderColor: theme.colors['Light Inverse'],
+                    borderColor: palettes.Brand['Light Inverse'],
                     borderRadius: 40,
                     borderStyle: 'dashed',
                     overflow: 'hidden',
@@ -234,9 +235,9 @@ const ConversationBlock = props => {
             onChangeText={newTextInputValue => {
               const textInputValue = newTextInputValue;
               try {
-                props.onChangeValue?.(props.id ?? '', newTextInputValue);
+                props.onChangeValue?.(undefined, undefined);
                 if (newTextInputValue === '') {
-                  props.onDelete?.(props.id ?? '');
+                  props.onDelete?.(undefined);
                 } else {
                 }
               } catch (err) {
@@ -262,7 +263,7 @@ const ConversationBlock = props => {
             defaultValue={props.text ?? ''}
             multiline={true}
             placeholder={'What was said?'}
-            placeholderTextColor={theme.colors['Light']}
+            placeholderTextColor={theme.colors.text.light}
             scrollEnabled={false}
             selectTextOnFocus={false}
             style={StyleSheet.applyWidth(
@@ -297,7 +298,7 @@ const ConversationBlock = props => {
               style={StyleSheet.applyWidth(
                 {
                   alignItems: 'center',
-                  backgroundColor: theme.colors['Light Gray'],
+                  backgroundColor: palettes.App['Light Gray'],
                   borderRadius: 36,
                   flexDirection: 'row',
                   height: 36,
@@ -325,7 +326,7 @@ const ConversationBlock = props => {
                   try {
                     setSearchStringDisplayValue(newSearchInputValue);
                     if (newSearchInputValue === '') {
-                      props.onDelete?.(props.id ?? '');
+                      props.onDelete?.(undefined);
                     } else {
                     }
                   } catch (err) {
@@ -388,7 +389,7 @@ const ConversationBlock = props => {
                 <View
                   style={StyleSheet.applyWidth(
                     {
-                      backgroundColor: theme.colors['Surface'],
+                      backgroundColor: palettes.Brand.Surface,
                       borderRadius: 40,
                       paddingBottom: 2,
                       paddingLeft: 6,
@@ -404,7 +405,7 @@ const ConversationBlock = props => {
                     style={StyleSheet.applyWidth(
                       StyleSheet.compose(
                         GlobalStyles.TextStyles(theme)['Text'].style,
-                        { color: theme.colors['Medium'], fontSize: 12 }
+                        { color: theme.colors.text.medium, fontSize: 12 }
                       ),
                       dimensions.width
                     )}
@@ -449,8 +450,8 @@ const ConversationBlock = props => {
                                   try {
                                     /* hidden 'API Request' action */
                                     props.onChangeContact?.(
-                                      props.id ?? '',
-                                      Constants['CX_USER']
+                                      undefined,
+                                      undefined
                                     );
                                   } catch (err) {
                                     console.error(err);
@@ -501,8 +502,8 @@ const ConversationBlock = props => {
                                           try {
                                             /* hidden 'API Request' action */
                                             props.onChangeContact?.(
-                                              props.id ?? '',
-                                              Constants['CX_USER']
+                                              undefined,
+                                              undefined
                                             );
                                           } catch (err) {
                                             console.error(err);
@@ -546,8 +547,8 @@ const ConversationBlock = props => {
                                             )
                                           )?.json;
                                           props.onChangeContact?.(
-                                            props.id ?? '',
-                                            listData
+                                            undefined,
+                                            undefined
                                           );
                                         } catch (err) {
                                           console.error(err);
@@ -598,7 +599,7 @@ const ConversationBlock = props => {
                 <View
                   style={StyleSheet.applyWidth(
                     {
-                      backgroundColor: theme.colors['Background'],
+                      backgroundColor: theme.colors.background.brand,
                       flex: 1,
                       width: dimensions.width,
                     },
@@ -661,8 +662,8 @@ const ConversationBlock = props => {
                                           )
                                         )?.json;
                                         props.onChangeContact?.(
-                                          props.id ?? '',
-                                          listData
+                                          undefined,
+                                          undefined
                                         );
                                         setSearchStringValue('');
                                         setSearchStringDisplayValue('');
