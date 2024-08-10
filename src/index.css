@@ -1,13 +1,211 @@
+/* Global styles */
+:root {
+  --primary-color: #38B2AC;
+  --secondary-color: #4FD1C5;
+  --background-color: #F7FAFC;
+  --text-color: #2D3748;
+  --text-color-light: #718096;
+  --border-color: #E2E8F0;
+  --header-bg: #2C7A7B;
+  --header-text: #FFFFFF;
+  --card-bg: #FFFFFF;
+  --hover-bg: #E6FFFA;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --transition: all 0.3s ease;
+  --border-radius: 8px;
+  --section-bg: #F0FFF4;
+  --section-header-bg: #E6FFFA;
+  --calendar-color: #38B2AC;
+  --groups-color: #3182CE;
+  --offerings-color: #38A169;
+  --emergency-color: #E53E3E;
+  --needs-wants-color: #805AD5;
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  line-height: 1.6;
+  font-size: 16px;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+/* Custom styles for Google Calendar integration */
+.calendar-container {
+  width: 100%;
+  height: 300px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  position: relative;
+  transition: var(--transition);
+  background-color: var(--card-bg);
+}
+
+.calendar-container iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.calendar-container::before {
+  content: "Loading...";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.9);
+  font-size: 1.2rem;
+  color: var(--primary-color);
+  font-weight: 600;
+  z-index: 1;
+}
+
+@media (min-width: 768px) {
+  .calendar-container {
+    height: 400px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .calendar-container {
+    height: 450px;
+  }
+}
+
+.calendar-container:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-4px);
+}
+
+.calendar-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 1rem;
+  text-align: center;
+  color: var(--text-color);
+  font-weight: 500;
+}
+
+/* Custom styles for dashboard sections */
+.dashboard-section {
+  background-color: var(--card-bg);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.dashboard-section:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-3px);
+}
+
+.dashboard-section h2, .dashboard-section h3 {
+  margin-bottom: 1rem;
+  color: var(--primary-color);
+  font-weight: 700;
+  font-size: 1.3rem;
+}
+
+.dashboard-section-content {
+  padding-top: 1rem;
+}
+
+.dashboard-section .chakra-button {
+  transition: var(--transition);
+}
+
+.dashboard-section .chakra-button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.dashboard-section > div {
+  margin-bottom: 1rem;
+}
+
+.dashboard-section > div:last-child {
+  margin-bottom: 0;
+}
+
+.dashboard-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--border-color);
+  margin-bottom: 1rem;
+}
+
+.dashboard-section-item {
+  padding: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  transition: var(--transition);
+}
+
+.dashboard-section-item:hover {
+  background-color: var(--hover-bg);
+  transform: translateY(-2px);
+}
+
+/* Header styles */
+.dashboard-header {
+  background-color: var(--header-bg);
+  color: var(--header-text);
+  padding: 1rem 0;
+}
+
+.dashboard-header h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+.dashboard-header .add-event-button {
+  background-color: var(--header-text);
+  color: var(--header-bg);
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.dashboard-header .add-event-button:hover {
+  background-color: var(--background-color);
+  transform: translateY(-2px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .dashboard-section {
+    padding: 1rem;
+  }
+
+  .dashboard-section h2, .dashboard-section h3 {
+    font-size: 1.1rem;
+  }
+
+  .dashboard-header h1 {
+    font-size: 1.5rem;
+  }
 }
